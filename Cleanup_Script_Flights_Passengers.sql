@@ -56,7 +56,8 @@ BEGIN
       destination VARCHAR2(100),
       source VARCHAR2(100),
       status VARCHAR2(10),
-      no_pax NUMBER
+      no_pax NUMBER,
+      airline_id NUMBER
     )';
     dbms_output.put_line('Table flight has been created');
   ELSE
@@ -94,17 +95,17 @@ the event of any errors a rollback is performed.
 */
 CREATE OR REPLACE PROCEDURE insert_flight IS
 BEGIN
-    INSERT INTO flight (flight_id, duration, flight_type, departure_time, arrival_time, destination, source, status, no_pax)
-    SELECT 1, 120, 'Boeing 737', TO_TIMESTAMP('2023-03-21 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-21 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'New York', 'London', 'On Time', 200 from dual union all
-    SELECT 2, 180, 'Airbus A320', TO_TIMESTAMP('2023-03-22 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-22 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Paris', 'Berlin', 'Delayed', 150 from dual union all
-    SELECT 3, 240, 'Boeing 747', TO_TIMESTAMP('2023-03-23 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-23 20:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Sydney', 'Singapore', 'On Time', 400 from dual union all
-    SELECT 4, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-24 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Los Angeles', 'San Francisco', 'On Time', 80 from dual union all
-    SELECT 5, 150, 'Boeing 737', TO_TIMESTAMP('2023-03-25 09:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-25 11:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Toronto', 'Montreal', 'On Time', 180 from dual union all
-    SELECT 6, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-26 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-26 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Berlin', 'Amsterdam', 'Delayed', 150 from dual union all
-    SELECT 7, 180, 'Boeing 787', TO_TIMESTAMP('2023-03-27 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-27 18:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Dubai', 'London', 'On Time', 300 from dual union all
-    SELECT 8, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-28 17:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-28 19:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Miami', 'Orlando', 'On Time', 80 from dual union all
-    SELECT 9, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-29 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Barcelona', 'Madrid','Cancelled',100 from dual union all
-    SELECT 10, 187, 'Airbus A380', TO_TIMESTAMP('2023-03-30 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Boston', 'Madrid','On Time',300 from dual;
+    INSERT INTO flight (flight_id, duration, flight_type, departure_time, arrival_time, destination, source, status, no_pax, airline_id)
+    SELECT 1, 120, 'Boeing 737', TO_TIMESTAMP('2023-03-21 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-21 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'New York', 'London', 'On Time', 200, 256 from dual union all
+    SELECT 2, 180, 'Airbus A320', TO_TIMESTAMP('2023-03-22 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-22 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Paris', 'Berlin', 'Delayed', 150, 257 from dual union all
+    SELECT 3, 240, 'Boeing 747', TO_TIMESTAMP('2023-03-23 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-23 20:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Sydney', 'Singapore', 'On Time', 400, 258 ,from dual union all
+    SELECT 4, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-24 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Los Angeles', 'San Francisco', 'On Time', 80, 259 from dual union all
+    SELECT 5, 150, 'Boeing 737', TO_TIMESTAMP('2023-03-25 09:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-25 11:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Toronto', 'Montreal', 'On Time', 180, 260 from dual union all
+    SELECT 6, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-26 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-26 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Berlin', 'Amsterdam', 'Delayed', 150, 261 from dual union all
+    SELECT 7, 180, 'Boeing 787', TO_TIMESTAMP('2023-03-27 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-27 18:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Dubai', 'London', 'On Time', 300,262 from dual union all
+    SELECT 8, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-28 17:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-28 19:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Miami', 'Orlando', 'On Time', 80, 263 from dual union all
+    SELECT 9, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-29 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Barcelona', 'Madrid','Cancelled',100, 264 from dual union all
+    SELECT 10, 187, 'Airbus A380', TO_TIMESTAMP('2023-03-30 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Boston', 'Madrid','On Time',300, 265 from dual;
     COMMIT;
 EXCEPTION
   WHEN OTHERS THEN
@@ -145,6 +146,34 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
 /
+
+
+/*
+Stored Procedure for updating flight Status
+*/
+
+CREATE OR REPLACE PROCEDURE update_flight_status(
+  p_flight_id IN NUMBER,
+  p_status IN VARCHAR2
+)
+IS
+BEGIN
+  UPDATE flight
+  SET status = p_status
+  WHERE flight_id = p_flight_id;
+  
+  COMMIT;
+  
+  DBMS_OUTPUT.PUT_LINE('Flight ' || p_flight_id || ' status updated to ' || p_status);
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Flight ' || p_flight_id || ' not found.');
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+--Execution 
+EXECUTE update_flight_status(9, 'DELAYED');
 
 /*
 The Below block of code creates the Passenger table. As an additional layer of
@@ -249,29 +278,3 @@ END;
 /
 
 
-/*
-Stored Procedure for updating flight Status
-*/
-
-CREATE OR REPLACE PROCEDURE update_flight_status(
-  p_flight_id IN NUMBER,
-  p_status IN VARCHAR2
-)
-IS
-BEGIN
-  UPDATE flight
-  SET status = p_status
-  WHERE flight_id = p_flight_id;
-  
-  COMMIT;
-  
-  DBMS_OUTPUT.PUT_LINE('Flight ' || p_flight_id || ' status updated to ' || p_status);
-EXCEPTION
-  WHEN NO_DATA_FOUND THEN
-    DBMS_OUTPUT.PUT_LINE('Flight ' || p_flight_id || ' not found.');
-  WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
-END;
-/
---Execution 
-EXECUTE update_flight_status(9, 'DELAYED');
