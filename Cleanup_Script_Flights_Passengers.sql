@@ -2,13 +2,19 @@
 show user;
 --CLEANUP SCRIPT
 set serveroutput on
+/*
+The Below block of code checks if the tables FLIGHT and PASSENGER
+are present in the database. If present the tables are dropped and 
+a message indicating the success is the output. In the case of any errors
+a custom error message is displayed.
+*/
 declare
     v_table_exists varchar(1) := 'Y';
     v_sql varchar(2000);
 begin
    dbms_output.put_line('Start schema cleanup');
    for i in (select 'FLIGHT' table_name from dual UNION ALL
-             select 'PASSENGER' table_name from duak
+             select 'PASSENGER' table_name from dual
    )
    loop
    dbms_output.put_line('....Drop table '||i.table_name);
@@ -32,7 +38,10 @@ exception
       dbms_output.put_line('Error with the table:'||sqlerrm);
 end;
 /
----- create table for flights
+/*
+The Below block of code creates the FLIGHTS table. As an additional layer of
+validation, the script is executed only if the table does not exist.
+*/
 DECLARE
   table_exists NUMBER;
 BEGIN
@@ -76,6 +85,13 @@ END;
 --END;
 /
 
+/*
+The Below block of code is a stored procedure for inserting
+data into the Flights table , it is called  insert_flight
+and the execution line is present after the block. Once 
+the data is inserted it is commited to the database. In
+the event of any errors a rollback is performed.
+*/
 CREATE OR REPLACE PROCEDURE insert_flight IS
 BEGIN
     INSERT INTO flight (flight_id, duration, flight_type, departure_time, arrival_time, destination, source, status, no_pax)
@@ -99,10 +115,11 @@ END insert_flight;
 EXECUTE insert_flight;
 -- CREATING VIEW
 
+
+/*
+The Below block of code creates views from the FLIGHT table
 -- View 1: Retrieve flight information with the departure and arrival locations swapped
-
-
-
+*/
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  swapped_flight_info AS
     SELECT flight_id, duration, flight_type, arrival_time AS departure_time, departure_time AS arrival_time, source AS destination, destination AS source, status, no_pax
@@ -113,9 +130,10 @@ EXCEPTION
 END;
 /
 
-
+/*
+The Below block of code creates views from the FLIGHT table
 -- View 2: Retrieve only delayed flights
-
+*/
 
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  delayed_flights AS
@@ -128,7 +146,10 @@ EXCEPTION
 END;
 /
 
----- create table for passenger
+/*
+The Below block of code creates the Passenger table. As an additional layer of
+validation, the script is executed only if the table does not exist.
+*/
 DECLARE
   table_exists NUMBER;
 BEGIN
@@ -166,7 +187,13 @@ END;
 --SELECT 5, 19, 'MNO345', 1005, '654 Maple St, Anytown, USA', 'Male', 'MNO345XYZ', 'David', 'Nguyen', TO_DATE('2003-08-11', 'YYYY-MM-DD'), '444-444-4444', 'davidnguyen@email.com' FROM DUAL;
 --
 --commit;
-
+/*
+The Below block of code is a stored procedure for inserting
+data into the Passengers table , it is called  insert_passenger
+and the execution line is present after the block. Once 
+the data is inserted it is commited to the database. In
+the event of any errors a rollback is performed.
+*/
 CREATE OR REPLACE PROCEDURE insert_passengers IS
 BEGIN
     SELECT 1, 25, 'ABC123', 1001, '123 Main St, Anytown, USA', 'Male', 'ABC123XYZ', 'John', 'Doe', TO_DATE('1997-01-15', 'YYYY-MM-DD'), '123-456-7890', 'johndoe@email.com' FROM DUAL
@@ -187,12 +214,14 @@ EXCEPTION
 END insert_passengers;
 
 EXECUTE insert_passengers;
+
+
 -- CREATING VIEW
 
--- creating views
-
--- group_passengers: A view that shows only passengers traveling in a group (p_id is not null).
-
+/*
+The Below block of code creates views from the FLIGHT table
+-- View 1: Group_passengers: A view that shows only passengers traveling in a group (p_id is not null).
+*/
 
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW group_passengers AS
@@ -204,7 +233,10 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
 /
-
+/*
+The Below block of code creates views from the FLIGHT table
+-- View 2: The variation in gender of passengers travelling.
+*/
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW passenger_count_by_gender AS
     SELECT gender, COUNT(*) as passenger_count
@@ -216,7 +248,11 @@ EXCEPTION
 END;
 /
 
---Stored Procedure for updating flight Status
+
+/*
+Stored Procedure for updating flight Status
+*/
+
 CREATE OR REPLACE PROCEDURE update_flight_status(
   p_flight_id IN NUMBER,
   p_status IN VARCHAR2
