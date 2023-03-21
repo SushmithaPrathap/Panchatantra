@@ -3,7 +3,6 @@
 show user;
 -- create a new user - Airport_Admin
 CREATE USER AirportAdmin IDENTIFIED BY AirportMainGuy2024;
-
 -- grant necessary system privileges
 GRANT CREATE SESSION TO AirportAdmin;
 GRANT UNLIMITED TABLESPACE TO AirportAdmin;
@@ -12,7 +11,7 @@ GRANT CREATE PROCEDURE TO AirportAdmin;
 GRANT CREATE SEQUENCE TO AirportAdmin;
 GRANT CREATE TRIGGER TO AirportAdmin;
 GRANT CREATE ANY VIEW TO AirportAdmin;
----
+
 -- CREATE A SEQUENCE FOR FLIGHT
 CREATE SEQUENCE flight_seq
   MINVALUE 1
@@ -21,14 +20,10 @@ CREATE SEQUENCE flight_seq
   INCREMENT BY 1
   CACHE 1000;
   
--- ASSIGNING SEQUENCE TO USER
-grant select on flight_seq to AirportAdmin;  
 -- CHECK  
-SELECT flight_seq.NEXTVAL FROM DUAL;
-SELECT flight_seq.CURRVAL from DUAL;
-select * from dba_tab_privs where table_name = 'flight_seq';
---RESET
-alter sequence flight_seq restart start with 1;
+--SELECT flight_seq.NEXTVAL FROM DUAL;
+--SELECT flight_seq.CURRVAL from DUAL;
+--select * from dba_tab_privs where table_name = 'flight_seq';
 
 -- CREATE A SEQUENCE FOR PASSENGER
 CREATE SEQUENCE passenger_seq
@@ -37,13 +32,9 @@ CREATE SEQUENCE passenger_seq
   START WITH 1
   INCREMENT BY 1
   CACHE 1000;
--- ASSIGNING SEQUENCE TO USER
-grant select on passenger_seq to AirportAdmin;  
 -- CHECK  
-SELECT passenger_seq.NEXTVAL FROM DUAL;
-select * from dba_tab_privs where table_name = 'passenger_seq';
---RESET
-alter sequence passenger_seq restart start with 1;
+--SELECT passenger_seq.NEXTVAL FROM DUAL;
+--select * from dba_tab_privs where table_name = 'passenger_seq';
 
 -- CREATE A SEQUENCE FOR AIRLINE
 CREATE SEQUENCE my_sequence 
@@ -52,6 +43,7 @@ INCREMENT BY 1
 MAXVALUE 1000 
 NOCYCLE 
 CACHE 20; 
+
 -- CREATE A SEQUENCE FOR AIRLINE ROUTE
 CREATE SEQUENCE airline_route_sequence 
 START WITH 10 
@@ -69,26 +61,15 @@ INCREMENT BY 1;
 grant select on my_sequence to AirportAdmin;  
 grant select on airline_route_sequence to AirportAdmin;
 grant select on orders_seq to AirportAdmin;
----- PUBLIC SYNONYM
---CREATE PUBLIC SYNONYM my_sequence for OWNER.my_sequence;
+grant select on flight_seq to AirportAdmin;  
+grant select on passenger_seq to AirportAdmin;  
+
 -- Reset Sequences
 alter sequence my_sequence restart start with 1;
 alter sequence airline_route_sequence restart start with 10;
 alter sequence orders_seq restart start with 1;
--- grant privileges on specific objects
---GRANT ALL PRIVILEGES ON <table_name> TO AirportAdmin;
---GRANT ALL PRIVILEGES ON <sequence_name> TO AirportAdmin;
---GRANT ALL PRIVILEGES ON <procedure_name> TO AirportAdmin;
---GRANT ALL PRIVILEGES ON <trigger_name> TO AirportAdmin;
-
----- grant roles
---GRANT DBA TO AirportAdmin;
-
----Admin Scripts
-show user;
--- create a new user - Airport_Admin
-CREATE role Passenger;
-GRANT SELECT ON table_name TO view_access;
+alter sequence flight_seq restart start with 1;
+alter sequence passenger_seq restart start with 1;
 
 
 
