@@ -45,6 +45,36 @@ select * from dba_tab_privs where table_name = 'passenger_seq';
 --RESET
 alter sequence passenger_seq restart start with 1;
 
+-- CREATE A SEQUENCE FOR AIRLINE
+CREATE SEQUENCE my_sequence 
+START WITH 1 
+INCREMENT BY 1 
+MAXVALUE 1000 
+NOCYCLE 
+CACHE 20; 
+-- CREATE A SEQUENCE FOR AIRLINE ROUTE
+CREATE SEQUENCE airline_route_sequence 
+START WITH 10 
+INCREMENT BY 50 
+MAXVALUE 100000 
+NOCYCLE 
+CACHE 20; 
+
+-- CREATE A SEQUENCE FOR ORDER 
+CREATE SEQUENCE order_seq 
+START WITH 1 
+INCREMENT BY 1; 
+
+-- Granting Priviliges
+grant select on my_sequence to AirportAdmin;  
+grant select on airline_route_sequence to AirportAdmin;
+grant select on orders_seq to AirportAdmin;
+---- PUBLIC SYNONYM
+--CREATE PUBLIC SYNONYM my_sequence for OWNER.my_sequence;
+-- Reset Sequences
+alter sequence my_sequence restart start with 1;
+alter sequence airline_route_sequence restart start with 10;
+alter sequence orders_seq restart start with 1;
 -- grant privileges on specific objects
 --GRANT ALL PRIVILEGES ON <table_name> TO AirportAdmin;
 --GRANT ALL PRIVILEGES ON <sequence_name> TO AirportAdmin;
