@@ -39,3 +39,46 @@ exception
       dbms_output.put_line('Failed to execute code:'||sqlerrm);
 end;
 /
+/*
+The Below block of code creates the TERMINAL table. As an additional layer of
+validation, the script is executed only if the table does not exist.
+*/
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'TERMINAL';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE terminal (
+      terminal_id NUMBER PRIMARY KEY,
+      terminal_name VARCHAR2(100)
+    )';
+    dbms_output.put_line('Table terminal has been created');
+  ELSE
+    dbms_output.put_line('Table terminal already exists');
+  END IF;
+END;
+/
+/*
+The Below block of code is a stored procedure for inserting
+data into the TERMINAL table , it is called  insert_terminal
+and the execution line is present after the block. Once 
+the data is inserted it is commited to the database. In
+the event of any errors a rollback is performed.
+*/
+CREATE OR REPLACE PROCEDURE insert_terminal IS
+BEGIN
+    INSERT INTO terminal (terminal_id, terminal_name)
+    SELECT 1, 'Terminal A' from dual union all
+    SELECT 2, 'Terminal B' from dual union all
+    SELECT 3, 'Terminal C' from dual union all
+    SELECT 4, 'Terminal D' from dual union all
+    SELECT 5, 'Terminal E' from dual;
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Data Inserted into terminal table');
+EXCEPTION
+  WHEN OTHERS THEN
+    ROLLBACK;
+    DBMS_OUTPUT.PUT_LINE('Error inserting terminal: ' || SQLERRM);
+END insert_terminal;
+/
+EXECUTE insert_terminal;
