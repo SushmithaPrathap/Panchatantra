@@ -11,21 +11,40 @@ GRANT CREATE TABLE TO AirportAdmin;
 GRANT CREATE PROCEDURE TO AirportAdmin;
 GRANT CREATE SEQUENCE TO AirportAdmin;
 GRANT CREATE TRIGGER TO AirportAdmin;
+GRANT CREATE ANY VIEW TO AirportAdmin;
 ---
--- CREATE A SEQUENCE FROM ADMIN?
-CREATE SEQUENCE order_id_seq
+-- CREATE A SEQUENCE FOR FLIGHT
+CREATE SEQUENCE flight_seq
   MINVALUE 1
-  MAXVALUE 100
+  MAXVALUE 10000
   START WITH 1
   INCREMENT BY 1
-  CACHE 100;
--- CHECK  
-SELECT order_id_seq.NEXTVAL FROM DUAL;
- select * from dba_tab_privs where table_name = 'order_id_seq';
+  CACHE 1000;
+  
 -- ASSIGNING SEQUENCE TO USER
-grant select on order_id_seq to abhi;
+grant select on flight_seq to AirportAdmin;  
+-- CHECK  
+SELECT flight_seq.NEXTVAL FROM DUAL;
+SELECT flight_seq.CURRVAL from DUAL;
+select * from dba_tab_privs where table_name = 'flight_seq';
 --RESET
-alter sequence order_id_seq restart start with 1;
+alter sequence flight_seq restart start with 1;
+
+-- CREATE A SEQUENCE FOR PASSENGER
+CREATE SEQUENCE passenger_seq
+  MINVALUE 1
+  MAXVALUE 10000
+  START WITH 1
+  INCREMENT BY 1
+  CACHE 1000;
+-- ASSIGNING SEQUENCE TO USER
+grant select on passenger_seq to AirportAdmin;  
+-- CHECK  
+SELECT passenger_seq.NEXTVAL FROM DUAL;
+select * from dba_tab_privs where table_name = 'passenger_seq';
+--RESET
+alter sequence passenger_seq restart start with 1;
+
 -- grant privileges on specific objects
 --GRANT ALL PRIVILEGES ON <table_name> TO AirportAdmin;
 --GRANT ALL PRIVILEGES ON <sequence_name> TO AirportAdmin;

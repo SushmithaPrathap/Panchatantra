@@ -1,4 +1,5 @@
 --  Initial Cleanup Script - This is done on devDB handled by Sushmitha Prathap
+WHENEVER SQLERROR EXIT SQL.SQLCODE
 show user;
 --CLEANUP SCRIPT
 set serveroutput on
@@ -98,7 +99,7 @@ BEGIN
     INSERT INTO flight (flight_id, duration, flight_type, departure_time, arrival_time, destination, source, status, no_pax, airline_id)
     SELECT 1, 120, 'Boeing 737', TO_TIMESTAMP('2023-03-21 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-21 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'New York', 'London', 'On Time', 200, 256 from dual union all
     SELECT 2, 180, 'Airbus A320', TO_TIMESTAMP('2023-03-22 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-22 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Paris', 'Berlin', 'Delayed', 150, 257 from dual union all
-    SELECT 3, 240, 'Boeing 747', TO_TIMESTAMP('2023-03-23 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-23 20:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Sydney', 'Singapore', 'On Time', 400, 258 ,from dual union all
+    SELECT 3, 240, 'Boeing 747', TO_TIMESTAMP('2023-03-23 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-23 20:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Sydney', 'Singapore', 'On Time', 400, 258 from dual union all
     SELECT 4, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-24 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Los Angeles', 'San Francisco', 'On Time', 80, 259 from dual union all
     SELECT 5, 150, 'Boeing 737', TO_TIMESTAMP('2023-03-25 09:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-25 11:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Toronto', 'Montreal', 'On Time', 180, 260 from dual union all
     SELECT 6, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-26 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-26 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Berlin', 'Amsterdam', 'Delayed', 150, 261 from dual union all
@@ -107,16 +108,18 @@ BEGIN
     SELECT 9, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-29 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Barcelona', 'Madrid','Cancelled',100, 264 from dual union all
     SELECT 10, 187, 'Airbus A380', TO_TIMESTAMP('2023-03-30 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'Boston', 'Madrid','On Time',300, 265 from dual;
     COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Data Inserted into flights table');
 EXCEPTION
   WHEN OTHERS THEN
     ROLLBACK;
     DBMS_OUTPUT.PUT_LINE('Error inserting flight: ' || SQLERRM);
 END insert_flight;
-
+/
 EXECUTE insert_flight;
+
+-- Lets see a sample of the data
+--Select * from flight;
 -- CREATING VIEW
-
-
 /*
 The Below block of code creates views from the FLIGHT table
 -- View 1: Retrieve flight information with the departure and arrival locations swapped
@@ -130,7 +133,6 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
 /
-
 /*
 The Below block of code creates views from the FLIGHT table
 -- View 2: Retrieve only delayed flights
@@ -173,7 +175,8 @@ EXCEPTION
 END;
 /
 --Execution 
-EXECUTE update_flight_status(9, 'DELAYED');
+--Select * from flight;
+EXECUTE update_flight_status(1, 'Delayed');
 
 /*
 The Below block of code creates the Passenger table. As an additional layer of
@@ -225,23 +228,23 @@ the event of any errors a rollback is performed.
 */
 CREATE OR REPLACE PROCEDURE insert_passengers IS
 BEGIN
-    SELECT 1, 25, 'ABC123', 1001, '123 Main St, Anytown, USA', 'Male', 'ABC123XYZ', 'John', 'Doe', TO_DATE('1997-01-15', 'YYYY-MM-DD'), '123-456-7890', 'johndoe@email.com' FROM DUAL
+    INSERT INTO passenger (passenger_id, age, pnr, p_id, address, gender, passport_number, first_name, last_name, dob, contact_number, email)
+    SELECT 1, 25, 'ABC123', 1001, '123 Main St, Anytown, USA', 'Male', 'ABC123XYZ', 'John', 'Doe', TO_DATE('1997-01-15', 'YYYY-MM-DD'), 1234567890, 'johndoe@email.com' FROM DUAL
     UNION ALL
-    SELECT 2, 35, 'DEF456', 1002, '456 Elm St, Anytown, USA', 'Female', 'DEF456XYZ', 'Jane', 'Smith', TO_DATE('1987-06-22', 'YYYY-MM-DD'), '987-654-3210', 'janesmith@email.com' FROM DUAL
+    SELECT 2, 35, 'DEF456', 1002, '456 Elm St, Anytown, USA', 'Female', 'DEF456XYZ', 'Jane', 'Smith', TO_DATE('1987-06-22', 'YYYY-MM-DD'), 9876543210, 'janesmith@email.com' FROM DUAL
     UNION ALL
-    SELECT 3, 45, 'GHI789', 1003, '789 Oak St, Anytown, USA', 'Male', 'GHI789XYZ', 'Bob', 'Johnson', TO_DATE('1977-03-10', 'YYYY-MM-DD'), '555-555-5555', 'bobjohnson@email.com' FROM DUAL
+    SELECT 3, 45, 'GHI789', 1003, '789 Oak St, Anytown, USA', 'Male', 'GHI789XYZ', 'Bob', 'Johnson', TO_DATE('1977-03-10', 'YYYY-MM-DD'), 5555555555, 'bobjohnson@email.com' FROM DUAL
     UNION ALL
-    SELECT 4, 28, 'JKL012', 1004, '321 Pine St, Anytown, USA', 'Female', 'JKL012XYZ', 'Sara', 'Lee', TO_DATE('1994-12-01', 'YYYY-MM-DD'), '111-222-3333', 'saralee@email.com' FROM DUAL
+    SELECT 4, 28, 'JKL012', 1004, '321 Pine St, Anytown, USA', 'Female', 'JKL012XYZ', 'Sara', 'Lee', TO_DATE('1994-12-01', 'YYYY-MM-DD'), 1112223333, 'saralee@email.com' FROM DUAL
     UNION ALL
-    SELECT 5, 19, 'MNO345', 1005, '654 Maple St, Anytown, USA', 'Male', 'MNO345XYZ', 'David', 'Nguyen', TO_DATE('2003-08-11', 'YYYY-MM-DD'), '444-444-4444', 'davidnguyen@email.com' FROM DUAL;
-    
+    SELECT 5, 19, 'MNO345', 1005, '654 Maple St, Anytown, USA', 'Male', 'MNO345XYZ', 'David', 'Nguyen', TO_DATE('2003-08-11', 'YYYY-MM-DD'), 4444444444, 'davidnguyen@email.com' FROM DUAL;    
     commit;
 EXCEPTION
   WHEN OTHERS THEN
     ROLLBACK;
     DBMS_OUTPUT.PUT_LINE('Error inserting Passenger: ' || SQLERRM);
 END insert_passengers;
-
+/
 EXECUTE insert_passengers;
 
 
