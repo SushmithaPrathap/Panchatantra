@@ -35,7 +35,8 @@ exception
       dbms_output.put_line('Error with the table:'||sqlerrm);
 end;
 /
-
+--creating airlines table, if it doesn't already exist, if it does exist
+-- display that the table already exists
 DECLARE
   table_exists NUMBER;
 BEGIN
@@ -54,7 +55,8 @@ BEGIN
 END;
 /
 
-
+--inserting values into airlines table and using a sequence called
+-- my_sequence for the airline_id
 INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
 VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'AA', 'American Airlines');
 INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
@@ -76,7 +78,8 @@ VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'G4', '
 INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
 VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'SY', 'IndiGo Airlines');
 
-
+--creating orders table and checking if the table already exists, if it does exist
+-- display that the table already exists
 DECLARE
   table_exists NUMBER;
 BEGIN
@@ -94,13 +97,9 @@ BEGIN
   END IF;
 END;
 /
---CREATE TABLE "order" ( 
---      order_id NUMBER PRIMARY KEY, 
---      passenger_id NUMBER, 
---      amount FLOAT, 
---      status VARCHAR2(20) 
---    )
--- Generating 10 insert statements 
+
+-- A loop to insert 10 values into the orders table, it uses
+-- a sequence called orders_seq for the order_id
 DECLARE 
   passenger_id NUMBER := 1; 
 BEGIN 
