@@ -43,6 +43,7 @@ end;
 The Below block of code creates the TERMINAL table. As an additional layer of
 validation, the script is executed only if the table does not exist.
 */
+
 DECLARE
   table_exists NUMBER;
 BEGIN
@@ -61,7 +62,7 @@ END;
 /*
 The Below block of code is a stored procedure for inserting
 data into the TERMINAL table , it is called  insert_terminal
-and the execution line is present after the block. Once 
+and the execution line is present after the block. Once
 the data is inserted it is commited to the database. In
 the event of any errors a rollback is performed.
 */
@@ -82,8 +83,6 @@ EXCEPTION
 END insert_terminal;
 /
 EXECUTE insert_terminal;
--- Lets see a sample of the data
---Select * from terminal;
 -- CREATING VIEW
 /*
 The Below block of code creates views from the TERMINAL table
@@ -113,32 +112,7 @@ EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
-/*
-Stored Procedure for updating terminal names
-*/
-
-CREATE OR REPLACE PROCEDURE update_terminal (
-  p_terminal_id IN NUMBER,
-  p_terminal_name IN VARCHAR2
-)
-IS
-BEGIN
-  UPDATE terminal
-  SET terminal_name = p_terminal_name
-  WHERE terminal_id = p_terminal_id;
-  COMMIT;
-  
-  DBMS_OUTPUT.PUT_LINE('Terminal ' || p_terminal_id || ' name updated to ' || p_terminal_name);
-EXCEPTION
-  WHEN NO_DATA_FOUND THEN
-    DBMS_OUTPUT.PUT_LINE('Terminal ' || p_terminal_id || ' not found.');
-  WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
-END;
 /
---Execution 
---Select * from flight;
-EXECUTE update_flight_status(1, 'Terminal A3');
 
 /*
 The Below block of code creates the Airport table. As an additional layer of
@@ -151,7 +125,7 @@ BEGIN
   IF table_exists = 0 THEN
     EXECUTE IMMEDIATE 'CREATE TABLE airport (
           airport_id NUMBER PRIMARY KEY,
-          airport_name VARCHAR2(20),
+          airport_name VARCHAR2(100),
           city VARCHAR(20),
           state VARCHAR2(20),
           country VARCHAR2(20)
@@ -165,18 +139,25 @@ END;
 /*
 The Below block of code is a stored procedure for inserting
 data into the Aiport table , it is called  insert_airport
-and the execution line is present after the block. Once 
+and the execution line is present after the block. Once
 the data is inserted it is commited to the database. In
 the event of any errors a rollback is performed.
 */
-CREATE OR REPLACE PROCEDURE insert_aiport IS
+CREATE OR REPLACE PROCEDURE insert_airport IS
 BEGIN
-    INSERT INTO airport (aiport_id, airport_name, city, state, country)
-    SELECT 1, 'Denver International Airport', 'Denver', 'CO', 'USA' from dual union all
-    SELECT 2, 'O Hare International Airport', 'Chicago', 'IL', 'USA'  from dual union all
-    SELECT 3, 'Los Angeles International Airport', 'Los Angeles', 'CA', 'USA' from dual union all
-    SELECT 4, 'Orlando International Airport', 'Orlando', 'FL', 'USA' from dual union all
-    SELECT 5, 'Harry Reid International Airport', 'Las Vegas', 'NV', 'USA' from dual;
+--    INSERT INTO airport (airport_id, airport_name, city, state, country)
+--    SELECT 1, 'Denver International Airport', 'Denver', 'CO', 'USA' from dual union all
+--    SELECT 2, 'O Hare International Airport', 'Chicago', 'IL', 'USA'  from dual union all
+--    SELECT 3, 'Los Angeles International Airport', 'Los Angeles', 'CA', 'USA' from dual union all
+--    SELECT 4, 'Orlando International Airport', 'Orlando', 'FL', 'USA' from dual union all
+--    SELECT 5, 'Harry Reid International Airport', 'Las Vegas', 'NV', 'USA' from dual;
+--    COMMIT;
+    INSERT INTO airport (airport_id, airport_name, city, state, country)
+    SELECT 1, 'Heathrow Airport', 'London', NULL, 'UK' from dual union all
+    SELECT 2, 'Narita International Airport', 'Tokyo', NULL, 'Japan' from dual union all
+    SELECT 3, 'Sydney Airport', 'Sydney', 'NSW', 'Australia' from dual union all
+    SELECT 4, 'Dubai International Airport', 'Dubai', NULL, 'UAE' from dual union all
+    SELECT 5, 'Charles de Gaulle Airport', 'Paris', NULL, 'France' from dual;
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Data Inserted into airport table');
 EXCEPTION
@@ -208,13 +189,14 @@ The Below block of code creates views from the AIRPORT table
 
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  count_of_airport_in_each_state AS
-    SELECT COUNT(*)
+    SELECT COUNT(*) as airport_count
     FROM airport
     GROUP BY state';
 EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
+/
 /*
 Stored Procedure for updating airport names
 */
@@ -227,9 +209,9 @@ IS
 BEGIN
   UPDATE airport
   SET airport_name = p_airport_name
-  WHERE aiport_id = p_airport_id;
+  WHERE airport_id = p_airport_id;
   COMMIT;
-  
+ 
   DBMS_OUTPUT.PUT_LINE('Airport ' || p_airport_id || ' name updated to ' || p_airport_name);
 EXCEPTION
   WHEN NO_DATA_FOUND THEN
@@ -238,6 +220,6 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
 /
---Execution 
+--Execution
 --Select * from airport;
 EXECUTE update_airport_name(2, 'Logan International Airport');
