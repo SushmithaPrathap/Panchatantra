@@ -110,6 +110,16 @@ BEGIN
   
   COMMIT;
 END;
+/
+CREATE OR REPLACE VIEW monthly_ticket_sales AS
+SELECT 
+  TO_CHAR(date_of_travel, 'YYYY-MM') AS month_of_travel,
+  COUNT(*) AS num_tickets_sold,
+  SUM(transaction_amount) AS total_sales_amount
+FROM 
+  ticket
+GROUP BY 
+  TO_CHAR(date_of_travel, 'YYYY-MM');
 /*Airport_Staff*/
 
 DECLARE
@@ -148,4 +158,3 @@ BEGIN
     (5, 103, 'Tom', 'Wilson', '345 Maple St', '567-89-0123', 'twilson@email.com', 5555678, 'Group5', 'Male');
 END;
 /
-select * from airline_staff;
