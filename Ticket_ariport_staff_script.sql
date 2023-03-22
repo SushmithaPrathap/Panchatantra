@@ -46,7 +46,10 @@ BEGIN
   source VARCHAR2(50),
   destination VARCHAR2(50),
   date_of_travel DATE,
-  class VARCHAR2(20)
+  class VARCHAR2(20),
+  payment_type VARCHAR2(20),
+  member_id NUMBER,
+  transaction_amount FLOAT
   )';
     dbms_output.put_line('Table ticket has been created');
   ELSE
@@ -64,6 +67,7 @@ BEGIN
 END insert_ticket;
 /
 EXECUTE insert_ticket;*/
+/*
 DECLARE
   i NUMBER := 1;
 BEGIN
@@ -85,7 +89,37 @@ BEGIN
   COMMIT;
 END;
 /
+*/
+select * from ticket;
 
+BEGIN
+  INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
+  VALUES (1, 'ORD1234', 101, 'A1', 'Vegetarian', 'LAX', 'JFK', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00);
+  
+  INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
+  VALUES (2, 'ORD5678', 202, 'B2', 'Kosher', 'JFK', 'LAX', TO_DATE('2023-04-30', 'YYYY-MM-DD'), 'Business', 'PayPal', 1234, 750.00);
+  
+  INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
+  VALUES (3, 'ORD9012', 303, 'C3', 'No Preference', 'SFO', 'ATL', TO_DATE('2023-05-01', 'YYYY-MM-DD'), 'First', 'Debit Card', 9101, 1200.00);
+  
+  INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
+  VALUES (4, 'ORD3456', 404, 'D4', 'Gluten Free', 'ATL', 'SFO', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 250.00);
+  
+  INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
+  VALUES (5, 'ORD7890', 505, 'E5', 'Vegetarian', 'LAX', 'JFK', TO_DATE('2023-05-30', 'YYYY-MM-DD'), 'Business', 'Credit Card', 6789, 850.00);
+  
+  COMMIT;
+END;
+/
+CREATE OR REPLACE VIEW monthly_ticket_sales AS
+SELECT 
+  TO_CHAR(date_of_travel, 'YYYY-MM') AS month_of_travel,
+  COUNT(*) AS num_tickets_sold,
+  SUM(transaction_amount) AS total_sales_amount
+FROM 
+  ticket
+GROUP BY 
+  TO_CHAR(date_of_travel, 'YYYY-MM');
 /*Airport_Staff*/
 
 DECLARE
@@ -113,14 +147,14 @@ END;
 /
 BEGIN
   INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
-    (1, 101, 'John', 'Doe', '123 Main St', '123-45-6789', 'jdoe@email.com', 555-1234, 'Group1', 'Male');
+    (1, 101, 'John', 'Doe', '123 Main St', '123-45-6789', 'jdoe@email.com', 5551234, 'Group1', 'Male');
   INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
-    (2, 101, 'Jane', 'Smith', '456 Elm St', '234-56-7890', 'jsmith@email.com', 555-2345, 'Group2', 'Female');
+    (2, 101, 'Jane', 'Smith', '456 Elm St', '234-56-7890', 'jsmith@email.com', 5552345, 'Group2', 'Female');
   INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
-    (3, 102, 'Bob', 'Johnson', '789 Oak St', '345-67-8901', 'bjohnson@email.com', 555-3456, 'Group3', 'Male');
+    (3, 102, 'Bob', 'Johnson', '789 Oak St', '345-67-8901', 'bjohnson@email.com', 5553456, 'Group3', 'Male');
   INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
-    (4, 102, 'Mary', 'Lee', '12 Pine St', '456-78-9012', 'mlee@email.com', 555-4567, 'Group4', 'Female');
+    (4, 102, 'Mary', 'Lee', '12 Pine St', '456-78-9012', 'mlee@email.com', 5554567, 'Group4', 'Female');
   INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
-    (5, 103, 'Tom', 'Wilson', '345 Maple St', '567-89-0123', 'twilson@email.com', 555-5678, 'Group5', 'Male');
+    (5, 103, 'Tom', 'Wilson', '345 Maple St', '567-89-0123', 'twilson@email.com', 5555678, 'Group5', 'Male');
 END;
 /
