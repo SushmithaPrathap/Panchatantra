@@ -139,3 +139,105 @@ END;
 --Execution 
 --Select * from flight;
 EXECUTE update_flight_status(1, 'Terminal A3');
+
+/*
+The Below block of code creates the Airport table. As an additional layer of
+validation, the script is executed only if the table does not exist.
+*/
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'AIRPORT';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE airport (
+          airport_id NUMBER PRIMARY KEY,
+          airport_name VARCHAR2(20),
+          city VARCHAR(20),
+          state VARCHAR2(20),
+          country VARCHAR2(20)
+        )';
+    dbms_output.put_line('Table Airport has been created');
+  ELSE
+    dbms_output.put_line('Table Airport already exists');
+  END IF;
+END;
+/
+/*
+The Below block of code is a stored procedure for inserting
+data into the Aiport table , it is called  insert_airport
+and the execution line is present after the block. Once 
+the data is inserted it is commited to the database. In
+the event of any errors a rollback is performed.
+*/
+CREATE OR REPLACE PROCEDURE insert_aiport IS
+BEGIN
+    INSERT INTO airport (aiport_id, airport_name, city, state, country)
+    SELECT 1, 'Denver International Airport', 'Denver', 'CO', 'USA' from dual union all
+    SELECT 2, 'O Hare International Airport', 'Chicago', 'IL', 'USA'  from dual union all
+    SELECT 3, 'Los Angeles International Airport', 'Los Angeles', 'CA', 'USA' from dual union all
+    SELECT 4, 'Orlando International Airport', 'Orlando', 'FL', 'USA' from dual union all
+    SELECT 5, 'Harry Reid International Airport', 'Las Vegas', 'NV', 'USA' from dual;
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Data Inserted into airport table');
+EXCEPTION
+  WHEN OTHERS THEN
+    ROLLBACK;
+    DBMS_OUTPUT.PUT_LINE('Error inserting airport: ' || SQLERRM);
+END insert_airport;
+/
+EXECUTE insert_airport;
+
+-- CREATING VIEW
+/*
+The Below block of code creates views from the AIRPORT table
+-- View 1: Retrieve all airport details
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  airport_info AS
+    SELECT airport_id, airport_name
+    FROM airport';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+/*
+The Below block of code creates views from the AIRPORT table
+-- View 2: Retrieve count of the airports in each state
+*/
+
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  count_of_airport_in_each_state AS
+    SELECT COUNT(*)
+    FROM airport
+    GROUP BY state';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/*
+Stored Procedure for updating airport names
+*/
+
+CREATE OR REPLACE PROCEDURE update_airport_name (
+  p_airport_id IN NUMBER,
+  p_airport_name IN VARCHAR2
+)
+IS
+BEGIN
+  UPDATE airport
+  SET airport_name = p_airport_name
+  WHERE aiport_id = p_airport_id;
+  COMMIT;
+  
+  DBMS_OUTPUT.PUT_LINE('Airport ' || p_airport_id || ' name updated to ' || p_airport_name);
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Airport ' || p_airport_id || ' not found.');
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+--Execution 
+--Select * from airport;
+EXECUTE update_airport_name(2, 'Logan International Airport');
