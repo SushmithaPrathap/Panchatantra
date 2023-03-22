@@ -113,4 +113,29 @@ EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
+/*
+Stored Procedure for updating terminal names
+*/
+
+CREATE OR REPLACE PROCEDURE update_terminal (
+  p_terminal_id IN NUMBER,
+  p_terminal_name IN VARCHAR2
+)
+IS
+BEGIN
+  UPDATE terminal
+  SET terminal_name = p_terminal_name
+  WHERE terminal_id = p_terminal_id;
+  COMMIT;
+  
+  DBMS_OUTPUT.PUT_LINE('Terminal ' || p_terminal_id || ' name updated to ' || p_terminal_name);
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Terminal ' || p_terminal_id || ' not found.');
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
 /
+--Execution 
+--Select * from flight;
+EXECUTE update_flight_status(1, 'Terminal A3');
