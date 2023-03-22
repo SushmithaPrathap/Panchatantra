@@ -169,7 +169,7 @@ and the execution line is present after the block. Once
 the data is inserted it is commited to the database. In
 the event of any errors a rollback is performed.
 */
-CREATE OR REPLACE PROCEDURE insert_aiport IS
+CREATE OR REPLACE PROCEDURE insert_airport IS
 BEGIN
     INSERT INTO airport (aiport_id, airport_name, city, state, country)
     SELECT 1, 'Denver International Airport', 'Denver', 'CO', 'USA' from dual union all
