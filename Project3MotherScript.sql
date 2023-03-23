@@ -2,6 +2,16 @@ WHENEVER SQLERROR EXIT SQL.SQLCODE
 show user;
 --CLEANUP SCRIPT
 set serveroutput on
+--Alter the sequences used in the script
+
+-- Reset Sequences
+alter sequence ADMIN.my_sequence restart start with 1;
+alter sequence ADMIN.airline_route_sequence restart start with 10;
+alter sequence ADMIN.orders_seq restart start with 1;
+--alter sequence flight_seq restart start with 1;
+alter sequence ADMIN.passenger_seq restart start with 1;
+alter sequence ADMIN.baggage_id_seq restart start with 1;
+
 /*
 The Below block of code checks if the tables FLIGHT and PASSENGER
 are present in the database. If present the tables are dropped and 
@@ -654,8 +664,6 @@ EXECUTE update_flight_status(101, 'Delayed');
 -- Create a role for passenger
 -- Add a store procedure to check the paxs data point.
 -- Grant necessary system priviliges
-
-
 DECLARE
   v_count NUMBER;
 BEGIN
@@ -670,6 +678,48 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('The passenger role was created successfully');
   ELSE
     DBMS_OUTPUT.PUT_LINE('The passenger role already exists');
+  END IF;
+END;
+/
+-- Create a role for Baggage Handler
+-- Grant necessary system priviliges
+DECLARE
+  v_count NUMBER;
+BEGIN
+  SELECT COUNT(*)
+  INTO v_count
+  FROM dba_roles
+  WHERE role = 'BAGGAGE_HANDLER';
+  
+  IF v_count = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE ROLE baggage_handler IDENTIFIED BY BaggagePrimaryGuy2024';
+    EXECUTE IMMEDIATE 'GRANT select ON AirportAdmin.FLIGHT TO baggage_handler';
+    EXECUTE IMMEDIATE 'GRANT select ON AirportAdmin.BAGGAGE TO baggage_handler';    
+    DBMS_OUTPUT.PUT_LINE('The baggage_handler role was created successfully');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('The baggage_handler role already exists');
+  END IF;
+END;
+/
+
+-- Create a role for Accounts Department
+-- Add a store procedure to check the paxs data point.
+-- Grant necessary system priviliges
+DECLARE
+  v_count NUMBER;
+BEGIN
+  SELECT COUNT(*)
+  INTO v_count
+  FROM dba_roles
+  WHERE role = 'ACCOUNTS_DEPARTMENT';
+  
+  IF v_count = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE ROLE accounts_department IDENTIFIED BY AccountsPrimaryGuy2024';
+    EXECUTE IMMEDIATE 'GRANT select ON AirportAdmin.ORDERS TO accounts_department';
+    EXECUTE IMMEDIATE 'GRANT select ON AirportAdmin.TICKET TO accounts_department';    
+    DBMS_OUTPUT.PUT_LINE('The accounts_department role was created successfully');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('The accounts_department role already exists');
   END IF;
 END;
 /
