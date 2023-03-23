@@ -317,6 +317,17 @@ BEGIN
 END;
 /
 
+-- CREATING VIEW - no of staff in each airline
+/*
+The Below block of code creates views from the airline_staff table
+-- View 1: number of staff in each airline
+*/
+CREATE OR REPLACE VIEW airline_staff_counts AS
+SELECT airline_name, COUNT(*) AS num_staff
+FROM airline_staff
+JOIN airlines ON airline_staff.airline_id = airlines.airline_id
+GROUP BY airline_name;
+
 /*
 The Below block of code creates the FLIGHTS table. As an additional layer of
 validation, the script is executed only if the table does not exist.
@@ -634,7 +645,7 @@ BEGIN
 END; 
 /
 
--- CREATING VIEW - baggae information
+-- CREATING VIEW - baggage information
 /*
 The Below block of code creates views from the BAGGAGE table
 -- View 1: Retrieve all baggage details
