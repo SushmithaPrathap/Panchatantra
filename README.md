@@ -11,6 +11,6 @@ to ensure the script runs with out errors
 1. Run Admin.sql file - This files creates the role of `Airport_Admin` and adds `sequences` which are used in the code. The file also grants the necessary
 priviliges to the user.
 
-2. Run Project3MotherScript.sql - This file contains code to clean and create the entire database schema
+2. Run MainScript.sql - This file contains code to clean and create the entire database schema
 
 *Roles are created and the necessary grants and priviliges are performed by the airport admin and the script is present in the secondary file*
