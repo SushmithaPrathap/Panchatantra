@@ -626,25 +626,23 @@ IS
     ROLLBACK;
     END insert_baggage;
 /
-CREATE SEQUENCE ticket_id_seq 
-START WITH 100 
-INCREMENT BY 1; 
 
-CREATE SEQUENCE baggage_id_seq 
-START WITH 1 
-INCREMENT BY 1; 
+-- CREATE SEQUENCE ticket_id_seq 
+-- START WITH 100 
+-- INCREMENT BY 1; 
+
+-- CREATE SEQUENCE baggage_id_seq 
+-- START WITH 1 
+-- INCREMENT BY 1; 
 
 -- Generating 10 insert statements 
 DECLARE 
-  bag_id NUMBER := 1001; 
+  bag_id NUMBER := 1; 
 BEGIN 
-  FOR i IN 1..5 LOOP 
-   INSERT INTO baggage (baggage_id, ticket_id, weight) 
-   VALUES (ADMIN.baggage_id_seq.NEXTVAL, bag_id, 100.00);
-   bag_id := bag_id + 1;
+  FOR i IN 1..10 LOOP 
+    insert_baggage(baggage_id_seq.NEXTVAL, ticket_id_seq.NEXTVAL);
   END LOOP; 
 END; 
-/
 
 -- CREATING VIEW - baggae information
 /*
