@@ -1,43 +1,5 @@
 WHENEVER SQLERROR EXIT SQL.SQLCODE
 show user;
-
--- ADMIN SCRIPTS BELOW
-/*
-The below Code Deletes all Sequences
-*/
-BEGIN
-   FOR seq IN (SELECT sequence_name FROM user_sequences) LOOP
-      EXECUTE IMMEDIATE 'DROP SEQUENCE ' || seq.sequence_name;
-   END LOOP;
-END;
-/
-
--- CREATE A SEQUENCE FOR AIRLINE ROUTE
-CREATE SEQUENCE airline_route_sequence 
-START WITH 10 
-INCREMENT BY 50 
-MAXVALUE 100000 
-NOCYCLE 
-CACHE 20; 
-
--- CREATE A SEQUENCE FOR ORDER 
-CREATE SEQUENCE order_seq 
-START WITH 1 
-INCREMENT BY 1; 
-
--- CREATE A SEQUENCE FOR ORDER 
-CREATE SEQUENCE baggage_id_seq 
-START WITH 1 
-INCREMENT BY 1; 
-
-alter sequence ADMIN.my_sequence restart start with 1;
-alter sequence ADMIN.airline_route_sequence restart start with 10;
-alter sequence ADMIN.orders_seq restart start with 1;
-alter sequence ADMIN.flight_seq restart start with 1;
-alter sequence ADMIN.passenger_seq restart start with 1;
-
--- END OF ADMIN SCRIPTS
-
 --CLEANUP SCRIPT
 set serveroutput on
 /*
@@ -582,17 +544,7 @@ END;
 /
 
 
---SELECT * FROM PASSENGER;
---SELECT * FROM BAGGAGE;
---SELECT * FROM TICKET;
---SELECT * FROM ORDERS;
---SELECT * FROM SCHEDULE;
---SELECT * FROM FLIGHT;
---SELECT * FROM TERMINAL;
---SELECT * FROM AIRPORT;
---SELECT * FROM AIRLINE_STAFF;
---SELECT * FROM TERMINAL;
---SELECT * FROM AIRLINES;
+
 
 -- CREATING VIEW -- flight
 /*
@@ -656,7 +608,68 @@ EXCEPTION
 END;
 /
 
-select * from male_passengers;                 
---SELECT constraint_name, table_name
---FROM all_constraints
---WHERE r_constraint_name = 'SYS_C0047259';
+/*
+Stored Procedure for updating flight Status
+*/
+
+CREATE OR REPLACE PROCEDURE update_flight_status(
+  p_flight_id IN NUMBER,
+  p_status IN VARCHAR2
+)
+IS
+BEGIN
+  UPDATE flight
+  SET status = p_status
+  WHERE flight_id = p_flight_id;
+  
+  COMMIT;
+  
+  DBMS_OUTPUT.PUT_LINE('Flight ' || p_flight_id || ' status updated to ' || p_status);
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Flight ' || p_flight_id || ' not found.');
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+--Execution 
+--Select * from flight;
+EXECUTE update_flight_status(101, 'Delayed');
+
+
+--SELECT * FROM PASSENGER;
+--SELECT * FROM BAGGAGE;
+--SELECT * FROM TICKET;
+--SELECT * FROM ORDERS;
+--SELECT * FROM SCHEDULE;
+--SELECT * FROM FLIGHT;
+--SELECT * FROM TERMINAL;
+--SELECT * FROM AIRPORT;
+--SELECT * FROM AIRLINE_STAFF;
+--SELECT * FROM TERMINAL;
+--SELECT * FROM AIRLINES;
+--select * from male_passengers;     
+
+
+-- Create a role for passenger
+-- Add a store procedure to check the paxs data point.
+-- Grant necessary system priviliges
+
+
+DECLARE
+  v_count NUMBER;
+BEGIN
+  SELECT COUNT(*)
+  INTO v_count
+  FROM dba_roles
+  WHERE role = 'PASSENGER';
+  
+  IF v_count = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE ROLE passenger IDENTIFIED BY PassengerPrimaryGuy2024';
+    EXECUTE IMMEDIATE 'GRANT select ON AirportAdmin.FLIGHT TO passenger';
+    DBMS_OUTPUT.PUT_LINE('The passenger role was created successfully');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('The passenger role already exists');
+  END IF;
+END;
+/
