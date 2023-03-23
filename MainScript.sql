@@ -412,7 +412,7 @@ BEGIN
   VALUES (1002, 2, 102, 'B2', 'Kosher', 'JFK', 'BOS', TO_DATE('2023-04-30', 'YYYY-MM-DD'), 'Business', 'PayPal', 1234, 750.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (1003, 3, 103, 'C3', 'No Preference', 'HKG', 'BOS', TO_DATE('2023-05-01', 'YYYY-MM-DD'), 'First', 'Debit Card', 9101, 1200.00);
+  VALUES (1003, 3, 103, 'C3', 'No Preference', 'HKG', 'BOS', TO_DATE('2023-05-01', 'YYYY-MM-DD'), 'Business', 'Debit Card', 9101, 1200.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
   VALUES (1004, 4, 104, 'D4', 'Gluten Free', 'BOS', 'HKG', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 250.00);
@@ -543,7 +543,7 @@ The Below block of code creates views from the SCHEDULE table
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  flight_per_terminal AS
     SELECT schedule_id, flight_id, terminal_id, arrival_time, departure_time
-    FROM Schedule WHERE terminal_id = 2 GROUP BY flight_id';
+    FROM Schedule WHERE terminal_id = 2';
 EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
@@ -595,7 +595,7 @@ IS
     BEGIN
     SELECT class INTO v_ticket_class FROM ticket WHERE ticket_id = p_ticket_id;
     
-    IF v_ticket_class = 'business' THEN
+    IF v_ticket_class = 'Business' THEN
         v_weight := 200.00;
     ELSE
         v_weight := 100.00;
@@ -610,10 +610,6 @@ IS
         p_ticket_id,
         v_weight
     );
-
-  -- UPDATE baggage
-  -- SET status = v_weight
-  -- WHERE ticket_id = p_ticket_id;
     
     COMMIT;
     
@@ -627,20 +623,13 @@ IS
     END insert_baggage;
 /
 
--- CREATE SEQUENCE ticket_id_seq 
--- START WITH 100 
--- INCREMENT BY 1; 
-
--- CREATE SEQUENCE baggage_id_seq 
--- START WITH 1 
--- INCREMENT BY 1; 
-
 -- Generating 10 insert statements 
 DECLARE 
   bag_id NUMBER := 1001; 
 BEGIN 
-  FOR i IN 1..10 LOOP 
+  FOR i IN 1..5 LOOP 
     insert_baggage(ADMIN.baggage_id_seq.NEXTVAL, bag_id);
+    bag_id := bag_id + 1;
   END LOOP; 
 END; 
 /
