@@ -582,6 +582,58 @@ BEGIN
 END;
 /
 
+/*
+Stored Procedure for updating baggage weight based on the class
+*/
+ CREATE OR REPLACE PROCEDURE insert_baggage (
+    p_baggage_id IN NUMBER,
+    p_ticket_id IN NUMBER
+)
+IS
+    v_weight FLOAT;
+    v_ticket_class VARCHAR2(20);
+    BEGIN
+    SELECT class INTO v_ticket_class FROM ticket WHERE ticket_id = p_ticket_id;
+    
+    IF v_ticket_class = 'business' THEN
+        v_weight := 200.00;
+    ELSE
+        v_weight := 100.00;
+    END IF;
+    
+    INSERT INTO baggage (
+        baggage_id,
+        ticket_id,
+        weight
+    ) VALUES (
+        p_baggage_id,
+        p_ticket_id,
+        v_weight
+    );
+
+  -- UPDATE baggage
+  -- SET status = v_weight
+  -- WHERE ticket_id = p_ticket_id;
+    
+    COMMIT;
+    
+    DBMS_OUTPUT.PUT_LINE('Baggage ' || p_baggage_id || ' weight updated to ' || v_weight);
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No ticket found with ID ' || p_ticket_id);
+    WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('Error inserting baggage record: ' || SQLERRM);
+    ROLLBACK;
+    END insert_baggage;
+/
+CREATE SEQUENCE ticket_id_seq 
+START WITH 100 
+INCREMENT BY 1; 
+
+CREATE SEQUENCE baggage_id_seq 
+START WITH 1 
+INCREMENT BY 1; 
+
 -- Generating 10 insert statements 
 DECLARE 
   bag_id NUMBER := 1001; 
