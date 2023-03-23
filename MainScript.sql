@@ -535,6 +535,21 @@ BEGIN
 END;
 /
 
+-- CREATING VIEW
+/*
+The Below block of code creates views from the SCHEDULE table
+-- View 1: Retrieve all schedule details of flights taking off from a terminal
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  flight_per_terminal AS
+    SELECT schedule_id, flight_id, terminal_id, arrival_time, departure_time
+    FROM Schedule WHERE terminal_id = 2 GROUP BY flight_id';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
 DECLARE
   table_exists NUMBER;
 BEGIN
