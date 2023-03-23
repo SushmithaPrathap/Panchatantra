@@ -422,7 +422,16 @@ BEGIN
   dbms_output.put_line('Data Inserted Successfully into Tickets');
 END;
 /
-
+CREATE OR REPLACE VIEW monthly_ticket_sales AS
+SELECT 
+  TO_CHAR(date_of_travel, 'YYYY-MM') AS month_of_travel,
+  COUNT(*) AS num_tickets_sold,
+  SUM(transaction_amount) AS total_sales_amount
+FROM 
+  ticket
+GROUP BY 
+  TO_CHAR(date_of_travel, 'YYYY-MM');
+/
 /*
 The Below block of code creates the TERMINAL table. As an additional layer of
 validation, the script is executed only if the table does not exist.
