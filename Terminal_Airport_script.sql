@@ -188,10 +188,10 @@ The Below block of code creates views from the AIRPORT table
 */
 
 BEGIN
-  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  count_of_airport_in_each_state AS
-    SELECT COUNT(*) as airport_count
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  count_of_airport_in_each_country AS
+    SELECT COUNT(*) as airport_count, airport_id, airport_name 
     FROM airport
-    GROUP BY state';
+    GROUP BY country';
 EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);

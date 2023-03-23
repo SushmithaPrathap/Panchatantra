@@ -629,6 +629,36 @@ EXCEPTION
 END;
 /
 
+-- CREATING VIEW
+/*
+The Below block of code creates views from the AIRPORT table
+-- View 1: Retrieve all airport details
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  airport_info AS
+    SELECT airport_id, airport_name
+    FROM airport';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+/*
+The Below block of code creates views from the AIRPORT table
+-- View 2: Retrieve count of the airports in each state
+*/
+
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  count_of_airport_in_each_country AS
+    SELECT COUNT(*) as airport_count, country 
+    FROM airport
+    GROUP BY country';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
 /*
 Stored Procedure for updating flight Status
 */
