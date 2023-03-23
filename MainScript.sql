@@ -550,6 +550,21 @@ EXCEPTION
 END;
 /
 
+-- CREATING VIEW
+/*
+The Below block of code creates views from the SCHEDULE table
+-- View 1: Retrieve all schedule details of flights taking off before a date
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  flight_at_aTime AS
+    SELECT schedule_id, flight_id, terminal_id, arrival_time, departure_time
+    FROM Schedule WHERE arrival_time < TO_DATE(''2023-04-02 12:15:00'', ''YYYY-MM-DD HH24:MI:SS'') ';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
 DECLARE
   table_exists NUMBER;
 BEGIN
@@ -578,8 +593,6 @@ BEGIN
   END LOOP; 
 END; 
 /
-
-
 
 
 -- CREATING VIEW -- flight
