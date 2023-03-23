@@ -637,12 +637,13 @@ IS
 
 -- Generating 10 insert statements 
 DECLARE 
-  bag_id NUMBER := 1; 
+  bag_id NUMBER := 1001; 
 BEGIN 
   FOR i IN 1..10 LOOP 
-    insert_baggage(baggage_id_seq.NEXTVAL, ticket_id_seq.NEXTVAL);
+    insert_baggage(ADMIN.baggage_id_seq.NEXTVAL, bag_id);
   END LOOP; 
 END; 
+/
 
 -- CREATING VIEW - baggae information
 /*
