@@ -2,28 +2,37 @@
 ---Admin Scripts
 show user;
 -- create a new user - Airport_Admin
-CREATE USER AirportAdmin IDENTIFIED BY AirportMainGuy2024;
--- grant necessary system privileges
-GRANT CREATE SESSION TO AirportAdmin;
-GRANT UNLIMITED TABLESPACE TO AirportAdmin;
-GRANT CREATE TABLE TO AirportAdmin;
-GRANT CREATE PROCEDURE TO AirportAdmin;
-GRANT CREATE SEQUENCE TO AirportAdmin;
-GRANT CREATE TRIGGER TO AirportAdmin;
-GRANT CREATE ANY VIEW TO AirportAdmin;
-
--- CREATE A SEQUENCE FOR FLIGHT
-CREATE SEQUENCE flight_seq
-  MINVALUE 1
-  MAXVALUE 10000
-  START WITH 1
-  INCREMENT BY 1
-  CACHE 1000;
-  
--- CHECK  
---SELECT flight_seq.NEXTVAL FROM DUAL;
---SELECT flight_seq.CURRVAL from DUAL;
---select * from dba_tab_privs where table_name = 'flight_seq';
+--CREATE USER AirportAdmin IDENTIFIED BY AirportMainGuy2024;
+---- grant necessary system privileges
+--GRANT CREATE SESSION TO AirportAdmin;
+--GRANT UNLIMITED TABLESPACE TO AirportAdmin;
+--GRANT CREATE TABLE TO AirportAdmin;
+--GRANT CREATE PROCEDURE TO AirportAdmin;
+--GRANT CREATE SEQUENCE TO AirportAdmin;
+--GRANT CREATE TRIGGER TO AirportAdmin;
+--GRANT CREATE ANY VIEW TO AirportAdmin;  
+--SELECT count(*) FROM dba_users WHERE username = 'AIRPORTADMIN';
+DECLARE
+   v_count INTEGER;
+BEGIN
+   SELECT COUNT(*) INTO v_count FROM dba_users WHERE username = 'AIRPORTADMIN';
+   IF v_count = 0 THEN
+        EXECUTE IMMEDIATE 'CREATE USER AirportAdmin IDENTIFIED BY AirportMainGuy2024';
+        EXECUTE IMMEDIATE 'GRANT CREATE SESSION TO AirportAdmin';
+        EXECUTE IMMEDIATE 'GRANT UNLIMITED TABLESPACE TO AirportAdmin';
+        EXECUTE IMMEDIATE 'GRANT CREATE TABLE TO AirportAdmin';
+        EXECUTE IMMEDIATE 'GRANT CREATE PROCEDURE TO AirportAdmin';
+        EXECUTE IMMEDIATE 'GRANT CREATE SEQUENCE TO AirportAdmin';
+        EXECUTE IMMEDIATE 'GRANT CREATE TRIGGER TO AirportAdmin';
+        EXECUTE IMMEDIATE 'GRANT CREATE ANY VIEW TO AirportAdmin';      
+        EXECUTE IMMEDIATE 'GRANT CREATE ROLE TO AirportAdmin';
+        EXECUTE IMMEDIATE 'GRANT SELECT on dba_roles to AirportAdmin';
+        DBMS_OUTPUT.PUT_LINE('User CREATED and assigned the necessary priviliges SUCCESSFULLY');
+   ELSE
+        DBMS_OUTPUT.PUT_LINE('User already exists');
+   END IF;
+END;
+/
 
 /*
 The below Code Deletes all Sequences
@@ -34,6 +43,13 @@ BEGIN
    END LOOP;
 END;
 /
+-- CREATE A SEQUENCE FOR FLIGHT
+CREATE SEQUENCE flight_seq
+  MINVALUE 1
+  MAXVALUE 10000
+  START WITH 1
+  INCREMENT BY 1
+  CACHE 1000;
 
 -- CREATE A SEQUENCE FOR PASSENGER
 CREATE SEQUENCE passenger_seq
