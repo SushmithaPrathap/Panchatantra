@@ -39,7 +39,7 @@ BEGIN
   IF table_exists = 0 THEN
     EXECUTE IMMEDIATE 'CREATE TABLE ticket (
    ticket_id NUMBER PRIMARY KEY,
-  order_id VARCHAR2(50),
+  order_id NUMBER,
   flight_id NUMBER,
   seat_no VARCHAR2(10),
   meal_preferences VARCHAR2(20),
@@ -94,19 +94,19 @@ select * from ticket;
 
 BEGIN
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (1, 'ORD1234', 101, 'A1', 'Vegetarian', 'LAX', 'JFK', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00);
+  VALUES (1, 1, 101, 'A1', 'Vegetarian', 'LAX', 'JFK', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (2, 'ORD5678', 202, 'B2', 'Kosher', 'JFK', 'LAX', TO_DATE('2023-04-30', 'YYYY-MM-DD'), 'Business', 'PayPal', 1234, 750.00);
+  VALUES (2, 2, 202, 'B2', 'Kosher', 'JFK', 'LAX', TO_DATE('2023-04-30', 'YYYY-MM-DD'), 'Business', 'PayPal', 1234, 750.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (3, 'ORD9012', 303, 'C3', 'No Preference', 'SFO', 'ATL', TO_DATE('2023-05-01', 'YYYY-MM-DD'), 'First', 'Debit Card', 9101, 1200.00);
+  VALUES (3, 3, 303, 'C3', 'No Preference', 'SFO', 'ATL', TO_DATE('2023-05-01', 'YYYY-MM-DD'), 'First', 'Debit Card', 9101, 1200.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (4, 'ORD3456', 404, 'D4', 'Gluten Free', 'ATL', 'SFO', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 250.00);
+  VALUES (4, 4, 404, 'D4', 'Gluten Free', 'ATL', 'SFO', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 250.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (5, 'ORD7890', 505, 'E5', 'Vegetarian', 'LAX', 'JFK', TO_DATE('2023-05-30', 'YYYY-MM-DD'), 'Business', 'Credit Card', 6789, 850.00);
+  VALUES (5, 5, 505, 'E5', 'Vegetarian', 'LAX', 'JFK', TO_DATE('2023-05-30', 'YYYY-MM-DD'), 'Business', 'Credit Card', 6789, 850.00);
   
   COMMIT;
 END;
