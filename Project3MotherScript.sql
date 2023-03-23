@@ -692,7 +692,7 @@ END;
 
 /*
 The Below block of code creates views from the ticket table
--- View 2: Retrieve count of the Cancelled flights in the airport
+-- View 2: Retrieve count of the cancelled flights in the airport
 */
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW flight_cancellation_counts AS
