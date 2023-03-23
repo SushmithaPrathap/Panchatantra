@@ -691,6 +691,24 @@ END;
 /
 
 /*
+The Below block of code creates views from the ticket table
+-- View 2: Retrieve count of the Cancelled flights in the airport
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW flight_cancellation_counts AS
+    SELECT f.flight_id, COUNT(*) AS cancellation_count
+    FROM ticket t
+    JOIN flight f ON t.flight_id = f.flight_id
+    WHERE f.status = ''Cancelled''
+    GROUP BY f.flight_id';
+
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
+/*
 Stored Procedure for updating flight Status
 */
 
@@ -795,3 +813,5 @@ BEGIN
   END IF;
 END;
 /
+
+
