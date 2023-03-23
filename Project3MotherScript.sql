@@ -552,7 +552,7 @@ BEGIN
 END;
 /
 
--- Generating 10 insert statements 
+-- Generating 10 insert statements for baggage table
 DECLARE 
   bag_id NUMBER := 1001; 
 BEGIN 
@@ -709,7 +709,7 @@ END;
 /
 
 /*
-Stored Procedure for updating flight Status
+Stored procedure for updating flight status
 */
 
 CREATE OR REPLACE PROCEDURE update_flight_status(
@@ -772,7 +772,7 @@ BEGIN
 END;
 /
 -- Create a role for Baggage Handler
--- Grant necessary system priviliges
+-- Grant necessary system privileges
 DECLARE
   v_count NUMBER;
 BEGIN
@@ -794,7 +794,7 @@ END;
 
 -- Create a role for Accounts Department
 -- Add a store procedure to check the paxs data point.
--- Grant necessary system priviliges
+-- Grant necessary system privileges
 DECLARE
   v_count NUMBER;
 BEGIN
