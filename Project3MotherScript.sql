@@ -631,6 +631,37 @@ END;
 
 -- CREATING VIEW
 /*
+The Below block of code creates views from the TERMINAL table
+-- View 1: Retrieve all terminal details
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  terminal_info AS
+    SELECT terminal_id, terminal_name
+    FROM terminal';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+/*
+The Below block of code creates views from the TERMINAL table
+-- View 2: Retrieve the terminal details with longest name
+*/
+
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  longest_terminal_name_details AS
+    SELECT *
+    FROM terminal
+    ORDER BY LENGTH(terminal_name) DESC
+    FETCH FIRST 1 ROW ONLY';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
+-- CREATING VIEW
+/*
 The Below block of code creates views from the AIRPORT table
 -- View 1: Retrieve all airport details
 */
