@@ -92,6 +92,36 @@ BEGIN
 END;
 /
 
+-- CREATING VIEW
+/*
+The Below block of code creates views from the SCHEDULE table
+-- View 1: Retrieve all schedule details of flights taking off from a terminal
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  flight_per_terminal AS
+    SELECT schedule_id, flight_id, terminal_id, arrival_time, departure_time
+    FROM Schedule WHERE terminal_id = 2 GROUP BY flight_id';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
+-- CREATING VIEW
+/*
+The Below block of code creates views from the SCHEDULE table
+-- View 1: Retrieve all schedule details of flights taking off from a terminal
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  flight_at_aTime AS
+    SELECT schedule_id, flight_id, terminal_id, arrival_time, departure_time
+    FROM Schedule WHERE arrival_time < TO_DATE(''2023-04-02 12:15:00'', ''YYYY-MM-DD HH24:MI:SS'') ';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
 DECLARE
   table_exists NUMBER;
 BEGIN
@@ -109,6 +139,50 @@ BEGIN
 END;
 /
 
+/*
+Stored Procedure for updating baggage weight based on the class
+*/
+ CREATE OR REPLACE PROCEDURE insert_baggage (
+    p_baggage_id IN NUMBER,
+    p_ticket_id IN NUMBER
+)
+IS
+    v_weight FLOAT;
+    v_ticket_class VARCHAR2(20);
+BEGIN
+    SELECT class INTO v_ticket_class FROM ticket WHERE ticket_id = p_ticket_id;
+    
+    IF v_ticket_class = 'business' THEN
+        v_weight := 200.00;
+    ELSE
+        v_weight := 100.00;
+    END IF;
+    
+    INSERT INTO baggage (
+        baggage_id,
+        ticket_id,
+        weight
+    ) VALUES (
+        p_baggage_id,
+        p_ticket_id,
+        v_weight
+    );
+
+  -- UPDATE baggage
+  -- SET status = v_weight
+  -- WHERE ticket_id = p_ticket_id;
+    
+    COMMIT;
+    
+    DBMS_OUTPUT.PUT_LINE('Baggage ' || p_baggage_id || ' weight updated to ' || v_weight);
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No ticket found with ID ' || p_ticket_id);
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error inserting baggage record: ' || SQLERRM);
+        ROLLBACK;
+END insert_baggage;
+/
 CREATE SEQUENCE ticket_id_seq 
 START WITH 100 
 INCREMENT BY 1; 
@@ -122,10 +196,26 @@ DECLARE
   bag_id NUMBER := 1; 
 BEGIN 
   FOR i IN 1..10 LOOP 
-   INSERT INTO baggage (baggage_id, ticket_id, weight) 
-   VALUES (baggage_id_seq.NEXTVAL, ticket_id_seq.NEXTVAL, 100.00);
+  --  INSERT INTO baggage (baggage_id, ticket_id, weight) 
+  --  VALUES (baggage_id_seq.NEXTVAL, ticket_id_seq.NEXTVAL, 100.00);
+    insert_baggage(baggage_id_seq.NEXTVAL, ticket_id_seq.NEXTVAL);
   END LOOP; 
 END; 
+
+-- CREATING VIEW
+/*
+The Below block of code creates views from the BAGGAGE table
+-- View 1: Retrieve all baggage details
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  baggage_transaction AS
+    SELECT baggage_id, weight, ticket_id
+    FROM baggage';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
 
 
  
