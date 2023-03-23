@@ -535,7 +535,7 @@ BEGIN
 END;
 /
 
--- CREATING VIEW
+-- CREATING VIEW - scheduled flights at a terminal
 /*
 The Below block of code creates views from the SCHEDULE table
 -- View 1: Retrieve all schedule details of flights taking off from a terminal
@@ -550,7 +550,7 @@ EXCEPTION
 END;
 /
 
--- CREATING VIEW
+-- CREATING VIEW - schedule before a date
 /*
 The Below block of code creates views from the SCHEDULE table
 -- View 1: Retrieve all schedule details of flights taking off before a date
@@ -592,6 +592,21 @@ BEGIN
    bag_id := bag_id + 1;
   END LOOP; 
 END; 
+/
+
+-- CREATING VIEW - baggae information
+/*
+The Below block of code creates views from the BAGGAGE table
+-- View 1: Retrieve all baggage details
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  baggage_transaction AS
+    SELECT baggage_id, weight, ticket_id
+    FROM baggage';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
 /
 
 
