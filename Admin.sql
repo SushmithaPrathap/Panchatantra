@@ -104,13 +104,13 @@ grant alter on orders_seq to AirportAdmin;
 --grant alter on flight_seq to AirportAdmin;  
 grant alter on passenger_seq to AirportAdmin;
 grant alter on baggage_id_seq to AirportAdmin;
--- Reset Sequences
-alter sequence my_sequence restart start with 1;
-alter sequence airline_route_sequence restart start with 10;
-alter sequence orders_seq restart start with 1;
---alter sequence flight_seq restart start with 1;
-alter sequence passenger_seq restart start with 1;
-alter sequence baggage_id_seq restart start with 1;
+---- Reset Sequences
+--alter sequence my_sequence restart start with 1;
+--alter sequence airline_route_sequence restart start with 10;
+--alter sequence orders_seq restart start with 1;
+----alter sequence flight_seq restart start with 1;
+--alter sequence passenger_seq restart start with 1;
+--alter sequence baggage_id_seq restart start with 1;
 
 --DELETE
 --from user_constraints
