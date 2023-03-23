@@ -115,3 +115,11 @@ grant alter on baggage_id_seq to AirportAdmin;
 --DELETE
 --from user_constraints
 --where table_name = 'FLIGHT';
+--GRANT CREATE SESSION TO AirportAdmin
+--GRANT UNLIMITED TABLESPACE TO AirportAdmin
+--GRANT CREATE TABLE TO AirportAdmin
+--GRANT CREATE PROCEDURE TO AirportAdmin
+--GRANT CREATE SEQUENCE TO AirportAdmin
+--GRANT CREATE TRIGGER TO AirportAdmin
+--GRANT CREATE ANY VIEW TO AirportAdmin  
+--GRANT CREATE ROLE TO AirportAdmin
