@@ -25,6 +25,16 @@ CREATE SEQUENCE flight_seq
 --SELECT flight_seq.CURRVAL from DUAL;
 --select * from dba_tab_privs where table_name = 'flight_seq';
 
+/*
+The below Code Deletes all Sequences
+*/
+BEGIN
+   FOR seq IN (SELECT sequence_name FROM user_sequences) LOOP
+      EXECUTE IMMEDIATE 'DROP SEQUENCE ' || seq.sequence_name;
+   END LOOP;
+END;
+/
+
 -- CREATE A SEQUENCE FOR PASSENGER
 CREATE SEQUENCE passenger_seq
   MINVALUE 1
@@ -53,7 +63,7 @@ NOCYCLE
 CACHE 20; 
 
 -- CREATE A SEQUENCE FOR ORDER 
-CREATE SEQUENCE order_seq 
+CREATE SEQUENCE orders_seq 
 START WITH 1 
 INCREMENT BY 1; 
 
@@ -62,25 +72,27 @@ CREATE SEQUENCE baggage_id_seq
 START WITH 1 
 INCREMENT BY 1; 
 
+
+
 -- Granting Priviliges
 grant select on my_sequence to AirportAdmin;  
 grant select on airline_route_sequence to AirportAdmin;
 grant select on orders_seq to AirportAdmin;
-grant select on flight_seq to AirportAdmin;  
+--grant select on flight_seq to AirportAdmin;  
 grant select on passenger_seq to AirportAdmin;  
 grant select on baggage_id_seq to AirportAdmin;
 
 grant alter on my_sequence to AirportAdmin;
 grant alter on airline_route_sequence to AirportAdmin;
 grant alter on orders_seq to AirportAdmin;
-grant alter on flight_seq to AirportAdmin;  
+--grant alter on flight_seq to AirportAdmin;  
 grant alter on passenger_seq to AirportAdmin;
 grant alter on baggage_id_seq to AirportAdmin;
 -- Reset Sequences
 alter sequence my_sequence restart start with 1;
 alter sequence airline_route_sequence restart start with 10;
 alter sequence orders_seq restart start with 1;
-alter sequence flight_seq restart start with 1;
+--alter sequence flight_seq restart start with 1;
 alter sequence passenger_seq restart start with 1;
 alter sequence baggage_id_seq restart start with 1;
 

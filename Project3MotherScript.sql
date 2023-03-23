@@ -5,36 +5,36 @@ show user;
 /*
 The below Code Deletes all Sequences
 */
-BEGIN
-   FOR seq IN (SELECT sequence_name FROM user_sequences) LOOP
-      EXECUTE IMMEDIATE 'DROP SEQUENCE ' || seq.sequence_name;
-   END LOOP;
-END;
-/
-
--- CREATE A SEQUENCE FOR AIRLINE ROUTE
-CREATE SEQUENCE airline_route_sequence 
-START WITH 10 
-INCREMENT BY 50 
-MAXVALUE 100000 
-NOCYCLE 
-CACHE 20; 
-
--- CREATE A SEQUENCE FOR ORDER 
-CREATE SEQUENCE order_seq 
-START WITH 1 
-INCREMENT BY 1; 
-
--- CREATE A SEQUENCE FOR ORDER 
-CREATE SEQUENCE baggage_id_seq 
-START WITH 1 
-INCREMENT BY 1; 
-
-alter sequence ADMIN.my_sequence restart start with 1;
-alter sequence ADMIN.airline_route_sequence restart start with 10;
-alter sequence ADMIN.orders_seq restart start with 1;
-alter sequence ADMIN.flight_seq restart start with 1;
-alter sequence ADMIN.passenger_seq restart start with 1;
+--BEGIN
+--   FOR seq IN (SELECT sequence_name FROM user_sequences) LOOP
+--      EXECUTE IMMEDIATE 'DROP SEQUENCE ' || seq.sequence_name;
+--   END LOOP;
+--END;
+--/
+--
+---- CREATE A SEQUENCE FOR AIRLINE ROUTE
+--CREATE SEQUENCE airline_route_sequence 
+--START WITH 10 
+--INCREMENT BY 50 
+--MAXVALUE 100000 
+--NOCYCLE 
+--CACHE 20; 
+--
+---- CREATE A SEQUENCE FOR ORDER 
+--CREATE SEQUENCE orders_seq 
+--START WITH 1 
+--INCREMENT BY 1; 
+--
+---- CREATE A SEQUENCE FOR ORDER 
+--CREATE SEQUENCE baggage_id_seq 
+--START WITH 1 
+--INCREMENT BY 1; 
+--
+--alter sequence ADMIN.my_sequence restart start with 1;
+--alter sequence ADMIN.airline_route_sequence restart start with 10;
+--alter sequence ADMIN.orders_seq restart start with 1;
+--alter sequence ADMIN.flight_seq restart start with 1;
+--alter sequence ADMIN.passenger_seq restart start with 1;
 
 -- END OF ADMIN SCRIPTS
 
@@ -590,7 +590,7 @@ END;
 --SELECT * FROM FLIGHT;
 --SELECT * FROM TERMINAL;
 --SELECT * FROM AIRPORT;
---SELECT * FROM AIRLINE_STAFF;
+SELECT * FROM AIRLINE_STAFF;
 --SELECT * FROM TERMINAL;
 --SELECT * FROM AIRLINES;
 
