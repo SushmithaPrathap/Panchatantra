@@ -1,5 +1,43 @@
 WHENEVER SQLERROR EXIT SQL.SQLCODE
 show user;
+
+-- ADMIN SCRIPTS BELOW
+/*
+The below Code Deletes all Sequences
+*/
+BEGIN
+   FOR seq IN (SELECT sequence_name FROM user_sequences) LOOP
+      EXECUTE IMMEDIATE 'DROP SEQUENCE ' || seq.sequence_name;
+   END LOOP;
+END;
+/
+
+-- CREATE A SEQUENCE FOR AIRLINE ROUTE
+CREATE SEQUENCE airline_route_sequence 
+START WITH 10 
+INCREMENT BY 50 
+MAXVALUE 100000 
+NOCYCLE 
+CACHE 20; 
+
+-- CREATE A SEQUENCE FOR ORDER 
+CREATE SEQUENCE order_seq 
+START WITH 1 
+INCREMENT BY 1; 
+
+-- CREATE A SEQUENCE FOR ORDER 
+CREATE SEQUENCE baggage_id_seq 
+START WITH 1 
+INCREMENT BY 1; 
+
+alter sequence ADMIN.my_sequence restart start with 1;
+alter sequence ADMIN.airline_route_sequence restart start with 10;
+alter sequence ADMIN.orders_seq restart start with 1;
+alter sequence ADMIN.flight_seq restart start with 1;
+alter sequence ADMIN.passenger_seq restart start with 1;
+
+-- END OF ADMIN SCRIPTS
+
 --CLEANUP SCRIPT
 set serveroutput on
 /*
@@ -13,14 +51,17 @@ declare
     v_sql varchar(2000);
 begin
    dbms_output.put_line('Start schema cleanup');
-   for i in (select 'FLIGHT' table_name from dual UNION ALL
+   for i in (
              select 'PASSENGER' table_name from dual UNION ALL
-             select 'TERMINAL' table_name from dual UNION ALL
-             select 'AIRPORT' table_name from dual UNION ALL
-             select 'ORDER' table_name from dual UNION ALL
-             select 'AIRLINES' table_name from dual UNION ALL
-             select 'TICKET' table_name from dual union all
-             select 'AIRLINE_STAFF' table_name from dual                          
+             select 'BAGGAGE' table_name from dual UNION ALL
+             select 'TICKET' table_name from dual UNION ALL
+             select 'ORDERS' table_name from dual UNION ALL
+             select 'SCHEDULE' table_name from dual union all             
+             select 'FLIGHT' table_name from dual UNION ALL
+             select 'AIRPORT' table_name from dual union all
+             select 'AIRLINE_STAFF' table_name from dual union all
+             select 'TERMINAL' table_name from dual union all 
+             select 'AIRLINES' table_name from dual                          
    )
    loop
    dbms_output.put_line('....Drop table '||i.table_name);
@@ -45,10 +86,6 @@ exception
 end;
 /
 
-/*
-The Below block of code creates the Passenger table. As an additional layer of
-validation, the script is executed only if the table does not exist.
-*/
 DECLARE
   table_exists NUMBER;
 BEGIN
@@ -72,14 +109,6 @@ BEGIN
   END IF;
 END;
 /
-
-/*
-The Below block of code is a stored procedure for inserting
-data into the Passengers table , it is called  insert_passenger
-and the execution line is present after the block. Once 
-the data is inserted it is commited to the database. In
-the event of any errors a rollback is performed.
-*/
 CREATE OR REPLACE PROCEDURE insert_passengers IS
 BEGIN
     INSERT INTO passenger (passenger_id, age, address, sex, govt_id_nos, first_name, last_name, dob, contact_number, email)
@@ -107,35 +136,318 @@ END insert_passengers;
 /
 EXECUTE insert_passengers;
 
+--creating orders table and checking if the table already exists, if it does exist
+-- display that the table already exists
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'ORDERS';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE orders ( 
+      order_id NUMBER PRIMARY KEY, 
+      passenger_id NUMBER, 
+      amount FLOAT, 
+      status VARCHAR2(20) 
+    )';
+    dbms_output.put_line('Table order has been created');
+  ELSE
+    dbms_output.put_line('Table order already exists');
+  END IF;
+END;
+/
 
--- CREATING VIEW
+-- A loop to insert 10 values into the orders table, it uses
+-- a sequence called orders_seq for the order_id
+DECLARE 
+  passenger_id NUMBER := 1; 
+BEGIN 
+  FOR i IN 1..10 LOOP 
+    INSERT INTO orders (order_id, passenger_id, amount, status) 
+    VALUES (ADMIN.orders_seq.NEXTVAL, passenger_id, 100.00, 'Pending'); 
+    passenger_id := passenger_id + 1; 
+  END LOOP; 
+END; 
+/
 
 /*
-The Below block of code creates views from the FLIGHT table
--- View 1: View Showing All the male passengers travelling through the airport.
+The Below block of code creates the Airport table. As an additional layer of
+validation, the script is executed only if the table does not exist.
 */
-
+DECLARE
+  table_exists NUMBER;
 BEGIN
-  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW male_passengers AS
-    SELECT *
-    FROM passenger
-    WHERE sex = ''Male''';
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'AIRPORT';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE airport (
+          airport_id NUMBER UNIQUE,
+          airport_name VARCHAR2(3) CONSTRAINT airport_name_pk PRIMARY KEY,
+          city VARCHAR(20),
+          state VARCHAR2(20),
+          country VARCHAR2(50)
+        )';
+    dbms_output.put_line('Table Airport has been created');
+  ELSE
+    dbms_output.put_line('Table Airport already exists');
+  END IF;
+END;
+/
+
+/*
+The Below block of code is a stored procedure for inserting
+data into the Aiport table , it is called  insert_airport
+and the execution line is present after the block. Once
+the data is inserted it is commited to the database. In
+the event of any errors a rollback is performed.
+*/
+CREATE OR REPLACE PROCEDURE insert_airport IS
+BEGIN
+    INSERT INTO airport (airport_id, airport_name, city, state, country)
+    SELECT 1, 'LAX', 'Los Angeles', 'California', 'United States' FROM dual
+    UNION ALL
+    SELECT 2, 'JFK', 'New York City', 'New York', 'United States' FROM dual
+    UNION ALL
+    SELECT 3, 'LHR', 'London', null, 'United Kingdom' FROM dual
+    UNION ALL
+    SELECT 4, 'CDG', 'Paris', null, 'France' FROM dual
+    UNION ALL
+    SELECT 5, 'NRT', 'Narita', 'Chiba', 'Japan' FROM dual
+    UNION ALL
+    SELECT 6, 'SYD', 'Sydney', 'New South Wales', 'Australia' FROM dual
+    UNION ALL
+    SELECT 7, 'AMS', 'Amsterdam', null, 'Netherlands' FROM dual
+    UNION ALL
+    SELECT 8, 'ICN', 'Incheon', null, 'South Korea' FROM dual
+    UNION ALL
+    SELECT 9, 'HND', 'Haneda', 'Tokyo', 'Japan' FROM dual
+    UNION ALL
+    SELECT 10, 'YYZ', 'Toronto', 'Ontario', 'Canada' FROM dual
+    UNION ALL
+    SELECT 11, 'FRA', 'Frankfurt', null, 'Germany' FROM dual
+    UNION ALL
+    SELECT 12, 'DXB', 'Dubai', null, 'United Arab Emirates' FROM dual
+    UNION ALL
+    SELECT 13, 'HKG', 'Hong Kong', null, 'China' FROM dual
+    UNION ALL
+    SELECT 14, 'PEK', 'Beijing', null, 'China' FROM dual
+    UNION ALL
+    SELECT 15, 'SVO', 'Moscow', null, 'Russia' FROM dual
+    UNION ALL
+    SELECT 16, 'MAD', 'Madrid', null, 'Spain' FROM dual
+    UNION ALL
+    SELECT 17, 'BCN', 'Barcelona', null, 'Spain' FROM dual
+    UNION ALL
+    SELECT 18, 'BOM', 'Mumbai', 'Maharashtra', 'India' FROM dual
+    UNION ALL
+    SELECT 19, 'BOS', 'Boston', null, 'United States of America' FROM dual
+    UNION ALL
+    SELECT 20, 'CGK', 'Jakarta', null, 'Indonesia' FROM dual
+    UNION ALL
+    SELECT 21, 'SIN', 'Singapore', null, 'Singapore' FROM dual
+    UNION ALL
+    SELECT 22, 'BER','Berlin',null,'Germany' FROM dual
+    UNION ALL
+    SELECT 23, 'MIA' , 'Miami', 'Florida', 'United States of America' from DUAL;
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Data Inserted into airport table');
 EXCEPTION
   WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+    ROLLBACK;
+    DBMS_OUTPUT.PUT_LINE('Error inserting airport: ' || SQLERRM);
+END insert_airport;
+/
+EXECUTE insert_airport;
+
+--creating airlines table, if it doesn't already exist, if it does exist
+-- display that the table already exists
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'AIRLINES';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE airlines ( 
+  airline_id NUMBER PRIMARY KEY, 
+  route_number NUMBER, 
+  airline_code VARCHAR2(10), 
+  airline_name VARCHAR2(20) 
+)';
+    dbms_output.put_line('Table airline has been created');
+  ELSE
+    dbms_output.put_line('Table airline already exists');
+  END IF;
+END;
+/
+
+--inserting values into airlines table and using a sequence called
+-- my_sequence for the airline_id
+BEGIN
+    INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
+    VALUES (1001, ADMIN.airline_route_sequence.NEXTVAL, 'AA', 'American Airlines');
+    INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
+    VALUES (1002,ADMIN.airline_route_sequence.NEXTVAL, 'DL', 'Delta Air Lines');
+    INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
+    VALUES (1003, ADMIN.airline_route_sequence.NEXTVAL, 'UA', 'United Airlines') ;
+    INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
+    VALUES (1004, ADMIN.airline_route_sequence.NEXTVAL, 'WN', 'Southwest Airlines') ;
+    INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
+    VALUES (1005, ADMIN.airline_route_sequence.NEXTVAL, 'AS', 'Alaska Airlines') ;
+    INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
+    VALUES (1006, ADMIN.airline_route_sequence.NEXTVAL, 'B6', 'JetBlue Airways');
+    INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
+    VALUES (1007, ADMIN.airline_route_sequence.NEXTVAL, 'NK', 'Spirit Airlines');
+    INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
+    VALUES (1008, ADMIN.airline_route_sequence.NEXTVAL, 'F9', 'Frontier Airlines');
+    INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
+    VALUES (1009, ADMIN.airline_route_sequence.NEXTVAL, 'G4', 'Allegiant Air');
+    INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
+    VALUES (1010, ADMIN.airline_route_sequence.NEXTVAL, 'SY', 'IndiGo Airlines');
+    commit;
+    dbms_output.put_line('Data Inserted Successfully into Airlines');
+END;
+/
+
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'AIRLINE_STAFF';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE airline_staff (
+    staff_id       NUMBER PRIMARY KEY,
+    airline_id     NUMBER REFERENCES airlines(airline_id) ON DELETE CASCADE,
+    first_name     VARCHAR2(20),
+    last_name      VARCHAR2(20),
+    address        VARCHAR2(100),
+    ssn            VARCHAR2(12),
+    email_id       VARCHAR2(20),
+    contact_number NUMBER,
+    job_group      VARCHAR2(10),
+    gender         VARCHAR2(10)
+)';
+    dbms_output.put_line('Table Airline_staff has been created');
+  ELSE
+    dbms_output.put_line('Table Airline_staff already exists');
+  END IF;
+END;
+/
+BEGIN
+  INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
+    (1, 1001, 'John', 'Doe', '123 Main St', '123-45-6789', 'jdoe@email.com', 5551234, 'Group1', 'Male');
+  INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
+    (2, 1002, 'Jane', 'Smith', '456 Elm St', '234-56-7890', 'jsmith@email.com', 5552345, 'Group2', 'Female');
+  INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
+    (3, 1003, 'Bob', 'Johnson', '789 Oak St', '345-67-8901', 'bjohnson@email.com', 5553456, 'Group3', 'Male');
+  INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
+    (4, 1004, 'Mary', 'Lee', '12 Pine St', '456-78-9012', 'mlee@email.com', 5554567, 'Group4', 'Female');
+  INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
+    (5, 1005, 'Tom', 'Wilson', '345 Maple St', '567-89-0123', 'twilson@email.com', 5555678, 'Group5', 'Male');
+  dbms_output.put_line('Data Successfully Inserted into Airline Staff');
+END;
+/
+
+/*
+The Below block of code creates the FLIGHTS table. As an additional layer of
+validation, the script is executed only if the table does not exist.
+*/
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'FLIGHT';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE flight (
+      flight_id NUMBER PRIMARY KEY,
+      duration NUMBER,
+      flight_type VARCHAR2(100),
+      departure_time TIMESTAMP,
+      arrival_time TIMESTAMP,
+      destination VARCHAR2(3) REFERENCES AIRPORT(airport_name) ON DELETE CASCADE,
+      source VARCHAR2(3) REFERENCES AIRPORT(airport_name) ON DELETE CASCADE,
+      status VARCHAR2(10) ,
+      no_pax NUMBER,
+      airline_id NUMBER REFERENCES airlines(airline_id) ON DELETE CASCADE
+    )';
+    dbms_output.put_line('Table flight has been created');
+  ELSE
+    dbms_output.put_line('Table flight already exists');
+  END IF;
 END;
 /
 /*
-The Below block of code creates views from the FLIGHT table
--- View 2: details of children travelling in the airport
+The Below block of code is a stored procedure for inserting
+data into the Flights table , it is called  insert_flight
+and the execution line is present after the block. Once
+the data is inserted it is commited to the database. In
+the event of any errors a rollback is performed.
 */
+CREATE OR REPLACE PROCEDURE insert_flight IS
 BEGIN
-  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW underage_passengers AS
-    SELECT age, email FROM passenger
-    WHERE age < 18';
+    INSERT INTO flight (flight_id, duration, flight_type, departure_time, arrival_time, destination, source, status, no_pax, airline_id)
+    SELECT 101, 120, 'Boeing 737', TO_TIMESTAMP('2023-03-21 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-21 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LHR', 'On Time', 200, 1001 from dual union all
+    SELECT 102, 180, 'Airbus A320', TO_TIMESTAMP('2023-03-22 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-22 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS', 'Delayed', 150, 1002 from dual union all
+    SELECT 103, 240, 'Boeing 747', TO_TIMESTAMP('2023-03-23 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-23 20:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'SIN', 'On Time', 400, 1003 from dual union all
+    SELECT 104, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-24 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'HKG', 'On Time', 80, 1004 from dual union all
+    SELECT 105, 150, 'Boeing 737', TO_TIMESTAMP('2023-03-25 09:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-25 11:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'SIN', 'BOS', 'On Time', 180, 1005 from dual union all
+    SELECT 106, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-26 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-26 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LAX', 'Delayed', 150, 1006 from dual union all
+    SELECT 107, 180, 'Boeing 787', TO_TIMESTAMP('2023-03-27 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-27 18:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'DXB', 'BOS', 'On Time', 300,1007 from dual union all
+    SELECT 108, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-28 17:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-28 19:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'SIN', 'BOS', 'On Time', 80, 1008 from dual union all
+    SELECT 109, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-29 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LHR','Cancelled',100, 1009 from dual union all
+    SELECT 110, 187, 'Airbus A380', TO_TIMESTAMP('2023-03-30 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS','On Time',300, 1010 from dual;
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Data Inserted into flights table');
 EXCEPTION
   WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+    ROLLBACK;
+    DBMS_OUTPUT.PUT_LINE('Error inserting flight: ' || SQLERRM);
+END insert_flight;
+/
+EXECUTE insert_flight;
+
+/*
+The Below block of code creates the Ticket table. As an additional layer of
+validation, the script is executed only if the table does not exist.
+*/
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'TICKET';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE ticket (
+      ticket_id NUMBER PRIMARY KEY,
+      order_id NUMBER REFERENCES orders(order_id) ON DELETE CASCADE,
+      flight_id NUMBER REFERENCES flight(flight_id) ON DELETE CASCADE,
+      seat_no VARCHAR2(10),
+      meal_preferences VARCHAR2(20),
+      source VARCHAR2(3) REFERENCES airport(airport_name) ON DELETE CASCADE,
+      destination VARCHAR2(3)  REFERENCES airport(airport_name) ON DELETE CASCADE,
+      date_of_travel DATE,
+      class VARCHAR2(20),
+      payment_type VARCHAR2(20),
+      member_id NUMBER,
+      transaction_amount FLOAT
+      )';
+    dbms_output.put_line('Table ticket has been created');
+  ELSE
+    dbms_output.put_line('Table ticket already exists');
+  END IF;
+END;
+/
+
+BEGIN
+  INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
+  VALUES (1001, 1, 101, 'A1', 'Vegetarian', 'LAX', 'BOS', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00);
+  
+  INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
+  VALUES (1002, 2, 102, 'B2', 'Kosher', 'JFK', 'BOS', TO_DATE('2023-04-30', 'YYYY-MM-DD'), 'Business', 'PayPal', 1234, 750.00);
+  
+  INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
+  VALUES (1003, 3, 103, 'C3', 'No Preference', 'HKG', 'BOS', TO_DATE('2023-05-01', 'YYYY-MM-DD'), 'First', 'Debit Card', 9101, 1200.00);
+  
+  INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
+  VALUES (1004, 4, 104, 'D4', 'Gluten Free', 'BOS', 'HKG', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 250.00);
+  
+  INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
+  VALUES (1005, 5, 105, 'E5', 'Vegetarian', 'BOS', 'JFK', TO_DATE('2023-05-30', 'YYYY-MM-DD'), 'Business', 'Credit Card', 6789, 850.00);
+  
+  COMMIT;
+  dbms_output.put_line('Data Inserted Successfully into Tickets');
 END;
 /
 
@@ -183,330 +495,106 @@ EXCEPTION
 END insert_terminal;
 /
 EXECUTE insert_terminal;
--- CREATING VIEW
-/*
-The Below block of code creates views from the TERMINAL table
--- View 1: Retrieve all terminal details
-*/
-BEGIN
-  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  terminal_info AS
-    SELECT terminal_id, terminal_name
-    FROM terminal';
-EXCEPTION
-  WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
-END;
-/
-/*
-The Below block of code creates views from the TERMINAL table
--- View 2: Retrieve the terminal details with longest name
-*/
 
-BEGIN
-  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  longest_terminal_name_details AS
-    SELECT *
-    FROM terminal
-    ORDER BY LENGTH(terminal_name) DESC
-    FETCH FIRST 1 ROW ONLY';
-EXCEPTION
-  WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
-END;
-/
 
-/*
-The Below block of code creates the Airport table. As an additional layer of
-validation, the script is executed only if the table does not exist.
-*/
 DECLARE
   table_exists NUMBER;
 BEGIN
-  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'AIRPORT';
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'SCHEDULE';
   IF table_exists = 0 THEN
-    EXECUTE IMMEDIATE 'CREATE TABLE airport (
-          airport_id NUMBER UNIQUE,
-          airport_name VARCHAR2(3) PRIMARY KEY,
-          city VARCHAR(20),
-          state VARCHAR2(20),
-          country VARCHAR2(20)
-        )';
-    dbms_output.put_line('Table Airport has been created');
-  ELSE
-    dbms_output.put_line('Table Airport already exists');
-  END IF;
-END;
-/
-/*
-The Below block of code is a stored procedure for inserting
-data into the Aiport table , it is called  insert_airport
-and the execution line is present after the block. Once
-the data is inserted it is commited to the database. In
-the event of any errors a rollback is performed.
-*/
-CREATE OR REPLACE PROCEDURE insert_airport IS
-BEGIN
---    INSERT INTO airport (airport_id, airport_name, city, state, country)
---    SELECT 1, 'Denver International Airport', 'Denver', 'CO', 'USA' from dual union all
---    SELECT 2, 'O Hare International Airport', 'Chicago', 'IL', 'USA'  from dual union all
---    SELECT 3, 'Los Angeles International Airport', 'Los Angeles', 'CA', 'USA' from dual union all
---    SELECT 4, 'Orlando International Airport', 'Orlando', 'FL', 'USA' from dual union all
---    SELECT 5, 'Harry Reid International Airport', 'Las Vegas', 'NV', 'USA' from dual;
---    COMMIT;
-    INSERT INTO airport (airport_id, airport_name, city, state, country)
-    SELECT 1, 'LAX', 'Los Angeles', 'California', 'United States' FROM dual
-    UNION ALL
-    SELECT 2, 'JFK', 'New York City', 'New York', 'United States' FROM dual
-    UNION ALL
-    SELECT 3, 'LHR', 'London', null, 'United Kingdom' FROM dual
-    UNION ALL
-    SELECT 4, 'CDG', 'Paris', null, 'France' FROM dual
-    UNION ALL
-    SELECT 5, 'NRT', 'Narita', 'Chiba', 'Japan' FROM dual
-    UNION ALL
-    SELECT 6, 'SYD', 'Sydney', 'New South Wales', 'Australia' FROM dual
-    UNION ALL
-    SELECT 7, 'AMS', 'Amsterdam', null, 'Netherlands' FROM dual
-    UNION ALL
-    SELECT 8, 'ICN', 'Incheon', null, 'South Korea' FROM dual
-    UNION ALL
-    SELECT 9, 'HND', 'Haneda', 'Tokyo', 'Japan' FROM dual
-    UNION ALL
-    SELECT 10, 'YYZ', 'Toronto', 'Ontario', 'Canada' FROM dual
-    UNION ALL
-    SELECT 11, 'FRA', 'Frankfurt', null, 'Germany' FROM dual
-    UNION ALL
-    SELECT 12, 'DXB', 'Dubai', null, 'United Arab Emirates' FROM dual
-    UNION ALL
-    SELECT 13, 'HKG', 'Hong Kong', null, 'China' FROM dual
-    UNION ALL
-    SELECT 14, 'PEK', 'Beijing', null, 'China' FROM dual
-    UNION ALL
-    SELECT 15, 'SVO', 'Moscow', null, 'Russia' FROM dual
-    UNION ALL
-    SELECT 16, 'MAD', 'Madrid', null, 'Spain' FROM dual
-    UNION ALL
-    SELECT 17, 'BCN', 'Barcelona', null, 'Spain' FROM dual
-    UNION ALL
-    SELECT 18, 'BOM', 'Mumbai', 'Maharashtra', 'India' FROM dual
-    UNION ALL
-    SELECT 19, 'DEL', 'New Delhi', null, 'India' FROM dual
-    UNION ALL
-    SELECT 20, 'CGK', 'Jakarta', null, 'Indonesia' FROM dual
-    UNION ALL
-    SELECT 21, 'SIN', 'Singapore', null, 'Singapore' FROM dual
-    UNION ALL
-    SELECT 22, 'BER','Berlin',null,'Germany' FROM dual
-    UNION ALL
-    SELECT 23, 'MIA' , 'Miami', 'Florida', 'United States of America' from DUAL;
-    COMMIT;
-    DBMS_OUTPUT.PUT_LINE('Data Inserted into airport table');
-EXCEPTION
-  WHEN OTHERS THEN
-    ROLLBACK;
-    DBMS_OUTPUT.PUT_LINE('Error inserting airport: ' || SQLERRM);
-END insert_airport;
-/
-EXECUTE insert_airport;
-
--- CREATING VIEW
-/*
-The Below block of code creates views from the AIRPORT table
--- View 1: Retrieve all airport details
-*/
-BEGIN
-  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  airport_info AS
-    SELECT airport_id, airport_name
-    FROM airport';
-EXCEPTION
-  WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
-END;
-/
-/*
-The Below block of code creates views from the AIRPORT table
--- View 2: Retrieve count of the airports in each state
-*/
-
-BEGIN
-  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  count_of_airport_in_each_state AS
-    SELECT COUNT(*) as airport_count
-    FROM airport
-    GROUP BY state';
-EXCEPTION
-  WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
-END;
-/
-/*
-Stored Procedure for updating airport names
-*/
-
-CREATE OR REPLACE PROCEDURE update_airport_name (
-  p_airport_id IN NUMBER,
-  p_airport_name IN VARCHAR2
-)
-IS
-BEGIN
-  UPDATE airport
-  SET airport_name = p_airport_name
-  WHERE airport_id = p_airport_id;
-  COMMIT;
- 
-  DBMS_OUTPUT.PUT_LINE('Airport ' || p_airport_id || ' name updated to ' || p_airport_name);
-EXCEPTION
-  WHEN NO_DATA_FOUND THEN
-    DBMS_OUTPUT.PUT_LINE('Airport ' || p_airport_id || ' not found.');
-  WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
-END;
-/
---Execution
---Select * from airport;
-EXECUTE update_airport_name(2, 'BOS');
-
---Select * from flight;
---Select * from passenger;
---Select * from male_passengers;
-/
---creating airlines table, if it doesn't already exist, if it does exist
--- display that the table already exists
-DECLARE
-  table_exists NUMBER;
-BEGIN
-  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'AIRLINES';
-  IF table_exists = 0 THEN
-    EXECUTE IMMEDIATE 'CREATE TABLE airlines ( 
-  airline_id NUMBER PRIMARY KEY, 
-  route_number NUMBER, 
-  airline_code VARCHAR2(10), 
-  airline_name VARCHAR2(20) 
+   EXECUTE IMMEDIATE 'CREATE TABLE schedule (
+  schedule_id NUMBER PRIMARY KEY,
+  flight_id NUMBER REFERENCES flight(flight_id) ON DELETE CASCADE,
+  terminal_id NUMBER REFERENCES terminal(terminal_id) ON DELETE CASCADE,
+  arrival_time DATE,
+  departure_time DATE
 )';
-    dbms_output.put_line('Table airline has been created');
+    dbms_output.put_line('Table Schedule has been created');
   ELSE
-    dbms_output.put_line('Table airline already exists');
+    dbms_output.put_line('Table Schedule already exists');
   END IF;
 END;
 /
+DECLARE
+  i NUMBER := 1;
+BEGIN
+  INSERT INTO schedule (schedule_id, flight_id, terminal_id, Arrival_time, Departure_time) 
+  VALUES (1, 101, 1, TO_DATE('2023-03-22 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-22 11:45:00', 'YYYY-MM-DD HH24:MI:SS'));
 
---inserting values into airlines table and using a sequence called
--- my_sequence for the airline_id
-INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
-VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'AA', 'American Airlines');
-INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
-VALUES (ADMIN.my_sequence.NEXTVAL,ADMIN.airline_route_sequence.NEXTVAL, 'DL', 'Delta Air Lines');
-INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
-VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'UA', 'United Airlines') ;
-INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
-VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'WN', 'Southwest Airlines') ;
-INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
-VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'AS', 'Alaska Airlines') ;
-INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
-VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'B6', 'JetBlue Airways');
-INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
-VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'NK', 'Spirit Airlines');
-INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
-VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'F9', 'Frontier Airlines');
-INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
-VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'G4', 'Allegiant Air');
-INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)  
-VALUES (ADMIN.my_sequence.NEXTVAL, ADMIN.airline_route_sequence.NEXTVAL, 'SY', 'IndiGo Airlines');
+  INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
+  VALUES (2, 102,  1, TO_DATE('2023-03-22 12:15:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-22 13:30:00', 'YYYY-MM-DD HH24:MI:SS')); 
+ 
+  INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
+  VALUES (3, 103,  2, TO_DATE('2023-03-22 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-22 15:15:00', 'YYYY-MM-DD HH24:MI:SS')); 
+ 
+  INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
+  VALUES (4, 104,  3, TO_DATE('2023-03-23 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-23 11:45:00', 'YYYY-MM-DD HH24:MI:SS')); 
+ 
+  INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
+  VALUES (5, 105,  2, TO_DATE('2023-03-23 12:15:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-23 13:30:00', 'YYYY-MM-DD HH24:MI:SS')); 
+ 
+  INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
+  VALUES (6, 106,  3, TO_DATE('2023-04-01 08:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-01 09:45:00', 'YYYY-MM-DD HH24:MI:SS')); 
+ 
+  INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
+  VALUES (7, 107,  2, TO_DATE('2023-04-02 12:15:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-02 13:20:00', 'YYYY-MM-DD HH24:MI:SS')); 
+ 
+  INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
+  VALUES (8, 108,  1, TO_DATE('2023-04-03 16:45:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-03 18:10:00', 'YYYY-MM-DD HH24:MI:SS')); 
+ 
+  INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
+  VALUES (9, 109,  4,TO_DATE('2023-04-04 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-04 11:45:00', 'YYYY-MM-DD HH24:MI:SS')); 
+ 
+  INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
+  VALUES (10, 110,  2, TO_DATE('2023-04-05 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-05 15:05:00', 'YYYY-MM-DD HH24:MI:SS'));
+  
+  COMMIT;
+END;
+/
 
---creating orders table and checking if the table already exists, if it does exist
--- display that the table already exists
 DECLARE
   table_exists NUMBER;
 BEGIN
-  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'ORDERS';
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'BAGGAGE';
   IF table_exists = 0 THEN
-    EXECUTE IMMEDIATE 'CREATE TABLE orders ( 
-      order_id NUMBER PRIMARY KEY, 
-      passenger_id NUMBER, 
-      amount FLOAT, 
-      status VARCHAR2(20) 
-    )';
-    dbms_output.put_line('Table order has been created');
+    EXECUTE IMMEDIATE 'CREATE TABLE baggage (
+    baggage_id       NUMBER PRIMARY KEY,
+    ticket_id     NUMBER REFERENCES ticket(ticket_id) ON DELETE CASCADE,
+    weight        FLOAT
+)';
+    dbms_output.put_line('Table Baggage has been created');
   ELSE
-    dbms_output.put_line('Table order already exists');
+    dbms_output.put_line('Table Baggage already exists');
   END IF;
 END;
 /
 
--- A loop to insert 10 values into the orders table, it uses
--- a sequence called orders_seq for the order_id
+-- Generating 10 insert statements 
 DECLARE 
-  passenger_id NUMBER := 1; 
+  bag_id NUMBER := 1001; 
 BEGIN 
-  FOR i IN 1..10 LOOP 
-    INSERT INTO orders (order_id, passenger_id, amount, status) 
-    VALUES (ADMIN.orders_seq.NEXTVAL, passenger_id, 100.00, 'Pending'); 
-    passenger_id := passenger_id + 1; 
+  FOR i IN 1..5 LOOP 
+   INSERT INTO baggage (baggage_id, ticket_id, weight) 
+   VALUES (ADMIN.baggage_id_seq.NEXTVAL, bag_id, 100.00);
+   bag_id := bag_id + 1;
   END LOOP; 
 END; 
 /
 
-/*
-The Below block of code creates the FLIGHTS table. As an additional layer of
-validation, the script is executed only if the table does not exist.
-*/
-DECLARE
-  table_exists NUMBER;
-BEGIN
-  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'FLIGHT';
-  IF table_exists = 0 THEN
-    EXECUTE IMMEDIATE 'CREATE TABLE flight (
-      flight_id NUMBER PRIMARY KEY,
-      duration NUMBER,
-      flight_type VARCHAR2(100),
-      departure_time TIMESTAMP,
-      arrival_time TIMESTAMP,
-      destination VARCHAR2(3) REFERENCES airport(airport_name),
-      source VARCHAR2(3) REFERENCES airport(airport_name),
-      status VARCHAR2(10) ,
-      no_pax NUMBER,
-      airline_id NUMBER REFERENCES airlines(airline_id)
-    )';
-    dbms_output.put_line('Table flight has been created');
-  ELSE
-    dbms_output.put_line('Table flight already exists');
-  END IF;
-END;
-/
 
-select * from airlines;
+--SELECT * FROM PASSENGER;
+--SELECT * FROM BAGGAGE;
+--SELECT * FROM TICKET;
+--SELECT * FROM ORDERS;
+--SELECT * FROM SCHEDULE;
+--SELECT * FROM FLIGHT;
+--SELECT * FROM TERMINAL;
+--SELECT * FROM AIRPORT;
+--SELECT * FROM AIRLINE_STAFF;
+--SELECT * FROM TERMINAL;
+--SELECT * FROM AIRLINES;
 
-/*
-The Below block of code is a stored procedure for inserting
-data into the Flights table , it is called  insert_flight
-and the execution line is present after the block. Once
-the data is inserted it is commited to the database. In
-the event of any errors a rollback is performed.
-*/
-CREATE OR REPLACE PROCEDURE insert_flight IS
-BEGIN
-    INSERT INTO flight (flight_id, duration, flight_type, departure_time, arrival_time, destination, source, status, no_pax, airline_id)
-    SELECT 1, 120, 'Boeing 737', TO_TIMESTAMP('2023-03-21 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-21 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'JFK', 'LHR', 'On Time', 200, 181 from dual union all
-    SELECT 2, 180, 'Airbus A320', TO_TIMESTAMP('2023-03-22 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-22 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'CDG', 'BER', 'Delayed', 150, 182 from dual union all
-    SELECT 3, 240, 'Boeing 747', TO_TIMESTAMP('2023-03-23 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-23 20:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'SYD', 'SIN', 'On Time', 400, 183 from dual union all
-    SELECT 4, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-24 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LAX', 'SFO', 'On Time', 80, 184 from dual union all
-    SELECT 5, 150, 'Boeing 737', TO_TIMESTAMP('2023-03-25 09:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-25 11:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'YYZ', 'YUL', 'On Time', 180, 185 from dual union all
-    SELECT 6, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-26 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-26 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BER', 'AMX', 'Delayed', 150, 186 from dual union all
-    SELECT 7, 180, 'Boeing 787', TO_TIMESTAMP('2023-03-27 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-27 18:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'DXB', 'LHR', 'On Time', 300,187 from dual union all
-    SELECT 8, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-28 17:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-28 19:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'MIA', 'MCO', 'On Time', 80, 188 from dual union all
-    SELECT 9, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-29 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BCN', 'MAD','Cancelled',100, 189 from dual union all
-    SELECT 10, 187, 'Airbus A380', TO_TIMESTAMP('2023-03-30 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'MAD','On Time',300, 190 from dual;
-    COMMIT;
-    DBMS_OUTPUT.PUT_LINE('Data Inserted into flights table');
-EXCEPTION
-  WHEN OTHERS THEN
-    ROLLBACK;
-    DBMS_OUTPUT.PUT_LINE('Error inserting flight: ' || SQLERRM);
-END insert_flight;
-/
-EXECUTE insert_flight;
-
--- Lets see a sample of the data
---Select * from flight;
--- CREATING VIEW
+-- CREATING VIEW -- flight
 /*
 The Below block of code creates views from the FLIGHT table
 -- View 1: Retrieve flight information with the departure and arrival locations swapped
@@ -537,75 +625,38 @@ END;
 /
 
 
+-- CREATING VIEW -- passenger
+
 /*
-Stored Procedure for updating flight Status
+The Below block of code creates views from the FLIGHT table
+-- View 1: View Showing All the male passengers travelling through the airport.
 */
 
-CREATE OR REPLACE PROCEDURE update_flight_status(
-  p_flight_id IN NUMBER,
-  p_status IN VARCHAR2
-)
-IS
 BEGIN
-  UPDATE flight
-  SET status = p_status
-  WHERE flight_id = p_flight_id;
- 
-  COMMIT;
- 
-  DBMS_OUTPUT.PUT_LINE('Flight ' || p_flight_id || ' status updated to ' || p_status);
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW male_passengers AS
+    SELECT *
+    FROM passenger
+    WHERE sex = ''Male''';
 EXCEPTION
-  WHEN NO_DATA_FOUND THEN
-    DBMS_OUTPUT.PUT_LINE('Flight ' || p_flight_id || ' not found.');
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
 /
---Execution
---Select * from flight;
-EXECUTE update_flight_status(1, 'Delayed');
 /*
-The Below block of code creates the Ticket table. As an additional layer of
-validation, the script is executed only if the table does not exist.
+The Below block of code creates views from the FLIGHT table
+-- View 2: details of children travelling in the airport
 */
-DECLARE
-  table_exists NUMBER;
 BEGIN
-  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'TICKET';
-  IF table_exists = 0 THEN
-    EXECUTE IMMEDIATE 'CREATE TABLE ticket (
-   ticket_id NUMBER PRIMARY KEY,
-      order_id VARCHAR2(50) REFERENCES order(order_id),
-      flight_id NUMBER REFERENCES flight(flight_id),
-      seat_no VARCHAR2(10),
-      meal_preferences VARCHAR2(20),
-      source VARCHAR2(50) REFERENCES airport(airport_name),
-      destination VARCHAR2(50) REFERENCES airport(airport_name),
-      date_of_travel DATE,
-      class VARCHAR2(20),
-      payment_type VARCHAR2(20),
-      member_id NUMBER,
-      transaction_amount FLOAT
-      )';
-    dbms_output.put_line('Table ticket has been created');
-  ELSE
-    dbms_output.put_line('Table ticket already exists');
-  END IF;
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW underage_passengers AS
+    SELECT age, email FROM passenger
+    WHERE age < 18';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
 /
 
-
-CREATE TABLE ticket (
-   ticket_id NUMBER PRIMARY KEY,
-      order_id VARCHAR2(50) REFERENCES orders(order_id),
-      flight_id NUMBER REFERENCES flight(flight_id),
-      seat_no VARCHAR2(10),
-      meal_preferences VARCHAR2(20),
-      source VARCHAR2(3) REFERENCES airport(airport_name),
-      destination VARCHAR2(3)  REFERENCES airport(airport_name),
-      date_of_travel DATE,
-      class VARCHAR2(20),
-      payment_type VARCHAR2(20),
-      member_id NUMBER,
-      transaction_amount FLOAT
-      );
+select * from male_passengers;                 
+--SELECT constraint_name, table_name
+--FROM all_constraints
+--WHERE r_constraint_name = 'SYS_C0047259';
