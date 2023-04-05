@@ -27,3 +27,5 @@ select  admin.passenger_seq.nextval from dual;
 select * from passenger;
 select * from orders;
 select * from ticket;
+
+SELECT acct_pkg.calculate_total_revenue FROM dual;
