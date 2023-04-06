@@ -20,13 +20,13 @@ END;
 
 BEGIN
   FLIGHT_PKG.INSERT_FLIGHT(
-    p_flight_id => 115,
+    p_flight_id => 117,
     p_duration => 187,
     p_flight_type => 'Airbus A380',
-    p_departure_time => TO_TIMESTAMP('2023-04-08 12:00:00', 'YYYY-MM-DD HH24:MI:SS')
+    p_departure_time => TO_TIMESTAMP('2023-04-08 12:00:00', 'YYYY-MM-DD HH24:MI:SS'),
     p_arrival_time => TO_TIMESTAMP('2023-04-07 10:00:00', 'YYYY-MM-DD HH24:MI:SS'),
-    p_destination => 'BOS',
-    p_source => 'LHR',
+    p_destination => 'BOM',
+    p_source => 'BOS',
     p_status => 'On Time',
     p_no_pax => 300,
     p_airline_id => 1010,

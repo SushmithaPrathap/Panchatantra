@@ -2,11 +2,11 @@ CREATE OR REPLACE PACKAGE FLIGHT_PKG AS
 
   FUNCTION check_airport(in_airport_name IN VARCHAR2) RETURN NUMBER;
 
-  FUNCTION check_duration(in_airport_name IN VARCHAR2) RETURN NUMBER;
+  FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN NUMBER;
 
   PROCEDURE INSERT_FLIGHT(
     p_flight_id IN NUMBER,
-    p_duration IN NUMBER,
+    -- p_duration IN NUMBER,
     p_flight_type IN VARCHAR2,
     p_departure_time IN DATE,
     p_arrival_time IN DATE,
@@ -32,20 +32,16 @@ CREATE OR REPLACE PACKAGE BODY FLIGHT_PKG AS
     RETURN v_result;
   END check_airport;
 
-  FUNCTION check_duration(in_arrival_time IN DATE, in_departure_time IN DATE, in_duration IN NUMBER) RETURN NUMBER IS
+  FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN NUMBER IS
     v_result NUMBER;
   BEGIN
-    IF in_departure_time - in_arrival_time = in_duration THEN
-    v_result = 1;
-    ELSE
-    v_result = 0 ; 
-    END IF;
+    v_result := in_arrival_time - in_departure_time;
     RETURN v_result;
-  END check_duration;
+  END get_duration;
 
   PROCEDURE INSERT_FLIGHT(
     p_flight_id IN NUMBER,
-    p_duration IN NUMBER,
+    -- p_duration IN NUMBER,
     p_flight_type IN VARCHAR2,
     p_departure_time IN DATE,
     p_arrival_time IN DATE,
@@ -58,7 +54,7 @@ CREATE OR REPLACE PACKAGE BODY FLIGHT_PKG AS
   ) AS
     l_d_airport_count NUMBER;
     l_s_airport_count NUMBER;
-    l_yes BOOLEAN;
+    l_duration NUMBER;
   BEGIN
 
     l_d_airport_count := FLIGHT_PKG.check_airport(p_destination);
@@ -73,6 +69,13 @@ CREATE OR REPLACE PACKAGE BODY FLIGHT_PKG AS
 
     IF l_s_airport_count = 0 THEN
       RAISE_APPLICATION_ERROR(-20002, 'Source airport does not exist in airport table');
+    END IF;
+
+     l_duration := FLIGHT_PKG.get_duration(p_arrival_time, p_departure_time);
+    DBMS_OUTPUT.PUT_LINE('Duration Match: ' || l_duration);
+
+    IF l_duration = 0 THEN
+      RAISE_APPLICATION_ERROR(-20002, 'Duration Wrong');
     END IF;
 
     -- Insert flight record
@@ -90,7 +93,7 @@ CREATE OR REPLACE PACKAGE BODY FLIGHT_PKG AS
       seats_filled
     ) VALUES (
       p_flight_id,
-      p_duration,
+      l_duration,
       p_flight_type,
       p_departure_time,
       p_arrival_time,
