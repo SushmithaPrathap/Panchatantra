@@ -21,11 +21,19 @@ p_email
 */    
 EXECUTE passenger_pkg.insert_passenger(25,'15 Cawfield','Female',9566186692,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Annvi@yahoo.com');
 EXECUTE passenger_pkg.update_passenger(123,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-
+EXECUTE passenger_pkg.delete_ticket(1);
 select  admin.passenger_seq.currval from dual;
 select  admin.passenger_seq.nextval from dual;
 select * from passenger;
 select * from orders;
 select * from ticket;
+select * from flight;
+
+UPDATE FLIGHT f
+SET f.SEATS_FILLED = 100
+WHERE f.flight_id = (
+SELECT t.flight_id FROM TICKET t WHERE t.order_id = 1
+);
+COMMIT;
 
 SELECT acct_pkg.calculate_total_revenue FROM dual;
