@@ -347,7 +347,8 @@ BEGIN
       source VARCHAR2(3) REFERENCES AIRPORT(airport_name) ON DELETE CASCADE,
       status VARCHAR2(10) ,
       no_pax NUMBER,
-      airline_id NUMBER REFERENCES airlines(airline_id) ON DELETE CASCADE
+      airline_id NUMBER REFERENCES airlines(airline_id) ON DELETE CASCADE,
+      seats_filled NUMBER
     )';
     dbms_output.put_line('Table flight has been created');
   ELSE
@@ -364,17 +365,17 @@ the event of any errors a rollback is performed.
 */
 CREATE OR REPLACE PROCEDURE insert_flight IS
 BEGIN
-    INSERT INTO flight (flight_id, duration, flight_type, departure_time, arrival_time, destination, source, status, no_pax, airline_id)
-    SELECT 101, 120, 'Boeing 737', TO_TIMESTAMP('2023-03-21 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-21 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LHR', 'On Time', 200, 1001 from dual union all
-    SELECT 102, 180, 'Airbus A320', TO_TIMESTAMP('2023-03-22 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-22 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS', 'Delayed', 150, 1002 from dual union all
-    SELECT 103, 240, 'Boeing 747', TO_TIMESTAMP('2023-03-23 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-23 20:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'SIN', 'On Time', 400, 1003 from dual union all
-    SELECT 104, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-24 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'HKG', 'On Time', 80, 1004 from dual union all
-    SELECT 105, 150, 'Boeing 737', TO_TIMESTAMP('2023-03-25 09:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-25 11:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'SIN', 'BOS', 'On Time', 180, 1005 from dual union all
-    SELECT 106, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-26 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-26 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LAX', 'Delayed', 150, 1006 from dual union all
-    SELECT 107, 180, 'Boeing 787', TO_TIMESTAMP('2023-03-27 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-27 18:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'DXB', 'BOS', 'On Time', 300,1007 from dual union all
-    SELECT 108, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-28 17:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-28 19:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'SIN', 'BOS', 'On Time', 80, 1008 from dual union all
-    SELECT 109, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-29 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LHR','Cancelled',100, 1009 from dual union all
-    SELECT 110, 187, 'Airbus A380', TO_TIMESTAMP('2023-03-30 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS','On Time',300, 1010 from dual;
+    INSERT INTO flight (flight_id, duration, flight_type, departure_time, arrival_time, destination, source, status, no_pax, airline_id, seats_filled)
+    SELECT 101, 120, 'Boeing 737', TO_TIMESTAMP('2023-03-21 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-21 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LHR', 'On Time', 200, 1001, 0 from dual union all
+    SELECT 102, 180, 'Airbus A320', TO_TIMESTAMP('2023-03-22 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-22 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS', 'Delayed', 150, 1002, 0 from dual union all
+    SELECT 103, 240, 'Boeing 747', TO_TIMESTAMP('2023-03-23 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-23 20:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'SIN', 'On Time', 400, 1003, 0 from dual union all
+    SELECT 104, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-24 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'HKG', 'On Time', 80, 1004, 0 from dual union all
+    SELECT 105, 150, 'Boeing 737', TO_TIMESTAMP('2023-03-25 09:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-25 11:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'SIN', 'BOS', 'On Time', 180, 1005, 0 from dual union all
+    SELECT 106, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-26 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-26 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LAX', 'Delayed', 150, 1006, 0 from dual union all
+    SELECT 107, 180, 'Boeing 787', TO_TIMESTAMP('2023-03-27 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-27 18:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'DXB', 'BOS', 'On Time', 300,1007, 0 from dual union all
+    SELECT 108, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-28 17:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-28 19:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'SIN', 'BOS', 'On Time', 80, 1008, 0 from dual union all
+    SELECT 109, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-29 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LHR','Cancelled',100, 1009, 0 from dual union all
+    SELECT 110, 187, 'Airbus A380', TO_TIMESTAMP('2023-03-30 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS','On Time',300, 1010, 0 from dual;
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Data Inserted into flights table');
 EXCEPTION
@@ -668,7 +669,7 @@ The Below block of code creates views from the FLIGHT table
 */
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  swapped_flight_info AS
-    SELECT flight_id, duration, flight_type, arrival_time AS departure_time, departure_time AS arrival_time, source AS destination, destination AS source, status, no_pax
+    SELECT flight_id, duration, flight_type, arrival_time AS departure_time, departure_time AS arrival_time, source AS destination, destination AS source, status, no_pax, seats_filled
     FROM flight';
 EXCEPTION
   WHEN OTHERS THEN
