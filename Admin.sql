@@ -88,6 +88,14 @@ CREATE SEQUENCE baggage_id_seq
 START WITH 10 
 INCREMENT BY 1; 
 
+-- CREATE A SEQUENCE FOR AIRPORT
+CREATE SEQUENCE airport_seq 
+START WITH 1 
+INCREMENT BY 1 
+MAXVALUE 1000 
+NOCYCLE 
+CACHE 20; 
+
 
 
 -- Granting Priviliges
@@ -97,6 +105,7 @@ grant select on orders_seq to AirportAdmin;
 --grant select on flight_seq to AirportAdmin;  
 grant select on passenger_seq to AirportAdmin;  
 grant select on baggage_id_seq to AirportAdmin;
+grant select on airport_seq to AirportAdmin;  
 
 grant alter on my_sequence to AirportAdmin;
 grant alter on airline_route_sequence to AirportAdmin;
@@ -104,6 +113,7 @@ grant alter on orders_seq to AirportAdmin;
 --grant alter on flight_seq to AirportAdmin;  
 grant alter on passenger_seq to AirportAdmin;
 grant alter on baggage_id_seq to AirportAdmin;
+grant alter on airport_seq to AirportAdmin;
 ---- Reset Sequences
 --alter sequence my_sequence restart start with 1;
 --alter sequence airline_route_sequence restart start with 10;
