@@ -3,8 +3,6 @@ This Package is used for inserting airline_staff data
 After a airline_staff signs up an Order gets generated in the order table
 When a airline_staff deetes a ticket the number of airline_staffs on a flight reduces
 */
---ALTER TABLE ticket
---  PARALLEL(DEGREE 1);
 CREATE OR REPLACE PACKAGE airline_staff_pkg AS  
   PROCEDURE insert_airline_staff(
     in_staff_id              IN NUMBER,
@@ -41,14 +39,14 @@ PROCEDURE insert_airline_staff(
     IF in_gender NOT IN ('Male', 'Female', 'Other') THEN
       RAISE_APPLICATION_ERROR(-20002, 'Gender must be specified as male, female, or other');
     END IF;
-    IF in_job_group NOT IN (1,2,3,4) THEN
+    IF in_job_group NOT IN (1,2,3,4,5) THEN
       RAISE_APPLICATION_ERROR(-20002, 'Incorrect job group');
     END IF;
     -- Validate SSN input
-    IF LENGTH(in_ssn) != 10 THEN
-      RAISE_APPLICATION_ERROR(-20003, 'Govt ID Number must be a 10-digit value');
+    IF REGEXP_LIKE(in_ssn, '^((?!219-09-9999|078-05-1120)(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4})|((?!219 09 9999|078 05 1120)(?!666|000|9\d{2})\d{3} (?!00)\d{2} (?!0{4})\d{4})|((?!219099999|078051120)(?!666|000|9\d{2})\d{3}(?!00)\d{2}(?!0{4})\d{4})$') = FALSE THEN
+      RAISE_APPLICATION_ERROR(-20006, 'Invalid SSN format');
     END IF;
-    
+    /^[a-zA-Z]+$/
     -- Validate contact_number input
     IF LENGTH(in_contact_number) != 10 THEN
       RAISE_APPLICATION_ERROR(-20004, 'Contact Number must be a 10-digit value');
