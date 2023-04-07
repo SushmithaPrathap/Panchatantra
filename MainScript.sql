@@ -66,23 +66,24 @@ BEGIN
   SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'PASSENGER';
   IF table_exists = 0 THEN
     EXECUTE IMMEDIATE 'CREATE TABLE passenger (
-          passenger_id NUMBER PRIMARY KEY,
-          age NUMBER,
-          address VARCHAR2(100),
-          sex VARCHAR2(10),
-          govt_id_nos VARCHAR2(10),
-          first_name VARCHAR2(20),
-          last_name VARCHAR2(20),
-          dob DATE,
-          contact_number NUMBER,
-          email VARCHAR2(100)
-        )';
+              passenger_id NUMBER PRIMARY KEY,
+              age NUMBER CONSTRAINT age_format CHECK(age > 0),
+              address VARCHAR2(100),
+              sex VARCHAR2(10),
+              govt_id_nos VARCHAR2(10),
+              first_name VARCHAR2(30) CONSTRAINT first_name_format CHECK(first_name = INITCAP(first_name)),
+              last_name VARCHAR2(30) CONSTRAINT last_name_format CHECK(last_name = INITCAP(last_name)),
+              dob DATE,
+              contact_number NUMBER,
+              email VARCHAR2(100) UNIQUE       
+            )';
     dbms_output.put_line('Table Passenger has been created');
   ELSE
     dbms_output.put_line('Table Passenger already exists');
   END IF;
 END;
 /
+
 CREATE OR REPLACE PROCEDURE insert_passengers IS
 BEGIN
     INSERT INTO passenger (passenger_id, age, address, sex, govt_id_nos, first_name, last_name, dob, contact_number, email)

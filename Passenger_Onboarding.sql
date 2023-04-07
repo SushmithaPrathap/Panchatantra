@@ -35,23 +35,27 @@ PROCEDURE insert_passenger(
   BEGIN
     IF p_age IS NULL OR p_address IS NULL OR p_sex IS NULL OR p_govt_id_nos IS NULL OR p_first_name IS NULL OR p_last_name IS NULL OR p_dob IS NULL OR p_contact_number IS NULL OR p_email IS NULL THEN
       --RAISE_APPLICATION_ERROR(-20001, 'All input parameters must be specified');
-      DBMS_OUTPUT.PUT_LINE('All input parameters must be specified');  
+        DBMS_OUTPUT.PUT_LINE('All input parameters must be specified');
+        RETURN;
     END IF;  
     IF p_sex NOT IN ('Male', 'Female', 'Other') THEN
       --RAISE_APPLICATION_ERROR(-20002, 'Sex must be specified as male, female, or other');
-      DBMS_OUTPUT.PUT_LINE('Sex must be specified as male, female, or other');  
+      DBMS_OUTPUT.PUT_LINE('Sex must be specified as male, female, or other');
+      RETURN;      
     END IF;
     
     -- Validate gov_id_nos input
     IF LENGTH(p_govt_id_nos) != 10 THEN
       --RAISE_APPLICATION_ERROR(-20003, 'Govt ID Number must be a 10-digit value');
-      DBMS_OUTPUT.PUT_LINE('Govt ID Number must be a 10-digit value');        
+      DBMS_OUTPUT.PUT_LINE('Govt ID Number must be a 10-digit value');
+      RETURN;            
     END IF;
     
     -- Validate contact_number input
     IF LENGTH(p_contact_number) != 10 THEN
       --RAISE_APPLICATION_ERROR(-20004, 'Contact Number must be a 10-digit value');
-       DBMS_OUTPUT.PUT_LINE('Contact Number must be a 10-digit value'); 
+      DBMS_OUTPUT.PUT_LINE('Contact Number must be a 10-digit value');
+      RETURN;          
     END IF;
     
 --    -- Validate dob input
