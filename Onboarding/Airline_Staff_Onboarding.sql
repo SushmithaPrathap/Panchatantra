@@ -46,12 +46,19 @@ PROCEDURE insert_airline_staff(
     IF REGEXP_LIKE(in_ssn, '^((?!219-09-9999|078-05-1120)(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4})|((?!219 09 9999|078 05 1120)(?!666|000|9\d{2})\d{3} (?!00)\d{2} (?!0{4})\d{4})|((?!219099999|078051120)(?!666|000|9\d{2})\d{3}(?!00)\d{2}(?!0{4})\d{4})$') = FALSE THEN
       RAISE_APPLICATION_ERROR(-20006, 'Invalid SSN format');
     END IF;
-    /^[a-zA-Z]+$/
+    IF REGEXP_LIKE(in_first_name, '/^[a-zA-Z]+$/') = FALSE THEN
+      RAISE_APPLICATION_ERROR(-20006, 'Invalid first name');
+    END IF;
+    IF REGEXP_LIKE(in_last_name, '/^[a-zA-Z]+$/') = FALSE THEN
+      RAISE_APPLICATION_ERROR(-20006, 'Invalid last name');
+    END IF;
     -- Validate contact_number input
     IF LENGTH(in_contact_number) != 10 THEN
       RAISE_APPLICATION_ERROR(-20004, 'Contact Number must be a 10-digit value');
     END IF;
-    
+    IF REGEXP_LIKE(in_address, '^[0-9]{1,5} [a-zA-Z0-9\s]{1,50}, [a-zA-Z\s]{2,50}, [A-Z]{2} [0-9]{5}$') = FALSE THEN
+      RAISE_APPLICATION_ERROR(-20004, 'Contact Number must be a 10-digit value');
+    END IF;
     
     -- Validate email input
     IF REGEXP_LIKE(in_email_id _email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$') = FALSE THEN
