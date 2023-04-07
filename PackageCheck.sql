@@ -42,6 +42,17 @@ COMMIT;
 
 SELECT acct_pkg.calculate_total_revenue FROM dual;
 set serveroutput on
+--- TEST CASES FOR PASSENGER INSERTS;
 EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','Female',9566186692,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Annvi@yahoo.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','Female',956,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Annvi@yahoo.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','Female',956,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Annvi@yahoo.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','Female',9566186692,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Annviyahoo.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','M',9566186692,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Annviyahoo.com');
+--- TEST CASES FOR PASSENGER WANTING TO BOOK A TICKET
 EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','Female',9566186692,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Annvi@yahoo.com');
-EXECUTE passenger_onboarding_pkg.update_passenger(123,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','Male',9566186692,'Abhi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Abhi@yahoo.com');
+-- TEST CASES FOR PASSENGER WANTING TO UPDATE HIS DETAILS
+EXECUTE passenger_updating_pkg.update_passenger(1002,26,'15 Cawfield','Female',9566186692,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Anvi@yahoo.com');
+
+

@@ -5,8 +5,9 @@ When a passenger deetes a ticket the number of passengers on a flight reduces
 */
 --ALTER TABLE ticket
 --  PARALLEL(DEGREE 1);
-CREATE OR REPLACE PACKAGE passenger_onboarding_pkg AS  
-  PROCEDURE insert_passenger(
+CREATE OR REPLACE PACKAGE passenger_updating_pkg AS  
+  PROCEDURE update_passenger(
+    p_passenger_id     IN NUMBER DEFAULT NULL,
     p_age              IN NUMBER,
     p_address          IN VARCHAR2,
     p_sex              IN VARCHAR2,
@@ -17,11 +18,12 @@ CREATE OR REPLACE PACKAGE passenger_onboarding_pkg AS
     p_contact_number   IN VARCHAR2,
     p_email            IN VARCHAR2
   );
-END passenger_onboarding_pkg;
+END passenger_updating_pkg;
 /
 
-CREATE OR REPLACE PACKAGE BODY passenger_onboarding_pkg AS
-PROCEDURE insert_passenger(
+CREATE OR REPLACE PACKAGE BODY passenger_updating_pkg AS
+PROCEDURE update_passenger(
+    p_passenger_id     IN NUMBER ,
     p_age              IN NUMBER,
     p_address          IN VARCHAR2,
     p_sex              IN VARCHAR2,
@@ -32,87 +34,62 @@ PROCEDURE insert_passenger(
     p_contact_number   IN VARCHAR2,
     p_email            IN VARCHAR2
   ) IS
+    v_passenger_id NUMBER;
   BEGIN
+    IF p_passenger_id IS NULL THEN
+      -- Prompt user to enter passenger ID
+      dbms_output.put('Please enter the passenger ID: ');
+      RETURN;
+    -- validate input parameters
     IF p_age IS NULL OR p_address IS NULL OR p_sex IS NULL OR p_govt_id_nos IS NULL OR p_first_name IS NULL OR p_last_name IS NULL OR p_dob IS NULL OR p_contact_number IS NULL OR p_email IS NULL THEN
-      --RAISE_APPLICATION_ERROR(-20001, 'All input parameters must be specified');
-        DBMS_OUTPUT.PUT_LINE('All input parameters must be specified');
-        RETURN;
+      DBMS_OUTPUT.PUT_LINE('All input parameters must be specified');
+      RETURN;
     END IF;  
     IF p_sex NOT IN ('Male', 'Female', 'Other') THEN
-      --RAISE_APPLICATION_ERROR(-20002, 'Sex must be specified as male, female, or other');
       DBMS_OUTPUT.PUT_LINE('Sex must be specified as male, female, or other');
       RETURN;      
     END IF;
-    
-    -- Validate gov_id_nos input
     IF LENGTH(p_govt_id_nos) != 10 THEN
-      --RAISE_APPLICATION_ERROR(-20003, 'Govt ID Number must be a 10-digit value');
       DBMS_OUTPUT.PUT_LINE('Govt ID Number must be a 10-digit value');
       RETURN;            
     END IF;
-    
-    -- Validate contact_number input
     IF LENGTH(p_contact_number) != 10 THEN
-      --RAISE_APPLICATION_ERROR(-20004, 'Contact Number must be a 10-digit value');
       DBMS_OUTPUT.PUT_LINE('Contact Number must be a 10-digit value');
       RETURN;          
     END IF;
-    
---    -- Validate dob input
---    BEGIN
---      SELECT TO_DATE(p_dob, 'YYYY-MM-DD') FROM dual;
---    EXCEPTION
---      WHEN OTHERS THEN
---        RAISE_APPLICATION_ERROR(-20005, 'DOB must be specified in the format YYYY-MM-DD');
---    END;
-    
-    -- Validate email input
     IF REGEXP_LIKE(p_email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$') = FALSE THEN
-      RAISE_APPLICATION_ERROR(-20006, 'Invalid email format');
+      --RAISE_APPLICATION_ERROR(-20006, 'Invalid email format');
+      DBMS_OUTPUT.PUT_LINE('Invalid email format');
+      RETURN;       
     END IF;
 
-    INSERT INTO PASSENGER (
-      passenger_id,
-      age,
-      address,
-      sex,
-      govt_id_nos,
-      first_name,
-      last_name,
-      dob,
-      contact_number,
-      email
-    ) VALUES (
-      admin.passenger_seq.nextval,
-      p_age,
-      p_address,
-      p_sex,
-      p_govt_id_nos,
-      p_first_name,
-      p_last_name,
-      p_dob,
-      p_contact_number,
-      p_email
-    );
-    
-    INSERT INTO orders (
-      order_id,
-      passenger_id,
-      amount,
-      status
-    ) VALUES (
-      admin.orders_seq.nextval,
-      admin.passenger_seq.currval,
-      0,
-      'SUCCESS'
-    );
-    DBMS_OUTPUT.PUT_LINE('Your Details were entered successfully'); 
---  EXCEPTION
---  WHEN OTHERS THEN
---    DBMS_OUTPUT.PUT_LINE('An error occured while inserting data');  
-  END insert_passenger;
+    ELSE
+      v_passenger_id := p_passenger_id;
+    END IF;
 
-END passenger_onboarding_pkg;
+    BEGIN
+      UPDATE PASSENGER
+      SET
+        age = p_age,
+        address = p_address,
+        sex = p_sex,
+        govt_id_nos = p_govt_id_nos,
+        first_name = p_first_name,
+        last_name = p_last_name,
+        dob = p_dob,
+        contact_number = p_contact_number,
+        email = p_email
+      WHERE
+        passenger_id = v_passenger_id;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No passenger found with the given ID');
+      WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('An error occurred while updating the passenger');
+    END;
+    
+  END update_passenger;
+END passenger_updating_pkg;
 /
 
 SHOW ERRORS;

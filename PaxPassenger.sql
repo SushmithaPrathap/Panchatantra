@@ -155,32 +155,29 @@ PROCEDURE update_passenger(
     IF p_passenger_id IS NULL THEN
       -- Prompt user to enter passenger ID
       dbms_output.put('Please enter the passenger ID: ');
-    
-    ELSIF p_passenger_id IS NULL or p_age IS NULL OR p_address IS NULL OR p_sex IS NULL OR p_govt_id_nos IS NULL OR p_first_name IS NULL OR p_last_name IS NULL OR p_dob IS NULL OR p_contact_number IS NULL OR p_email IS NULL THEN
-      RAISE_APPLICATION_ERROR(-20001, 'All input parameters must be specified');
-      
-    ELSIF p_sex NOT IN ('Male', 'Female', 'Other') THEN
-      RAISE_APPLICATION_ERROR(-20002, 'Sex must be specified as male, female, or other');
-
-    -- Validate gov_id_nos input
-    ELSIF LENGTH(p_govt_id_nos) != 10 THEN
-      RAISE_APPLICATION_ERROR(-20003, 'Govt ID Number must be a 10-digit value');
-    -- Validate contact_number input
-    ELSIF LENGTH(p_contact_number) != 10 THEN
-      RAISE_APPLICATION_ERROR(-20004, 'Contact Number must be a 10-digit value');
-
-    
---    -- Validate dob input
---    BEGIN
---      SELECT TO_DATE(p_dob, 'YYYY-MM-DD') FROM dual;
---    EXCEPTION
---      WHEN OTHERS THEN
---        RAISE_APPLICATION_ERROR(-20005, 'DOB must be specified in the format YYYY-MM-DD');
---    END;
-    
-    -- Validate email input
-    ELSIF REGEXP_LIKE(p_email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$') = FALSE THEN
-      RAISE_APPLICATION_ERROR(-20006, 'Invalid email format');
+      RETURN;
+    -- validate input parameters
+    IF p_age IS NULL OR p_address IS NULL OR p_sex IS NULL OR p_govt_id_nos IS NULL OR p_first_name IS NULL OR p_last_name IS NULL OR p_dob IS NULL OR p_contact_number IS NULL OR p_email IS NULL THEN
+      DBMS_OUTPUT.PUT_LINE('All input parameters must be specified');
+      RETURN;
+    END IF;  
+    IF p_sex NOT IN ('Male', 'Female', 'Other') THEN
+      DBMS_OUTPUT.PUT_LINE('Sex must be specified as male, female, or other');
+      RETURN;      
+    END IF;
+    IF LENGTH(p_govt_id_nos) != 10 THEN
+      DBMS_OUTPUT.PUT_LINE('Govt ID Number must be a 10-digit value');
+      RETURN;            
+    END IF;
+    IF LENGTH(p_contact_number) != 10 THEN
+      DBMS_OUTPUT.PUT_LINE('Contact Number must be a 10-digit value');
+      RETURN;          
+    END IF;
+    IF REGEXP_LIKE(p_email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$') = FALSE THEN
+      --RAISE_APPLICATION_ERROR(-20006, 'Invalid email format');
+      DBMS_OUTPUT.PUT_LINE('Invalid email format');
+      RETURN;       
+    END IF;
 
     ELSE
       v_passenger_id := p_passenger_id;
