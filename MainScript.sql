@@ -7,12 +7,12 @@ set serveroutput on
 --Alter the sequences used in the script
 
 -- Reset Sequences
-alter sequence ADMIN.my_sequence restart start with 1;
-alter sequence ADMIN.airline_route_sequence restart start with 10;
-alter sequence ADMIN.orders_seq restart start with 1;
---alter sequence flight_seq restart start with 1;
-alter sequence ADMIN.passenger_seq restart start with 1;
-alter sequence ADMIN.baggage_id_seq restart start with 1;
+--alter sequence ADMIN.my_sequence restart start with 1;
+--alter sequence ADMIN.airline_route_sequence restart start with 10;
+--alter sequence ADMIN.orders_seq restart start with 1;
+----alter sequence flight_seq restart start with 1;
+--alter sequence ADMIN.passenger_seq restart start with 1;
+--alter sequence ADMIN.baggage_id_seq restart start with 1;
 
 /*
 The Below block of code checks if the tables FLIGHT and PASSENGER

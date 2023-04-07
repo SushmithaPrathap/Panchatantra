@@ -132,7 +132,7 @@ PROCEDURE insert_passenger(
       admin.orders_seq.nextval,
       admin.passenger_seq.currval,
       0,
-      'PENDING'
+      'SUCCESS'
     );
     
   END insert_passenger;
