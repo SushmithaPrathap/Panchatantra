@@ -20,29 +20,34 @@ PROCEDURE insert_airport(
   ) IS
   BEGIN
     IF a_airport_name IS NULL OR a_city IS NULL OR a_state IS NULL OR a_country IS NULL THEN
-      RAISE_APPLICATION_ERROR(-20001, 'All input parameters must be specified');
+      DBMS_OUTPUT.PUT_LINE('All input parameters must be specified');
+      RETURN;
     END IF;  
     
     -- Regex validations
     
     -- Validate airport name input
     IF REGEXP_LIKE(a_airport_name, '/^[a-zA-Z ]*$/') = FALSE THEN
-      RAISE_APPLICATION_ERROR(-20002, 'Only alphabets and spaces are allowed');
+      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed');
+      RETURN;
     END IF;
     
     -- Validate city input
     IF REGEXP_LIKE(a_city, '/^[a-zA-Z ]*$/') = FALSE THEN
-      RAISE_APPLICATION_ERROR(-20003, 'Only alphabets and spaces are allowed');
+      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed');
+      RETURN;
     END IF;
     
     -- Validate state input
     IF REGEXP_LIKE(a_state, '/^[a-zA-Z ]*$/') = FALSE THEN
-      RAISE_APPLICATION_ERROR(-20004, 'Only alphabets and spaces are allowed');
+      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed');
+      RETURN;
     END IF;
     
     -- Validate country input
     IF REGEXP_LIKE(a_country, '/^[a-zA-Z ]*$/') = FALSE THEN
-      RAISE_APPLICATION_ERROR(-20005, 'Only alphabets and spaces are allowed');
+      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed');
+      RETURN;
     END IF;
 
     INSERT INTO PASSENGER (
@@ -58,7 +63,12 @@ PROCEDURE insert_airport(
       a_state,
       a_country
     );
-    
+    DBMS_OUTPUT.PUT_LINE('Data Successfully inserted');
+    commit;
+    EXCEPTION
+    WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred while updating the airport: ' || SQLERRM);      
+    rollback;
   END insert_airport;
 
 END airport_pkg;
