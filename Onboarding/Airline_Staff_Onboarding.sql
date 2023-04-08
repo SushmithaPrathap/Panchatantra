@@ -1,7 +1,6 @@
 /*
 This Package is used for inserting airline_staff data
-After a airline_staff signs up an Order gets generated in the order table
-When a airline_staff deetes a ticket the number of airline_staffs on a flight reduces
+Airline staff is onboarded once airport and airline is added. Each staff has a unique ID.
 */
 show user;
 select airline_staff_seq.currval from dual;
@@ -58,6 +57,7 @@ PROCEDURE insert_airline_staff(
     IF in_staff_id IS NULL OR in_airline_id IS NULL OR in_gender IS NULL OR in_first_name IS NULL OR in_last_name  IS NULL OR in_address IS NULL OR in_ssn IS NULL OR in_email_id IS NULL OR in_contact_number IS NULL OR in_job_group IS NULL THEN
       RAISE INVALID_INPUTS;
     END IF;  
+    --validate if airline ID exists before pushing into airline staff table
       airline_id_exists := check_airline_id_exists(in_airline_id);
       IF airline_id_exists IS NULL then
         DBMS_OUTPUT.PUT_LINE('airline ID does not exist');
