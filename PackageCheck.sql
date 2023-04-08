@@ -32,6 +32,7 @@ select * from passenger;
 select * from orders;
 select * from ticket;
 select * from flight;
+select * from baggage;
 
 UPDATE FLIGHT f
 SET f.SEATS_FILLED = 100
@@ -58,3 +59,10 @@ EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','Male',956618
 EXECUTE passenger_updating_pkg.update_passenger(1001,26,'15 Cawfield','Female',9566186692,'Abhishek','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Ani@yahoo.com');
 EXECUTE passenger_updating_pkg.update_passenger(1001,26,'15 Cawfield','Female',9566186692,'Abhishek','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Ani@yahoo.com');
 EXECUTE passenger_updating_pkg.update_passenger(1000,26,'15 Cawfield','Female',9566186692,'Abhishek','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Ani@yahoo.com');
+
+-- TEST CASES FOR PASSENGER TO DELETE HIS DETAILS
+
+EXECUTE passenger_delete_pkg.delete_ticket(500003);
+EXECUTE passenger_delete_pkg.delete_ticket('5000');
+EXECUTE passenger_delete_pkg.delete_ticket('Abishek');
+EXECUTE passenger_delete_pkg.delete_ticket(50004);
