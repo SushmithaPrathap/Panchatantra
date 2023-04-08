@@ -7,12 +7,15 @@ set serveroutput on
 --Alter the sequences used in the script
 
 -- Reset Sequences
---alter sequence ADMIN.my_sequence restart start with 1;
---alter sequence ADMIN.airline_route_sequence restart start with 10;
---alter sequence ADMIN.orders_seq restart start with 1;
-----alter sequence flight_seq restart start with 1;
---alter sequence ADMIN.passenger_seq restart start with 1;
---alter sequence ADMIN.baggage_id_seq restart start with 1;
+alter sequence ADMIN.my_sequence restart start with 1;
+alter sequence ADMIN.airline_route_sequence restart start with 10;
+alter sequence ADMIN.orders_seq restart start with 50000;
+alter sequence flight_seq restart start with 4000;
+alter sequence ADMIN.passenger_seq restart start with 10000;
+alter sequence ADMIN.baggage_id_seq restart start with 1;
+alter sequence ADMIN.schedule_seq restart start with 5000;
+alter sequence ADMIN.terminal_seq restart start with 6000;
+alter sequence ADMIN.ticket_seq restart start with 7000;
 
 /*
 The Below block of code checks if the tables FLIGHT and PASSENGER
@@ -342,8 +345,8 @@ BEGIN
       flight_id NUMBER PRIMARY KEY,
       duration NUMBER,
       flight_type VARCHAR2(100),
-      departure_time TIMESTAMP,
-      arrival_time TIMESTAMP,
+      -- departure_time TIMESTAMP,
+      -- arrival_time TIMESTAMP,
       destination VARCHAR2(3) REFERENCES AIRPORT(airport_name) ON DELETE CASCADE,
       source VARCHAR2(3) REFERENCES AIRPORT(airport_name) ON DELETE CASCADE,
       status VARCHAR2(10) ,
@@ -366,17 +369,26 @@ the event of any errors a rollback is performed.
 */
 CREATE OR REPLACE PROCEDURE insert_flight IS
 BEGIN
-    INSERT INTO flight (flight_id, duration, flight_type, departure_time, arrival_time, destination, source, status, no_pax, airline_id, seats_filled)
-    SELECT 101, 120, 'Boeing 737', TO_TIMESTAMP('2023-03-21 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-21 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LHR', 'On Time', 200, 1001, 0 from dual union all
-    SELECT 102, 180, 'Airbus A320', TO_TIMESTAMP('2023-03-22 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-22 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS', 'Delayed', 150, 1002, 0 from dual union all
-    SELECT 103, 240, 'Boeing 747', TO_TIMESTAMP('2023-03-23 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-23 20:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'SIN', 'On Time', 400, 1003, 0 from dual union all
-    SELECT 104, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-24 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'HKG', 'On Time', 80, 1004, 0 from dual union all
-    SELECT 105, 150, 'Boeing 737', TO_TIMESTAMP('2023-03-25 09:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-25 11:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'SIN', 'BOS', 'On Time', 180, 1005, 0 from dual union all
-    SELECT 106, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-26 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-26 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LAX', 'Delayed', 150, 1006, 0 from dual union all
-    SELECT 107, 180, 'Boeing 787', TO_TIMESTAMP('2023-03-27 15:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-27 18:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'DXB', 'BOS', 'On Time', 300,1007, 0 from dual union all
-    SELECT 108, 90, 'Embraer E175', TO_TIMESTAMP('2023-03-28 17:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-28 19:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'SIN', 'BOS', 'On Time', 80, 1008, 0 from dual union all
-    SELECT 109, 120, 'Airbus A320', TO_TIMESTAMP('2023-03-29 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOS', 'LHR','Cancelled',100, 1009, 0 from dual union all
-    SELECT 110, 187, 'Airbus A380', TO_TIMESTAMP('2023-03-30 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-03-29 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS','On Time',300, 1010, 0 from dual;
+    INSERT INTO flight (flight_id, duration, flight_type, destination, source, status, no_pax, airline_id, seats_filled)
+    VALUES( ADMIN.flight_seq.NEXTVAL, 120, 'Boeing 737', 'BOS', 'LHR', 'On Time', 200, 1001, 0);
+    INSERT INTO flight (flight_id, duration, flight_type, destination, source, status, no_pax, airline_id, seats_filled)
+    VALUES( ADMIN.flight_seq.NEXTVAL, 180, 'Airbus A320', 'LHR', 'BOS', 'Delayed', 150, 1002, 0);
+    INSERT INTO flight (flight_id, duration, flight_type, destination, source, status, no_pax, airline_id, seats_filled)
+    VALUES( ADMIN.flight_seq.NEXTVAL, 240, 'Boeing 747', 'BOS', 'SIN', 'On Time', 400, 1003, 0);
+    INSERT INTO flight (flight_id, duration, flight_type, destination, source, status, no_pax, airline_id, seats_filled)
+    VALUES( ADMIN.flight_seq.NEXTVAL, 90, 'Embraer E175', 'BOS', 'HKG', 'On Time', 80, 1004, 0);
+    INSERT INTO flight (flight_id, duration, flight_type, destination, source, status, no_pax, airline_id, seats_filled)
+    VALUES( ADMIN.flight_seq.NEXTVAL, 150, 'Boeing 737', 'SIN', 'BOS', 'On Time', 180, 1005, 0);
+    INSERT INTO flight (flight_id, duration, flight_type, destination, source, status, no_pax, airline_id, seats_filled)
+    VALUES( ADMIN.flight_seq.NEXTVAL, 120, 'Airbus A320', 'BOS', 'LAX', 'Delayed', 150, 1006, 0);
+    INSERT INTO flight (flight_id, duration, flight_type, destination, source, status, no_pax, airline_id, seats_filled)
+    VALUES( ADMIN.flight_seq.NEXTVAL, 180, 'Boeing 787', 'DXB', 'BOS', 'On Time', 300,1007, 0);
+    INSERT INTO flight (flight_id, duration, flight_type, destination, source, status, no_pax, airline_id, seats_filled)
+    VALUES( ADMIN.flight_seq.NEXTVAL, 90, 'Embraer E175', 'SIN', 'BOS', 'On Time', 80, 1008, 0);
+    INSERT INTO flight (flight_id, duration, flight_type, destination, source, status, no_pax, airline_id, seats_filled)
+    VALUES( ADMIN.flight_seq.NEXTVAL, 120, 'Airbus A320', 'BOS', 'LHR','Cancelled',100, 1009, 0);
+    INSERT INTO flight (flight_id, duration, flight_type, destination, source, status, no_pax, airline_id, seats_filled)
+    VALUES( ADMIN.flight_seq.NEXTVAL, 187, 'Airbus A380', 'LHR', 'BOS','On Time',300, 1010, 0);
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Data Inserted into flights table');
 EXCEPTION
@@ -419,19 +431,19 @@ END;
 
 BEGIN
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (1001, 1, 101, 'A1', 'Vegetarian', 'LAX', 'BOS', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00);
+  VALUES (7000, 50000, 4001, 'A1', 'Vegetarian', 'LAX', 'BOS', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (1002, 2, 102, 'B2', 'Kosher', 'JFK', 'BOS', TO_DATE('2023-04-30', 'YYYY-MM-DD'), 'Business', 'PayPal', 1234, 750.00);
+  VALUES (7001, 50001, 4002, 'B2', 'Kosher', 'JFK', 'BOS', TO_DATE('2023-04-30', 'YYYY-MM-DD'), 'Business', 'PayPal', 1234, 750.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (1003, 3, 103, 'C3', 'No Preference', 'HKG', 'BOS', TO_DATE('2023-05-01', 'YYYY-MM-DD'), 'Business', 'Debit Card', 9101, 1200.00);
+  VALUES (7002, 50002, 4003, 'C3', 'No Preference', 'HKG', 'BOS', TO_DATE('2023-05-01', 'YYYY-MM-DD'), 'Business', 'Debit Card', 9101, 1200.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (1004, 4, 104, 'D4', 'Gluten Free', 'BOS', 'HKG', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 250.00);
+  VALUES (7003, 50003, 4004, 'D4', 'Gluten Free', 'BOS', 'HKG', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 250.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (1005, 5, 105, 'E5', 'Vegetarian', 'BOS', 'JFK', TO_DATE('2023-05-30', 'YYYY-MM-DD'), 'Business', 'Credit Card', 6789, 850.00);
+  VALUES (7004, 50004, 4005, 'E5', 'Vegetarian', 'BOS', 'JFK', TO_DATE('2023-05-30', 'YYYY-MM-DD'), 'Business', 'Credit Card', 6789, 850.00);
   
   COMMIT;
   dbms_output.put_line('Data Inserted Successfully into Tickets');
@@ -477,17 +489,22 @@ the event of any errors a rollback is performed.
 CREATE OR REPLACE PROCEDURE insert_terminal IS
 BEGIN
     INSERT INTO terminal (terminal_id, terminal_name)
-    SELECT 1, 'Terminal A' from dual union all
-    SELECT 2, 'Terminal B' from dual union all
-    SELECT 3, 'Terminal C' from dual union all
-    SELECT 4, 'Terminal D' from dual union all
-    SELECT 5, 'Terminal E' from dual;
+    VALUES( ADMIN.terminal_seq.NEXTVAL, 'Terminal A');
+    INSERT INTO terminal (terminal_id, terminal_name)
+    VALUES(ADMIN.terminal_seq.NEXTVAL, 'Terminal B');
+    INSERT INTO terminal (terminal_id, terminal_name)
+    VALUES( ADMIN.terminal_seq.NEXTVAL, 'Terminal C');
+    INSERT INTO terminal (terminal_id, terminal_name)
+    VALUES( ADMIN.terminal_seq.NEXTVAL, 'Terminal D');
+    INSERT INTO terminal (terminal_id, terminal_name)
+    VALUES( ADMIN.terminal_seq.NEXTVAL, 'Terminal E');
+    
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Data Inserted into terminal table');
 EXCEPTION
   WHEN OTHERS THEN
     ROLLBACK;
-    DBMS_OUTPUT.PUT_LINE('Error inserting terminal: ' || SQLERRM);
+     DBMS_OUTPUT.PUT_LINE('Error inserting terminal: ' || SQLERRM);
 END insert_terminal;
 /
 EXECUTE insert_terminal;
@@ -514,35 +531,35 @@ END;
 DECLARE
   i NUMBER := 1;
 BEGIN
-  INSERT INTO schedule (schedule_id, flight_id, terminal_id, Arrival_time, Departure_time) 
-  VALUES (1, 101, 1, TO_DATE('2023-03-22 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-22 11:45:00', 'YYYY-MM-DD HH24:MI:SS'));
+  INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time) 
+  VALUES (ADMIN.schedule_seq.NEXTVAL, 4000, 6000, TO_DATE('2023-03-22 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-22 11:45:00', 'YYYY-MM-DD HH24:MI:SS'));
 
   INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
-  VALUES (2, 102,  1, TO_DATE('2023-03-22 12:15:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-22 13:30:00', 'YYYY-MM-DD HH24:MI:SS')); 
+  VALUES (ADMIN.schedule_seq.NEXTVAL, 4001,  6000, TO_DATE('2023-03-22 12:15:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-22 13:30:00', 'YYYY-MM-DD HH24:MI:SS')); 
  
   INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
-  VALUES (3, 103,  2, TO_DATE('2023-03-22 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-22 15:15:00', 'YYYY-MM-DD HH24:MI:SS')); 
+  VALUES (ADMIN.schedule_seq.NEXTVAL, 4002,  6002, TO_DATE('2023-03-22 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-22 15:15:00', 'YYYY-MM-DD HH24:MI:SS')); 
  
   INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
-  VALUES (4, 104,  3, TO_DATE('2023-03-23 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-23 11:45:00', 'YYYY-MM-DD HH24:MI:SS')); 
+  VALUES (ADMIN.schedule_seq.NEXTVAL, 4003,  6003, TO_DATE('2023-03-23 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-23 11:45:00', 'YYYY-MM-DD HH24:MI:SS')); 
  
   INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
-  VALUES (5, 105,  2, TO_DATE('2023-03-23 12:15:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-23 13:30:00', 'YYYY-MM-DD HH24:MI:SS')); 
+  VALUES (ADMIN.schedule_seq.NEXTVAL, 4004,  6002, TO_DATE('2023-03-23 12:15:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-03-23 13:30:00', 'YYYY-MM-DD HH24:MI:SS')); 
  
   INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
-  VALUES (6, 106,  3, TO_DATE('2023-04-01 08:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-01 09:45:00', 'YYYY-MM-DD HH24:MI:SS')); 
+  VALUES (ADMIN.schedule_seq.NEXTVAL, 4005,  6003, TO_DATE('2023-04-01 08:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-01 09:45:00', 'YYYY-MM-DD HH24:MI:SS')); 
  
   INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
-  VALUES (7, 107,  2, TO_DATE('2023-04-02 12:15:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-02 13:20:00', 'YYYY-MM-DD HH24:MI:SS')); 
+  VALUES (ADMIN.schedule_seq.NEXTVAL, 4006,  6002, TO_DATE('2023-04-02 12:15:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-02 13:20:00', 'YYYY-MM-DD HH24:MI:SS')); 
  
   INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
-  VALUES (8, 108,  1, TO_DATE('2023-04-03 16:45:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-03 18:10:00', 'YYYY-MM-DD HH24:MI:SS')); 
+  VALUES (ADMIN.schedule_seq.NEXTVAL, 4007,  6001, TO_DATE('2023-04-03 16:45:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-03 18:10:00', 'YYYY-MM-DD HH24:MI:SS')); 
  
   INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
-  VALUES (9, 109,  4,TO_DATE('2023-04-04 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-04 11:45:00', 'YYYY-MM-DD HH24:MI:SS')); 
+  VALUES (ADMIN.schedule_seq.NEXTVAL, 4008,  6004,TO_DATE('2023-04-04 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-04 11:45:00', 'YYYY-MM-DD HH24:MI:SS')); 
  
   INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time)  
-  VALUES (10, 110,  2, TO_DATE('2023-04-05 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-05 15:05:00', 'YYYY-MM-DD HH24:MI:SS'));
+  VALUES (ADMIN.schedule_seq.NEXTVAL, 4009,  6002, TO_DATE('2023-04-05 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2023-04-05 15:05:00', 'YYYY-MM-DD HH24:MI:SS'));
   
   COMMIT;
 END;
@@ -556,7 +573,7 @@ The Below block of code creates views from the SCHEDULE table
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  flight_per_terminal AS
     SELECT schedule_id, flight_id, terminal_id, arrival_time, departure_time
-    FROM Schedule WHERE terminal_id = 2';
+    FROM Schedule WHERE terminal_id = 6002';
 EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
@@ -670,7 +687,7 @@ The Below block of code creates views from the FLIGHT table
 */
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  swapped_flight_info AS
-    SELECT flight_id, duration, flight_type, arrival_time AS departure_time, departure_time AS arrival_time, source AS destination, destination AS source, status, no_pax, seats_filled
+    SELECT flight_id, duration, flight_type, source AS destination, destination AS source, status, no_pax, seats_filled
     FROM flight';
 EXCEPTION
   WHEN OTHERS THEN
