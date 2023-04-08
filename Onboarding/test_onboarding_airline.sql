@@ -9,3 +9,4 @@ select * from airlines;
 --Testing update airline
 
 --Testing delete airline
+EXECUTE delete_airline_pkg.delete_airline(1002);
