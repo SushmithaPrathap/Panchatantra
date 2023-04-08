@@ -7,7 +7,7 @@ set serveroutput on
 --Alter the sequences used in the script
 
 -- Reset Sequences
-alter sequence ADMIN.my_sequence restart start with 1;
+-- alter sequence ADMIN.my_sequence restart start with 1;
 alter sequence ADMIN.airline_route_sequence restart start with 10;
 alter sequence ADMIN.orders_seq restart start with 50000;
 alter sequence flight_seq restart start with 4000;
@@ -431,19 +431,19 @@ END;
 
 BEGIN
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (7000, 50000, 4001, 'A1', 'Vegetarian', 'LAX', 'BOS', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00);
+  VALUES (ADMIN.ticket_seq.NEXTVAL, 50000, 4001, 'A1', 'Vegetarian', 'LAX', 'BOS', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (7001, 50001, 4002, 'B2', 'Kosher', 'JFK', 'BOS', TO_DATE('2023-04-30', 'YYYY-MM-DD'), 'Business', 'PayPal', 1234, 750.00);
+  VALUES (ADMIN.ticket_seq.NEXTVAL, 50001, 4002, 'B2', 'Kosher', 'JFK', 'BOS', TO_DATE('2023-04-30', 'YYYY-MM-DD'), 'Business', 'PayPal', 1234, 750.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (7002, 50002, 4003, 'C3', 'No Preference', 'HKG', 'BOS', TO_DATE('2023-05-01', 'YYYY-MM-DD'), 'Business', 'Debit Card', 9101, 1200.00);
+  VALUES (ADMIN.ticket_seq.NEXTVAL, 50002, 4003, 'C3', 'No Preference', 'HKG', 'BOS', TO_DATE('2023-05-01', 'YYYY-MM-DD'), 'Business', 'Debit Card', 9101, 1200.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (7003, 50003, 4004, 'D4', 'Gluten Free', 'BOS', 'HKG', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 250.00);
+  VALUES (ADMIN.ticket_seq.NEXTVAL, 50003, 4004, 'D4', 'Gluten Free', 'BOS', 'HKG', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 250.00);
   
   INSERT INTO ticket (ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount)
-  VALUES (7004, 50004, 4005, 'E5', 'Vegetarian', 'BOS', 'JFK', TO_DATE('2023-05-30', 'YYYY-MM-DD'), 'Business', 'Credit Card', 6789, 850.00);
+  VALUES (ADMIN.ticket_seq.NEXTVAL, 50004, 4005, 'E5', 'Vegetarian', 'BOS', 'JFK', TO_DATE('2023-05-30', 'YYYY-MM-DD'), 'Business', 'Credit Card', 6789, 850.00);
   
   COMMIT;
   dbms_output.put_line('Data Inserted Successfully into Tickets');

@@ -61,7 +61,7 @@ CREATE SEQUENCE passenger_seq
 -- CHECK  
 --SELECT passenger_seq.NEXTVAL FROM DUAL;
 --select * from dba_tab_privs where table_name = 'passenger_seq';
-DROP SEQUENCE airline_seq;
+-- DROP SEQUENCE airline_seq;
 -- CREATE A SEQUENCE FOR AIRLINE
 CREATE SEQUENCE airline_seq 
 START WITH 1 
@@ -142,7 +142,6 @@ grant select on flight_seq to AirportAdmin;
 grant select on schedule_seq to AirportAdmin;  
 grant select on terminal_seq to AirportAdmin; 
 grant select on ticket_seq to AirportAdmin; 
-
 
 
 grant alter on airline_seq to AirportAdmin;
