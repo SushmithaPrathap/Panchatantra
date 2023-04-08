@@ -1,28 +1,25 @@
 /*
-This Package is used for inserting and Updating passenger data
-After a passenger signs up an Order gets generated in the order table
-When a passenger deetes a ticket the number of passengers on a flight reduces
+This Package is used for inserting and updating airline staff data
 */
---ALTER TABLE ticket
---  PARALLEL(DEGREE 1);
-CREATE OR REPLACE PACKAGE passenger_updating_pkg AS
-  PROCEDURE update_passenger(
-    p_passenger_id     IN NUMBER DEFAULT NULL,
-    p_age              IN NUMBER,
-    p_address          IN VARCHAR2,
-    p_sex              IN VARCHAR2,
-    p_govt_id_nos      IN VARCHAR2,
-    p_first_name       IN VARCHAR2,
-    p_last_name        IN VARCHAR2,
-    p_dob              IN DATE,
-    p_contact_number   IN VARCHAR2,
-    p_email            IN VARCHAR2
+
+CREATE OR REPLACE PACKAGE airline_staff_updating_pkg AS
+  PROCEDURE update_airline_staff(
+   in_staff_id              IN NUMBER,
+    in_airline_id         IN NUMBER,
+    in_first_name             IN VARCHAR2,
+    in_last_name     IN VARCHAR2,
+    in_address      IN VARCHAR2,
+    in_ssn      IN VARCHAR2,
+    in_email_id             IN VARCHAR2,
+    in_contact_number   IN NUMBER,
+    in_job_group          IN VARCHAR2,
+    in_gender in VARCHAR2
   );
-END passenger_updating_pkg;
+END airline_staff_updating_pkg;
 /
 
-CREATE OR REPLACE PACKAGE BODY passenger_updating_pkg AS
-PROCEDURE update_passenger(
+CREATE OR REPLACE PACKAGE BODY airline_staff_updating_pkg AS
+PROCEDURE update_airline_staff(
     p_passenger_id     IN NUMBER ,
     p_age              IN NUMBER,
     p_address          IN VARCHAR2,
@@ -49,15 +46,14 @@ PROCEDURE update_passenger(
       Return;      
     -- Validate gov_id_nos input
     ELSIF LENGTH(p_govt_id_nos) != 10 THEN
-      dbms_output.put('Govt ID Number must be a 10-digit value');
+       dbms_output.put('Govt ID Number must be a 10-digit value');
       Return;            
     -- Validate contact_number input
     ELSIF LENGTH(p_contact_number) != 10 THEN
       dbms_output.put('Contact Number must be a 10-digit value');
-      Return;
+      Return;         
     -- Validate email input
     ELSIF REGEXP_LIKE(p_email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$') = FALSE THEN
-      --RAISE_APPLICATION_ERROR(-20006, 'Invalid email format');
       dbms_output.put('Invalid email format');
       Return;         
     ELSE

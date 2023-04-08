@@ -1,5 +1,5 @@
 /*
-This Package is used for inserting airline_staff data
+This Package is used for onboarding airline_staff data
 Airline staff is onboarded once airport and airline is added. Each staff has a unique ID.
 */
 show user;
