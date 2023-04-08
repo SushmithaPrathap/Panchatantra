@@ -73,8 +73,8 @@ PROCEDURE update_passenger(
       --RAISE_APPLICATION_ERROR(-20006, 'Invalid email format');
       dbms_output.put('Invalid email format');
       Return;         
---    ELSE
-    v_passenger_id := p_passenger_id;
+    ELSE
+      v_passenger_id := p_passenger_id;
     END IF;
 
     SELECT COUNT(*) INTO v_count FROM PASSENGER WHERE passenger_id = v_passenger_id;
@@ -84,6 +84,13 @@ PROCEDURE update_passenger(
       RETURN;
     END IF;
 
+    -- Check if email already exists
+    SELECT COUNT(*) INTO v_count FROM PASSENGER WHERE email = p_email AND passenger_id <> p_passenger_id;
+    
+    IF v_count > 0 THEN
+      DBMS_OUTPUT.PUT_LINE('Email already in use by another passenger');
+      RETURN;
+    END IF;
 
     BEGIN
       UPDATE PASSENGER

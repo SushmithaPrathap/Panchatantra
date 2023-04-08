@@ -45,6 +45,7 @@ PROCEDURE insert_airline_staff(
     -- Validate SSN input
     IF REGEXP_LIKE(in_ssn, '^((?!219-09-9999|078-05-1120)(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4})|((?!219 09 9999|078 05 1120)(?!666|000|9\d{2})\d{3} (?!00)\d{2} (?!0{4})\d{4})|((?!219099999|078051120)(?!666|000|9\d{2})\d{3}(?!00)\d{2}(?!0{4})\d{4})$') = FALSE THEN
       RAISE_APPLICATION_ERROR(-20006, 'Invalid SSN format');
+<<<<<<< Updated upstream
     END IF;
     IF REGEXP_LIKE(in_first_name, '/^[a-zA-Z]+$/') = FALSE THEN
       RAISE_APPLICATION_ERROR(-20006, 'Invalid first name');
@@ -52,6 +53,10 @@ PROCEDURE insert_airline_staff(
     IF REGEXP_LIKE(in_last_name, '/^[a-zA-Z]+$/') = FALSE THEN
       RAISE_APPLICATION_ERROR(-20006, 'Invalid last name');
     END IF;
+=======
+    END IF;
+    /^[a-zA-Z]+$/
+>>>>>>> Stashed changes
     -- Validate contact_number input
     IF LENGTH(in_contact_number) != 10 THEN
       RAISE_APPLICATION_ERROR(-20004, 'Contact Number must be a 10-digit value');

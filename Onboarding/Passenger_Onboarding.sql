@@ -1,7 +1,7 @@
 /*
 This Package is used for inserting Passenger data
 After a passenger signs up an Order gets generated in the order table
-When a passenger deetes a ticket the number of passengers on a flight reduces
+if he is an existing customer his details do not get added again
 */
 --ALTER TABLE ticket
 --  PARALLEL(DEGREE 1);
@@ -63,7 +63,7 @@ CREATE OR REPLACE PACKAGE BODY passenger_onboarding_pkg AS
     -- if email is already present, insert a new order for the existing passenger
     INSERT INTO orders (order_id, passenger_id, amount, status) VALUES (admin.orders_seq.nextval, v_passenger_id, 0, 'SUCCESS');
     DBMS_OUTPUT.PUT_LINE('Welcome back your Order was created successfully');
-    
+    commit;
   EXCEPTION
     -- if email is not present, insert a new passenger and then insert a new order
     WHEN NO_DATA_FOUND THEN
@@ -72,8 +72,10 @@ CREATE OR REPLACE PACKAGE BODY passenger_onboarding_pkg AS
       SELECT admin.passenger_seq.currval INTO v_passenger_id FROM dual;
       INSERT INTO orders (order_id, passenger_id, amount, status) VALUES (admin.orders_seq.nextval, v_passenger_id, 0, 'SUCCESS');
       DBMS_OUTPUT.PUT_LINE('You are now registered and your order was created successfully');
+      commit;
     WHEN OTHERS THEN
       DBMS_OUTPUT.PUT_LINE('An error occurred while inserting data');
+      rollback;
   END insert_passenger;
 END passenger_onboarding_pkg;
 /
