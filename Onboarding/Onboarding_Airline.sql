@@ -7,6 +7,7 @@ CREATE OR REPLACE PACKAGE airline_pkg AS
 
 END airline_pkg;
 /
+SELECT admin.airline_seq.NEXTVAL FROM dual;
 
 CREATE OR REPLACE PACKAGE BODY airline_pkg AS
 
@@ -17,10 +18,12 @@ CREATE OR REPLACE PACKAGE BODY airline_pkg AS
   IS
   BEGIN
     IF v_airline_code IS NULL OR v_airline_name IS NULL THEN
-      RAISE_APPLICATION_ERROR(-20001, 'All input parameters must be specified');
+      --RAISE_APPLICATION_ERROR(-20001, 'All input parameters must be specified');
+      DBMS_OUTPUT.PUT_LINE('All input parameters must be specified');
     END IF;
     IF REGEXP_LIKE(v_airline_code, '^[a-zA-Z0-9]{2}$') = FALSE THEN
-      RAISE_APPLICATION_ERROR(-20006, 'Invalid airline code format');
+      DBMS_OUTPUT.PUT_LINE('Invalid airline code format');
+      --RAISE_APPLICATION_ERROR(-20006, 'Invalid airline code format');
     END IF;
     INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)
     VALUES (admin.airline_seq.nextval, admin.airline_route_sequence.nextval, v_airline_code, v_airline_name);
