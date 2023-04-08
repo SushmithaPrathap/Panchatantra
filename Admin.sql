@@ -138,6 +138,12 @@ grant select on orders_seq to AirportAdmin;
 grant select on passenger_seq to AirportAdmin;  
 grant select on baggage_id_seq to AirportAdmin;
 grant select on airport_seq to AirportAdmin;  
+grant select on flight_seq to AirportAdmin;  
+grant select on schedule_seq to AirportAdmin;  
+grant select on terminal_seq to AirportAdmin; 
+grant select on ticket_seq to AirportAdmin; 
+
+
 
 grant alter on airline_seq to AirportAdmin;
 grant alter on airline_route_sequence to AirportAdmin;
@@ -146,6 +152,10 @@ grant alter on orders_seq to AirportAdmin;
 grant alter on passenger_seq to AirportAdmin;
 grant alter on baggage_id_seq to AirportAdmin;
 grant alter on airport_seq to AirportAdmin;
+grant alter on flight_seq to AirportAdmin;  
+grant alter on schedule_seq to AirportAdmin;  
+grant alter on terminal_seq to AirportAdmin; 
+grant alter on ticket_seq to AirportAdmin; 
 ---- Reset Sequences
 --alter sequence my_sequence restart start with 1;
 --alter sequence airline_route_sequence restart start with 10;
