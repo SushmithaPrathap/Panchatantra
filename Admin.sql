@@ -132,6 +132,13 @@ MAXVALUE 7999
 NOCYCLE 
 CACHE 20; 
 
+-- CREATE A SEQUENCE FOR AIRLINE STAFF
+CREATE SEQUENCE airline_staff_seq
+START WITH 770
+INCREMENT BY 1
+MAXVALUE 100000
+NOCYCLE
+CACHE 20;
 
 
 -- Granting Priviliges
@@ -142,12 +149,17 @@ grant select on orders_seq to AirportAdmin;
 grant select on passenger_seq to AirportAdmin;  
 grant select on baggage_id_seq to AirportAdmin;
 grant select on airport_seq to AirportAdmin;  
+<<<<<<< Updated upstream
 grant select on flight_seq to AirportAdmin;  
 grant select on schedule_seq to AirportAdmin;  
 grant select on terminal_seq to AirportAdmin; 
 grant select on ticket_seq to AirportAdmin; 
 
+=======
+grant select on airline_staff_seq to Airport_Admin;
+>>>>>>> Stashed changes
 
+grant alter on airline_staff_seq to Airport_Admin;
 grant alter on airline_seq to AirportAdmin;
 grant alter on airline_route_sequence to AirportAdmin;
 grant alter on orders_seq to AirportAdmin;
