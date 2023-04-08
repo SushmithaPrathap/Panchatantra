@@ -7,11 +7,8 @@ set serveroutput on
 --Alter the sequences used in the script
 
 -- Reset Sequences
-<<<<<<< Updated upstream
 -- alter sequence ADMIN.my_sequence restart start with 1;
-=======
 alter sequence ADMIN.airline_seq restart start with 1;
->>>>>>> Stashed changes
 alter sequence ADMIN.airline_route_sequence restart start with 10;
 alter sequence ADMIN.orders_seq restart start with 50000;
 alter sequence flight_seq restart start with 4000;

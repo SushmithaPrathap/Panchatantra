@@ -60,12 +60,9 @@ CREATE SEQUENCE passenger_seq
   CACHE 1000;
 -- CHECK  
 --SELECT passenger_seq.NEXTVAL FROM DUAL;
---select * from dba_tab_privs where table_name = 'passenger_seq';
-<<<<<<< Updated upstream
+--select * from dba_tab_privs<<<<<<< where table_name = 'passenger_seq';
 -- DROP SEQUENCE airline_seq;
-=======
 --DROP SEQUENCE airline_seq;
->>>>>>> Stashed changes
 -- CREATE A SEQUENCE FOR AIRLINE
 CREATE SEQUENCE airline_seq 
 START WITH 1 
