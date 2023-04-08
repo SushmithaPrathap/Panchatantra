@@ -32,13 +32,13 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_FLIGHT_PKG AS
     RETURN v_result;
   END check_airport;
 
-  FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN NUMBER IS
+FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN NUMBER IS
     v_result NUMBER;
   BEGIN
-   IF in_arrival_time <= in_departure_time THEN
+    IF in_arrival_time <= in_departure_time THEN
       RAISE_APPLICATION_ERROR(-20001, 'Arrival time must be after departure time');
     END IF;
-    v_result := in_arrival_time - in_departure_time;
+    v_result := ROUND((in_arrival_time - in_departure_time) * 24 * 60);
     RETURN v_result;
   END get_duration;
   

@@ -29,16 +29,16 @@ declare
 begin
    dbms_output.put_line('Start schema cleanup');
    for i in (
-             select 'PASSENGER' table_name from dual
---             select 'BAGGAGE' table_name from dual UNION ALL
---             select 'TICKET' table_name from dual UNION ALL
---             select 'ORDERS' table_name from dual UNION ALL
---             select 'SCHEDULE' table_name from dual union all             
---             select 'FLIGHT' table_name from dual UNION ALL
---             select 'AIRPORT' table_name from dual union all
---             select 'AIRLINE_STAFF' table_name from dual union all
---             select 'TERMINAL' table_name from dual union all 
---             select 'AIRLINES' table_name from dual                          
+             select 'PASSENGER' table_name from dual UNION ALL
+             select 'BAGGAGE' table_name from dual UNION ALL
+             select 'TICKET' table_name from dual UNION ALL
+             select 'ORDERS' table_name from dual UNION ALL
+             select 'SCHEDULE' table_name from dual union all             
+             select 'FLIGHT' table_name from dual UNION ALL
+             select 'AIRPORT' table_name from dual union all
+             select 'AIRLINE_STAFF' table_name from dual union all
+             select 'TERMINAL' table_name from dual union all 
+             select 'AIRLINES' table_name from dual                          
    )
    loop
    dbms_output.put_line('....Drop table '||i.table_name);
