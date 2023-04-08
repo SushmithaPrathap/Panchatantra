@@ -61,9 +61,9 @@ CREATE SEQUENCE passenger_seq
 -- CHECK  
 --SELECT passenger_seq.NEXTVAL FROM DUAL;
 --select * from dba_tab_privs where table_name = 'passenger_seq';
-
+DROP SEQUENCE airline_seq;
 -- CREATE A SEQUENCE FOR AIRLINE
-CREATE SEQUENCE my_sequence 
+CREATE SEQUENCE airline_seq 
 START WITH 1 
 INCREMENT BY 1 
 MAXVALUE 1000 
@@ -72,7 +72,7 @@ CACHE 20;
 
 -- CREATE A SEQUENCE FOR AIRLINE ROUTE
 CREATE SEQUENCE airline_route_sequence 
-START WITH 10 
+START WITH 600 
 INCREMENT BY 50 
 MAXVALUE 100000 
 NOCYCLE 
@@ -131,7 +131,7 @@ CACHE 20;
 
 
 -- Granting Priviliges
-grant select on my_sequence to AirportAdmin;  
+grant select on airline_seq to AirportAdmin;  
 grant select on airline_route_sequence to AirportAdmin;
 grant select on orders_seq to AirportAdmin;
 --grant select on flight_seq to AirportAdmin;  
@@ -139,7 +139,7 @@ grant select on passenger_seq to AirportAdmin;
 grant select on baggage_id_seq to AirportAdmin;
 grant select on airport_seq to AirportAdmin;  
 
-grant alter on my_sequence to AirportAdmin;
+grant alter on airline_seq to AirportAdmin;
 grant alter on airline_route_sequence to AirportAdmin;
 grant alter on orders_seq to AirportAdmin;
 --grant alter on flight_seq to AirportAdmin;  

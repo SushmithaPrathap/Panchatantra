@@ -1,6 +1,6 @@
 set serveroutput on;
-EXECUTE airline_pkg.insert_airline(1, '1234', 'ABC', 'Airline 1');
-EXECUTE airline_pkg.update_airline(1, 'New Airline Name');
+EXECUTE airline_pkg.insert_airline(2, '1234', 'ABC', 'Airline 2');
+EXECUTE airline_pkg.update_airline(2, 'New Airline 2 Name');
 commit;
 EXECUTE airline_pkg.delete_airline(1);
 select * from airlines;
