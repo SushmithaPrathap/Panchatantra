@@ -146,15 +146,12 @@ grant select on orders_seq to AirportAdmin;
 grant select on passenger_seq to AirportAdmin;  
 grant select on baggage_id_seq to AirportAdmin;
 grant select on airport_seq to AirportAdmin;  
-<<<<<<< Updated upstream
 grant select on flight_seq to AirportAdmin;  
 grant select on schedule_seq to AirportAdmin;  
 grant select on terminal_seq to AirportAdmin; 
 grant select on ticket_seq to AirportAdmin; 
-
-=======
 grant select on airline_staff_seq to Airport_Admin;
->>>>>>> Stashed changes
+
 
 grant alter on airline_staff_seq to Airport_Admin;
 grant alter on airline_seq to AirportAdmin;

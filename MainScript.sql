@@ -1,9 +1,9 @@
 -- connect AirportAdminGuy/AirportMainGuy2024;
 -- ENSURE THIS SCRIPT IS EXECUTED BY AIRPORT ADMIN
-WHENEVER SQLERROR EXIT SQL.SQLCODE
+WHENEVER SQLERROR EXIT SQL.SQLCODE;
 show user;
 --CLEANUP SCRIPT
-set serveroutput on
+set serveroutput on;
 --Alter the sequences used in the script
 
 -- Reset Sequences
@@ -11,7 +11,7 @@ set serveroutput on
 alter sequence ADMIN.airline_seq restart start with 1;
 alter sequence ADMIN.airline_route_sequence restart start with 10;
 alter sequence ADMIN.orders_seq restart start with 50000;
-alter sequence flight_seq restart start with 4000;
+alter sequence ADMIN.flight_seq restart start with 4000;
 alter sequence ADMIN.passenger_seq restart start with 10000;
 alter sequence ADMIN.baggage_id_seq restart start with 1;
 alter sequence ADMIN.schedule_seq restart start with 5000;
