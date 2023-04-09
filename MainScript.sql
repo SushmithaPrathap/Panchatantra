@@ -1,4 +1,4 @@
--- connect AirportAdminGuy/AirportMainGuy2024;
+-- connect AirportAdmin/AirportMainGuy2024;
 -- ENSURE THIS SCRIPT IS EXECUTED BY AIRPORT ADMIN
 WHENEVER SQLERROR EXIT SQL.SQLCODE;
 show user;
