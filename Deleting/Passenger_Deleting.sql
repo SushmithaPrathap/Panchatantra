@@ -58,6 +58,7 @@ CREATE OR REPLACE PACKAGE BODY passenger_delete_pkg AS
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('Ticket with order_id ' || p_order_id || ' not found.'|| ': ' || SQLERRM);
+            ROLLBACK;
         WHEN OTHERS THEN
             ROLLBACK;
             DBMS_OUTPUT.PUT_LINE('Error deleting ticket with order_id ' || p_order_id || ': ' || SQLERRM);
