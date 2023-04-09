@@ -33,21 +33,10 @@ BEGIN
 END;
 /
 
--- BEGIN
---   ONBOARD_FLIGHT_PKG.INSERT_FLIGHT(
---     p_flight_id => ADMIN.flight_seq.NEXTVAL,
---     --p_duration => 187,
---     p_flight_type => 'Airbus A380',
---     p_departure_time => TO_TIMESTAMP('2023-04-20 12:00:00', 'YYYY-MM-DD HH24:MI:SS'),
---     p_arrival_time => TO_TIMESTAMP('2023-04-22 10:00:00', 'YYYY-MM-DD HH24:MI:SS'),
---     p_destination => 'BOM',
---     p_source => 'BOS',
---     p_status => 'On Time',
---     p_no_pax => 300,
---     p_airline_id => 1010,
---     p_seats_filled => 0,
---     p_terminal_id => 6001
---   );
--- END;
+EXECUTE ONBOARD_FLIGHT_PKG.INSERT_FLIGHT(ADMIN.flight_seq.NEXTVAL, 'Airbus A380',  TO_TIMESTAMP('2023-04-20 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-04-22 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'BOS', 'On Time', 300, 1010, 0, 6001);
 
+-- EXECUTE flight_updating_pkg.update_flight(4009, 'Airbus A380', 'BOM', 'BOS', 'On Time', 300, 1010, 0, 187);
+
+
+--select * from flight;
 

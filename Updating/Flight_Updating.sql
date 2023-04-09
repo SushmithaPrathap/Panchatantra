@@ -8,8 +8,8 @@ CREATE OR REPLACE PACKAGE flight_updating_pkg AS
     p_status IN VARCHAR2,
     p_no_pax IN NUMBER,
     p_airline_id IN NUMBER,
-    p_seats_filled IN NUMBER,
-    p_duration IN NUMBER
+    p_seats_filled IN NUMBER
+    -- p_duration IN NUMBER
   );
 
    PROCEDURE update_schedule(
@@ -32,8 +32,8 @@ CREATE OR REPLACE PACKAGE BODY flight_updating_pkg AS
     p_status IN VARCHAR2,
     p_no_pax IN NUMBER,
     p_airline_id IN NUMBER,
-    p_seats_filled IN NUMBER,
-    p_duration IN NUMBER
+    p_seats_filled IN NUMBER
+    -- p_duration IN NUMBER
   ) AS
     l_d_airport_count NUMBER;
     l_s_airport_count NUMBER;
@@ -68,9 +68,10 @@ CREATE OR REPLACE PACKAGE BODY flight_updating_pkg AS
       RAISE invalid_seats_filled;
     END IF;
 
-    IF p_duration > 0 or p_duration IS NULL THEN
-      RAISE invalid_duration;
-    END IF;
+    -- IF p_duration > 0 or p_duration IS NULL THEN
+    --   DBMS_OUTPUT.PUT_LINE('duration: ' || p_duration);
+    --   RAISE invalid_duration;
+    -- END IF;
 
     l_d_airport_count := ONBOARD_FLIGHT_PKG.check_airport(p_destination);
     DBMS_OUTPUT.PUT_LINE('Output value for destination: ' || l_d_airport_count);
@@ -96,13 +97,13 @@ CREATE OR REPLACE PACKAGE BODY flight_updating_pkg AS
     -- Update flight
     UPDATE flight SET
       flight_type = p_flight_type,
-      duration = p_duration,
       destination = p_destination,
       source = p_source,
       status = p_status,
       no_pax = p_no_pax,
       airline_id = p_airline_id,
       seats_filled = p_seats_filled
+      -- duration = p_duration
     WHERE flight_id = p_flight_id;
 
     COMMIT;
