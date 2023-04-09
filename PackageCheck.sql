@@ -64,3 +64,12 @@ EXECUTE passenger_delete_pkg.delete_ticket(500003);
 EXECUTE passenger_delete_pkg.delete_ticket('5000');
 EXECUTE passenger_delete_pkg.delete_ticket('Abishek');
 EXECUTE passenger_delete_pkg.delete_ticket(50004);
+
+select * from orders;
+
+-- TEST CASES FOR AN ACCOUNTANT
+EXECUTE acct_pkg.update_order_status(50006s,'Completed1');
+EXECUTE acct_pkg.update_order_status(50006,'Completed');
+select acct_pkg.calculate_total_revenue() from dual;
+
+execute acct_pkg.update_order_amount(50006,-10000);
