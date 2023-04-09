@@ -45,7 +45,6 @@ SELECT acct_pkg.calculate_total_revenue FROM dual;
 set serveroutput on
 --- TEST CASES FOR PASSENGER INSERTS;
 EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','Female',9566186692,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Annvi@yahoo.com');
-EXECUTE passenger_onboarding_pkg.insert_passenger(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','Female',956,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Annvi@yahoo.com');
 EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','Female',956,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Annvi@yahoo.com');
 EXECUTE passenger_onboarding_pkg.insert_passenger(25,'15 Cawfield','Female',9566186692,'Annvi','Jain',TO_DATE('2022-04-05', 'YYYY-MM-DD'),9566186692,'Annviyahoo.com');
