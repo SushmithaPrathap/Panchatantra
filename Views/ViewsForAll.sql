@@ -16,7 +16,7 @@ END;
 GRANT SELECT ON  AIRPORTADMIN.flight_schedule TO PASSENGERUSER;
 
 /*
-View 2 for Accountant
+View 1 for Accountants
 */
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  flight_revenue AS
@@ -31,9 +31,9 @@ EXCEPTION
 END;
 /
 
-
+GRANT SELECT ON  AIRPORTADMIN.flight_revenue TO ACCOUNTANT;
 /*
-View 3 for accounants
+View 2 for Accountants
 */
 
 BEGIN
@@ -48,3 +48,4 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
 /
+GRANT SELECT ON  AIRPORTADMIN.cancelled_flights TO ACCOUNTANT;
