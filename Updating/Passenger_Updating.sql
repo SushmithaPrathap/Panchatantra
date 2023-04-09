@@ -57,7 +57,6 @@ PROCEDURE update_passenger(
       Return;
     -- Validate email input
     ELSIF REGEXP_LIKE(p_email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$') = FALSE THEN
-      --RAISE_APPLICATION_ERROR(-20006, 'Invalid email format');
       dbms_output.put('Invalid email format');
       Return;         
     ELSE
