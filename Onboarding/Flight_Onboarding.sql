@@ -1,6 +1,8 @@
 CREATE OR REPLACE PACKAGE ONBOARD_FLIGHT_PKG AS
 
   FUNCTION check_airport(in_airport_name IN VARCHAR2) RETURN NUMBER;
+  FUNCTION check_airline(in_airline_id IN NUMBER) RETURN NUMBER;
+  FUNCTION check_terminal(in_terminal_id IN NUMBER) RETURN NUMBER;
 
   FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN NUMBER;
 
@@ -32,7 +34,27 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_FLIGHT_PKG AS
     RETURN v_result;
   END check_airport;
 
-FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN NUMBER IS
+  FUNCTION check_airline(in_airline_id IN NUMBER) RETURN NUMBER IS
+    v_result NUMBER;
+  BEGIN
+    SELECT COUNT(*) INTO v_result
+    FROM airlines
+    WHERE airline_id = in_airline_id;
+
+    RETURN v_result;
+  END check_airline;
+
+  FUNCTION check_terminal(in_terminal_id IN NUMBER) RETURN NUMBER IS
+    v_result NUMBER;
+  BEGIN
+    SELECT COUNT(*) INTO v_result
+    FROM terminal
+    WHERE terminal_id = in_terminal_id;
+
+    RETURN v_result;
+  END check_terminal;
+
+  FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN NUMBER IS
     v_result NUMBER;
   BEGIN
     IF in_arrival_time <= in_departure_time THEN
@@ -59,6 +81,8 @@ FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN
     l_d_airport_count NUMBER;
     l_s_airport_count NUMBER;
     l_duration NUMBER;
+    l_airline_count NUMBER;
+    l_terminal_count NUMBER;
 
     INVALID_INPUTS EXCEPTION;
     
@@ -93,6 +117,20 @@ FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN
 
     IF l_s_airport_count = 0 THEN
       RAISE_APPLICATION_ERROR(-20002, 'Source airport does not exist in airport table');
+    END IF;
+
+    l_airline_count := ONBOARD_FLIGHT_PKG.check_airline(p_airline_id);
+    DBMS_OUTPUT.PUT_LINE('Output value for airline: ' || l_airline_count);
+
+    IF l_airline_count = 0 THEN
+      RAISE_APPLICATION_ERROR(-20002, 'Airline does not exist in airline table');
+    END IF;
+
+    l_terminal_count := ONBOARD_FLIGHT_PKG.check_terminal(p_terminal_id);
+    DBMS_OUTPUT.PUT_LINE('Output value for terminal: ' || l_terminal_count);
+
+    IF l_terminal_count = 0 THEN
+      RAISE_APPLICATION_ERROR(-20002, 'Terminal does not exist in terminal table');
     END IF;
 
      l_duration := ONBOARD_FLIGHT_PKG.get_duration(p_arrival_time, p_departure_time);
