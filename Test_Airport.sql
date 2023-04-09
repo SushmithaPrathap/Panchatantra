@@ -16,7 +16,7 @@ select * from airport;
 
 --- TEST CASES FOR AIRPORT DELETES;
 EXECUTE airport_deleting_pkg.delete_airport(56);
-EXECUTE airport_deleting_pkg.delete_airport(1);
+EXECUTE airport_deleting_pkg.delete_airport(2);
 select * from airport;
 
 COMMIT;
