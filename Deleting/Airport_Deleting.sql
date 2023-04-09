@@ -2,17 +2,17 @@
 This Package is used for deleting airport data
 */
 
-CREATE OR REPLACE PACKAGE passenger_deleting_pkg AS
+CREATE OR REPLACE PACKAGE airport_deleting_pkg AS
   PROCEDURE delete_airport(
-    a_airport_id       IN NUMBER DEFAULT NULL
+    a_airport_id IN NUMBER
   );
-END passenger_deleting_pkg;
+END airport_deleting_pkg;
 /
 
-CREATE OR REPLACE PACKAGE BODY passenger_deleting_pkg AS
+CREATE OR REPLACE PACKAGE BODY airport_deleting_pkg AS
 
     PROCEDURE delete_airport(
-    a_airport_id       IN NUMBER
+    a_airport_id IN NUMBER
     ) IS
     BEGIN
     
@@ -28,7 +28,7 @@ CREATE OR REPLACE PACKAGE BODY passenger_deleting_pkg AS
             DBMS_OUTPUT.PUT_LINE('Error deleting airport with airport_id ' || a_airport_id || ': ' || SQLERRM);
             
     END delete_airport;
-END passenger_deleting_pkg;
+END airport_deleting_pkg;
 /
 
 SHOW ERRORS;

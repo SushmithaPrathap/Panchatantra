@@ -3,7 +3,7 @@ This Package is used for updating airport data
 */
 CREATE OR REPLACE PACKAGE airport_updating_pkg AS
   PROCEDURE update_airport(
-    a_airport_id       IN NUMBER DEFAULT NULL,
+    a_airport_id       IN NUMBER,
     a_airport_name     IN VARCHAR2,
     a_city             IN VARCHAR2,
     a_state            IN VARCHAR2,
@@ -20,8 +20,7 @@ PROCEDURE update_airport(
     a_state            IN VARCHAR2,
     a_country          IN VARCHAR2
   ) IS
-    k_airport_id NUMBER;
-    k_count NUMBER;    
+  k_count NUMBER; 
   BEGIN
     IF a_airport_id IS NULL THEN
       -- Prompt user to enter airport ID
@@ -34,37 +33,36 @@ PROCEDURE update_airport(
     -- Regex validations
     
     -- Validate airport name input
-    ELSIF REGEXP_LIKE(a_airport_name, '/^[a-zA-Z ]*$/') = FALSE THEN
+    ELSIF REGEXP_LIKE(a_airport_name, '^[a-zA-Z ]*$') = FALSE THEN
       dbms_output.put('Only alphabets and spaces are allowed');
     Return;
     
     -- Validate city input
-    ELSIF REGEXP_LIKE(a_city, '/^[a-zA-Z ]*$/') = FALSE THEN
+    ELSIF REGEXP_LIKE(a_city, '^[a-zA-Z ]*$') = FALSE THEN
       dbms_output.put('Only alphabets and spaces are allowed');
     Return;
     
     -- Validate state input
-    ELSIF REGEXP_LIKE(a_state, '/^[a-zA-Z ]*$/') = FALSE THEN
+    ELSIF REGEXP_LIKE(a_state, '^[a-zA-Z ]*$') = FALSE THEN
       dbms_output.put('Only alphabets and spaces are allowed');
     Return;
     
     -- Validate country input
-    ELSIF REGEXP_LIKE(a_country, '/^[a-zA-Z ]*$/') = FALSE THEN
+    ELSIF REGEXP_LIKE(a_country, '^[a-zA-Z ]*$') = FALSE THEN
       dbms_output.put('Only alphabets and spaces are allowed');
     Return;
     
-    END IF;        
-
-    SELECT COUNT(*) INTO k_count FROM AIRPORT WHERE aiport_id = k_airport_id;
+    END IF; 
+    
+    SELECT COUNT(*) INTO k_count FROM AIRPORT WHERE airport_id = a_airport_id;
     
     IF k_count = 0 THEN
       DBMS_OUTPUT.PUT_LINE('No airport found with the given ID');
       RETURN;
     END IF;
 
-
     BEGIN
-      UPDATE PASSENGER
+      UPDATE AIRPORT
       SET
         airport_name = a_airport_name,
         city = a_city,
