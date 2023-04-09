@@ -27,26 +27,26 @@ PROCEDURE insert_airport(
     -- Regex validations
     
     -- Validate airport name input
-    IF REGEXP_LIKE(a_airport_name, '^[a-zA-Z0-9]+$') = FALSE THEN
-      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed 1');
+    IF REGEXP_LIKE(a_airport_name, '^[a-zA-Z ]*$') = FALSE THEN
+      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed');
       RETURN;
     END IF;
     
     -- Validate city input
-    IF REGEXP_LIKE(a_city, '^[a-zA-Z0-9]+$') = FALSE THEN
-      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed 2');
+    IF REGEXP_LIKE(a_city, '^[a-zA-Z ]*$') = FALSE THEN
+      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed');
       RETURN;
     END IF;
     
     -- Validate state input
-    IF REGEXP_LIKE(a_state, '^[a-zA-Z0-9]+$') = FALSE THEN
-      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed 3');
+    IF REGEXP_LIKE(a_state, '^[a-zA-Z ]*$') = FALSE THEN
+      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed');
       RETURN;
     END IF;
     
     -- Validate country input
-    IF REGEXP_LIKE(a_country, '^[a-zA-Z0-9]+$') = FALSE THEN
-      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed 4');
+    IF REGEXP_LIKE(a_country, '^[a-zA-Z ]*$') = FALSE THEN
+      DBMS_OUTPUT.PUT_LINE('Only alphabets and spaces are allowed');
       RETURN;
     END IF;
 
