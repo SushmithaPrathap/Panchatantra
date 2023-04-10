@@ -107,7 +107,149 @@ BEGIN
   END IF;
 END;
 /
+/*
+The Below block of code creates the Airport table. As an additional layer of
+validation, the script is executed only if the table does not exist.
+*/
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'AIRPORT';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE airport (
+          airport_id NUMBER UNIQUE,
+          airport_name VARCHAR2(3) CONSTRAINT airport_name_pk PRIMARY KEY,
+          city VARCHAR(20),
+          state VARCHAR2(20),
+          country VARCHAR2(50)
+        )';
+    dbms_output.put_line('Table Airport has been created');
+  ELSE
+    dbms_output.put_line('Table Airport already exists');
+  END IF;
+END;
+/
+--creating airlines table, if it doesn't already exist, if it does exist
+-- display that the table already exists
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'AIRLINES';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE airlines ( 
+  airline_id NUMBER PRIMARY KEY, 
+  route_number NUMBER, 
+  airline_code VARCHAR2(10), 
+  airline_name VARCHAR2(20) 
+)';
+    dbms_output.put_line('Table airline has been created');
+  ELSE
+    dbms_output.put_line('Table airline already exists');
+  END IF;
+END;
+/
+--creating airline_staff table, if it doesn't already exist, if it does exist
+-- display that the table already exists
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'AIRLINE_STAFF';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE airline_staff (
+    staff_id       NUMBER PRIMARY KEY,
+    airline_id     NUMBER REFERENCES airlines(airline_id) ON DELETE CASCADE,
+    first_name     VARCHAR2(20),
+    last_name      VARCHAR2(20),
+    address        VARCHAR2(100),
+    ssn            VARCHAR2(12),
+    email_id       VARCHAR2(20),
+    contact_number NUMBER,
+    job_group      VARCHAR2(10),
+    gender         VARCHAR2(10)
+)';
+    dbms_output.put_line('Table Airline_staff has been created');
+  ELSE
+    dbms_output.put_line('Table Airline_staff already exists');
+  END IF;
+END;
+/
+/*
+The Below block of code creates the FLIGHTS table. As an additional layer of
+validation, the script is executed only if the table does not exist.
+*/
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'FLIGHT';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE flight (
+      flight_id NUMBER PRIMARY KEY,
+      duration NUMBER,
+      flight_type VARCHAR2(100),
+      -- departure_time TIMESTAMP,
+      -- arrival_time TIMESTAMP,
+      destination VARCHAR2(3) REFERENCES AIRPORT(airport_name) ON DELETE CASCADE,
+      source VARCHAR2(3) REFERENCES AIRPORT(airport_name) ON DELETE CASCADE,
+      status VARCHAR2(10) ,
+      no_pax NUMBER,
+      airline_id NUMBER REFERENCES airlines(airline_id) ON DELETE CASCADE,
+      seats_filled NUMBER
+    )';
+    dbms_output.put_line('Table flight has been created');
+  ELSE
+    dbms_output.put_line('Table flight already exists');
+  END IF;
+END;
+/
+/*
+The Below block of code creates the Ticket table. As an additional layer of
+validation, the script is executed only if the table does not exist.
+*/
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'TICKET';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE ticket (
+      ticket_id NUMBER PRIMARY KEY,
+      order_id NUMBER REFERENCES orders(order_id) ON DELETE CASCADE,
+      flight_id NUMBER REFERENCES flight(flight_id) ON DELETE CASCADE,
+      seat_no VARCHAR2(10),
+      meal_preferences VARCHAR2(20),
+      source VARCHAR2(3) REFERENCES airport(airport_name) ON DELETE CASCADE,
+      destination VARCHAR2(3)  REFERENCES airport(airport_name) ON DELETE CASCADE,
+      date_of_travel DATE,
+      class VARCHAR2(20),
+      payment_type VARCHAR2(20),
+      member_id NUMBER,
+      transaction_amount FLOAT
+      )';
+    dbms_output.put_line('Table ticket has been created');
+  ELSE
+    dbms_output.put_line('Table ticket already exists');
+  END IF;
+END;
+/
+/*
+The Below block of code creates the TERMINAL table. As an additional layer of
+validation, the script is executed only if the table does not exist.
+*/
 
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'TERMINAL';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE terminal (
+      terminal_id NUMBER PRIMARY KEY,
+      terminal_name VARCHAR2(100)
+    )';
+    dbms_output.put_line('Table terminal has been created');
+  ELSE
+    dbms_output.put_line('Table terminal already exists');
+  END IF;
+END;
+/
 --CREATE OR REPLACE PROCEDURE insert_passengers IS
 --BEGIN
 --    execute passenger_onboarding_pkg.insert_passenger(25, '123 Main St, Anytown, USA', 'Male', '1234567890', 'John', 'Doe', TO_DATE('1997-05-22', 'YYYY-MM-DD'), 1234567890, 'johndoe@example.com');
@@ -153,3 +295,18 @@ execute passenger_onboarding_pkg.insert_passenger(25, '890 Maple St, Anytown, US
 execute passenger_onboarding_pkg.insert_passenger(19, '321 Elm St, Anytown, USA', 'Male', '6789012345', 'Noah', 'Phillips', TO_DATE('2003-07-13', 'YYYY-MM-DD'), 4567890123, 'noahphillips@example.com');
 
 select * from passenger;
+
+--EXECUTE insert_airlines;
+
+EXECUTE airline_pkg.insert_airline('6E', 'Indigo');
+EXECUTE airline_pkg.insert_airline('AA', 'American Airlines');
+EXECUTE airline_pkg.insert_airline('DL', 'Delta Air Lines');
+EXECUTE airline_pkg.insert_airline('EK', 'Emirates');
+EXECUTE airline_pkg.insert_airline('BA', 'British Airways');
+EXECUTE airline_pkg.insert_airline('NH', 'All Nippon Airways');
+EXECUTE airline_pkg.insert_airline('UA', 'United Airlines');
+EXECUTE airline_pkg.insert_airline('TK', 'Turkish Airlines');
+EXECUTE airline_pkg.insert_airline('CX', 'Cathay Pacific');
+EXECUTE airline_pkg.insert_airline('SQ', 'Singapore Airlines');
+
+select * from airlines;
