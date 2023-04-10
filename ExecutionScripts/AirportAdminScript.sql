@@ -329,4 +329,34 @@ EXECUTE airline_pkg.insert_airline('SQ', 'Singapore Airlines');
 
 select * from airlines;
 
---
+--EXECUTE insert_airport;
+
+EXECUTE airport_pkg.insert_airport('LAX', 'Los Angeles', 'California', 'United States');
+EXECUTE airport_pkg.insert_airport('JFK', 'New York City', 'New York', 'United States');
+EXECUTE airport_pkg.insert_airport('NRT', 'Narita', 'Chiba', 'Japan');
+EXECUTE airport_pkg.insert_airport('SYD', 'Sydney', 'New South Wales', 'Australia');
+EXECUTE airport_pkg.insert_airport('HND', 'Haneda', 'Tokyo', 'Japan');
+EXECUTE airport_pkg.insert_airport('YYZ', 'Toronto', 'Ontario', 'Canada');
+EXECUTE airport_pkg.insert_airport('SFO', 'San Francisco', 'California', 'United States');
+EXECUTE airport_pkg.insert_airport('LHR', 'London', 'Greater London', 'United Kingdom');
+EXECUTE airport_pkg.insert_airport('CDG', 'Paris', 'Île-de-France', 'France');
+EXECUTE airport_pkg.insert_airport('NRT', 'Narita', 'Chiba', 'Japan');
+EXECUTE airport_pkg.insert_airport('AMS', 'Amsterdam', 'North Holland', 'Netherlands');
+EXECUTE airport_pkg.insert_airport('ICN', 'Incheon', 'Gyeonggi-do', 'South Korea');
+EXECUTE airport_pkg.insert_airport('MEX', 'Mexico City', 'Mexico City', 'Mexico');
+EXECUTE airport_pkg.insert_airport('SFO', 'San Francisco', 'California', 'United States');
+EXECUTE airport_pkg.insert_airport('FRA', 'Frankfurt', 'Hesse', 'Germany');
+EXECUTE airport_pkg.insert_airport('MAD', 'Madrid', 'Community of Madrid', 'Spain');
+EXECUTE airport_pkg.insert_airport('IST', 'Istanbul', 'Istanbul', 'Turkey');
+EXECUTE airport_pkg.insert_airport('DXB', 'Dubai', 'Dubai', 'United Arab Emirates');
+EXECUTE airport_pkg.insert_airport('BOM', 'Mumbai', 'Maharashtra', 'India');
+EXECUTE airport_pkg.insert_airport('PEK', 'Beijing', 'Beijing', 'China');
+EXECUTE airport_pkg.insert_airport('SVO', 'Moscow', 'Moscow Oblast', 'Russia');
+EXECUTE airport_pkg.insert_airport('SYX', 'Sanya', 'Hainan', 'China');
+EXECUTE airport_pkg.insert_airport('GRU', 'São Paulo', 'São Paulo', 'Brazil');
+EXECUTE airport_pkg.insert_airport('JNB', 'Johannesburg', 'Gauteng', 'South Africa');
+EXECUTE airport_pkg.insert_airport('AKL', 'Auckland', 'Auckland', 'New Zealand');
+EXECUTE airport_pkg.insert_airport('LIS', 'Lisbon', 'Lisbon', 'Portugal');
+EXECUTE airport_pkg.insert_airport('KUL', 'Kuala Lumpur', 'Selangor', 'Malaysia');
+
+select * from airport;
