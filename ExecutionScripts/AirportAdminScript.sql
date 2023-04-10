@@ -310,3 +310,84 @@ EXECUTE airline_pkg.insert_airline('CX', 'Cathay Pacific');
 EXECUTE airline_pkg.insert_airline('SQ', 'Singapore Airlines');
 
 select * from airlines;
+
+
+    INSERT INTO airport (airport_id, airport_name, city, state, country)
+    SELECT 1, 'LAX', 'Los Angeles', 'California', 'United States' FROM dual
+    UNION ALL
+    SELECT 2, 'JFK', 'New York City', 'New York', 'United States' FROM dual
+    UNION ALL
+    SELECT 3, 'LHR', 'London', null, 'United Kingdom' FROM dual
+    UNION ALL
+    SELECT 4, 'CDG', 'Paris', null, 'France' FROM dual
+    UNION ALL
+    SELECT 5, 'NRT', 'Narita', 'Chiba', 'Japan' FROM dual
+    UNION ALL
+    SELECT 6, 'SYD', 'Sydney', 'New South Wales', 'Australia' FROM dual
+    UNION ALL
+    SELECT 7, 'AMS', 'Amsterdam', null, 'Netherlands' FROM dual
+    UNION ALL
+    SELECT 8, 'ICN', 'Incheon', null, 'South Korea' FROM dual
+    UNION ALL
+    SELECT 9, 'HND', 'Haneda', 'Tokyo', 'Japan' FROM dual
+    UNION ALL
+    SELECT 10, 'YYZ', 'Toronto', 'Ontario', 'Canada' FROM dual
+    UNION ALL
+    SELECT 11, 'FRA', 'Frankfurt', null, 'Germany' FROM dual
+    UNION ALL
+    SELECT 12, 'DXB', 'Dubai', null, 'United Arab Emirates' FROM dual
+    UNION ALL
+    SELECT 13, 'HKG', 'Hong Kong', null, 'China' FROM dual
+    UNION ALL
+    SELECT 14, 'PEK', 'Beijing', null, 'China' FROM dual
+    UNION ALL
+    SELECT 15, 'SVO', 'Moscow', null, 'Russia' FROM dual
+    UNION ALL
+    SELECT 16, 'MAD', 'Madrid', null, 'Spain' FROM dual
+    UNION ALL
+    SELECT 17, 'BCN', 'Barcelona', null, 'Spain' FROM dual
+    UNION ALL
+    SELECT 18, 'BOM', 'Mumbai', 'Maharashtra', 'India' FROM dual
+    UNION ALL
+    SELECT 19, 'BOS', 'Boston', null, 'United States of America' FROM dual
+    UNION ALL
+    SELECT 20, 'CGK', 'Jakarta', null, 'Indonesia' FROM dual
+    UNION ALL
+    SELECT 21, 'SIN', 'Singapore', null, 'Singapore' FROM dual
+    UNION ALL
+    SELECT 22, 'BER','Berlin',null,'Germany' FROM dual
+    UNION ALL
+    SELECT 23, 'MIA' , 'Miami', 'Florida', 'United States of America' from DUAL;
+    COMMIT;
+
+--EXECUTE insert_airport;
+
+EXECUTE airport_pkg.insert_airport('LAX', 'Los Angeles', 'California', 'United States');
+EXECUTE airport_pkg.insert_airport('JFK', 'New York City', 'New York', 'United States');
+EXECUTE airport_pkg.insert_airport('NRT', 'Narita', 'Chiba', 'Japan');
+EXECUTE airport_pkg.insert_airport('SYD', 'Sydney', 'New South Wales', 'Australia');
+EXECUTE airport_pkg.insert_airport('HND', 'Haneda', 'Tokyo', 'Japan');
+EXECUTE airport_pkg.insert_airport('YYZ', 'Toronto', 'Ontario', 'Canada');
+EXECUTE airport_pkg.insert_airport('SFO', 'San Francisco', 'California', 'United States');
+EXECUTE airport_pkg.insert_airport('LHR', 'London', 'Greater London', 'United Kingdom');
+EXECUTE airport_pkg.insert_airport('CDG', 'Paris', 'Île-de-France', 'France');
+EXECUTE airport_pkg.insert_airport('NRT', 'Narita', 'Chiba', 'Japan');
+EXECUTE airport_pkg.insert_airport('AMS', 'Amsterdam', 'North Holland', 'Netherlands');
+EXECUTE airport_pkg.insert_airport('ICN', 'Incheon', 'Gyeonggi-do', 'South Korea');
+EXECUTE airport_pkg.insert_airport('MEX', 'Mexico City', 'Mexico City', 'Mexico');
+EXECUTE airport_pkg.insert_airport('SFO', 'San Francisco', 'California', 'United States');
+EXECUTE airport_pkg.insert_airport('FRA', 'Frankfurt', 'Hesse', 'Germany');
+EXECUTE airport_pkg.insert_airport('MAD', 'Madrid', 'Community of Madrid', 'Spain');
+EXECUTE airport_pkg.insert_airport('IST', 'Istanbul', 'Istanbul', 'Turkey');
+EXECUTE airport_pkg.insert_airport('DXB', 'Dubai', 'Dubai', 'United Arab Emirates');
+EXECUTE airport_pkg.insert_airport('BOM', 'Mumbai', 'Maharashtra', 'India');
+EXECUTE airport_pkg.insert_airport('PEK', 'Beijing', 'Beijing', 'China');
+EXECUTE airport_pkg.insert_airport('SVO', 'Moscow', 'Moscow Oblast', 'Russia');
+EXECUTE airport_pkg.insert_airport('SYX', 'Sanya', 'Hainan', 'China');
+EXECUTE airport_pkg.insert_airport('GRU', 'São Paulo', 'São Paulo', 'Brazil');
+EXECUTE airport_pkg.insert_airport('JNB', 'Johannesburg', 'Gauteng', 'South Africa');
+EXECUTE airport_pkg.insert_airport('AKL', 'Auckland', 'Auckland', 'New Zealand');
+EXECUTE airport_pkg.insert_airport('LIS', 'Lisbon', 'Lisbon', 'Portugal');
+EXECUTE airport_pkg.insert_airport('KUL', 'Kuala Lumpur', 'Selangor', 'Malaysia');
+
+select * from airport;
