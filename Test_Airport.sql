@@ -10,7 +10,7 @@ select * from airport;
 --- TEST CASES FOR AIRPORT UPDATES;
 EXECUTE airport_updating_pkg.update_airport(NULL, 'CDN', 'Texas', 'TX', 'USA');
 EXECUTE airport_updating_pkg.update_airport(31, 'CDN', 'Texas', 'TX', 'USA');
-EXECUTE airport_updating_pkg.update_airport(1, 'CDN', NULL, 'TX', 'USA');
+EXECUTE airport_updating_pkg.update_airport(1, 'CDN', 'Texas 123', 'TX', 'USA');
 EXECUTE airport_updating_pkg.update_airport(1, 'CDN', 'Texas', 'TX', 'USA');
 select * from airport;
 
