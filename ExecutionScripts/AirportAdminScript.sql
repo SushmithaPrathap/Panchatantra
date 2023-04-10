@@ -329,12 +329,8 @@ EXECUTE airline_pkg.insert_airline('SQ', 'Singapore Airlines');
 
 select * from airlines;
 
-<<<<<<< Updated upstream
---EXECUTE insert_airport;
 
-=======
 --EXECUTE insert_airport
->>>>>>> Stashed changes
 EXECUTE airport_pkg.insert_airport('LAX', 'Los Angeles', 'California', 'United States');
 EXECUTE airport_pkg.insert_airport('JFK', 'New York City', 'New York', 'United States');
 EXECUTE airport_pkg.insert_airport('NRT', 'Narita', 'Chiba', 'Japan');
@@ -343,11 +339,7 @@ EXECUTE airport_pkg.insert_airport('HND', 'Haneda', 'Tokyo', 'Japan');
 EXECUTE airport_pkg.insert_airport('YYZ', 'Toronto', 'Ontario', 'Canada');
 EXECUTE airport_pkg.insert_airport('SFO', 'San Francisco', 'California', 'United States');
 EXECUTE airport_pkg.insert_airport('LHR', 'London', 'Greater London', 'United Kingdom');
-<<<<<<< Updated upstream
-EXECUTE airport_pkg.insert_airport('CDG', 'Paris', 'ÃŽle-de-France', 'France');
-=======
 EXECUTE airport_pkg.insert_airport('CDG', 'Paris', 'Île-de-France', 'France');
->>>>>>> Stashed changes
 EXECUTE airport_pkg.insert_airport('NRT', 'Narita', 'Chiba', 'Japan');
 EXECUTE airport_pkg.insert_airport('AMS', 'Amsterdam', 'North Holland', 'Netherlands');
 EXECUTE airport_pkg.insert_airport('ICN', 'Incheon', 'Gyeonggi-do', 'South Korea');
@@ -361,19 +353,11 @@ EXECUTE airport_pkg.insert_airport('BOM', 'Mumbai', 'Maharashtra', 'India');
 EXECUTE airport_pkg.insert_airport('PEK', 'Beijing', 'Beijing', 'China');
 EXECUTE airport_pkg.insert_airport('SVO', 'Moscow', 'Moscow Oblast', 'Russia');
 EXECUTE airport_pkg.insert_airport('SYX', 'Sanya', 'Hainan', 'China');
-<<<<<<< Updated upstream
-EXECUTE airport_pkg.insert_airport('GRU', 'SÃ£o Paulo', 'SÃ£o Paulo', 'Brazil');
-=======
 EXECUTE airport_pkg.insert_airport('GRU', 'São Paulo', 'São Paulo', 'Brazil');
->>>>>>> Stashed changes
 EXECUTE airport_pkg.insert_airport('JNB', 'Johannesburg', 'Gauteng', 'South Africa');
 EXECUTE airport_pkg.insert_airport('AKL', 'Auckland', 'Auckland', 'New Zealand');
 EXECUTE airport_pkg.insert_airport('LIS', 'Lisbon', 'Lisbon', 'Portugal');
 EXECUTE airport_pkg.insert_airport('KUL', 'Kuala Lumpur', 'Selangor', 'Malaysia');
-<<<<<<< Updated upstream
-
-select * from airport;
-=======
 EXECUTE airport_pkg.insert_airport('BOS', 'Boston', null, 'United States of America');
 
 select * from airport;
@@ -381,4 +365,3 @@ select * from orders;
 select * from flight;
 --EXECUTE insert_ticket
 --EXECUTE onboard_ticket_pkg.INSERT_TICKET(50000, 4001, 'A1', 'Vegetarian', 'LAX', 'BOS', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00)
->>>>>>> Stashed changes
