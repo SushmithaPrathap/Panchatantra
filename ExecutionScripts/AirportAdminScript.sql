@@ -1,0 +1,138 @@
+-- connect AirportAdmin/AirportMainGuy2024;
+-- ENSURE THIS SCRIPT IS EXECUTED BY AIRPORT ADMIN
+WHENEVER SQLERROR EXIT SQL.SQLCODE;
+show user;
+--CLEANUP SCRIPT
+set serveroutput on;
+--Alter the sequences used in the script
+
+-- Reset Sequences
+-- alter sequence ADMIN.my_sequence restart start with 1;
+alter sequence ADMIN.airline_seq restart start with 1;
+alter sequence ADMIN.airline_route_sequence restart start with 10;
+alter sequence ADMIN.orders_seq restart start with 50000;
+alter sequence ADMIN.flight_seq restart start with 4000;
+alter sequence ADMIN.passenger_seq restart start with 10000;
+alter sequence ADMIN.baggage_id_seq restart start with 1;
+alter sequence ADMIN.schedule_seq restart start with 5000;
+alter sequence ADMIN.terminal_seq restart start with 6000;
+alter sequence ADMIN.ticket_seq restart start with 7000;
+
+/*
+The Below block of code checks if the tables FLIGHT and PASSENGER
+are present in the database. If present the tables are dropped and 
+a message indicating the success is the output. In the case of any errors
+a custom error message is displayed.
+*/
+declare
+    v_table_exists varchar(1) := 'Y';
+    v_sql varchar(2000);
+begin
+   dbms_output.put_line('Start schema cleanup');
+   for i in (
+             select 'PASSENGER' table_name from dual UNION ALL
+             select 'BAGGAGE' table_name from dual UNION ALL
+             select 'TICKET' table_name from dual UNION ALL
+             select 'ORDERS' table_name from dual UNION ALL
+             select 'SCHEDULE' table_name from dual union all             
+             select 'FLIGHT' table_name from dual UNION ALL
+             select 'AIRPORT' table_name from dual union all
+             select 'AIRLINE_STAFF' table_name from dual union all
+             select 'TERMINAL' table_name from dual union all 
+             select 'AIRLINES' table_name from dual                          
+   )
+   loop
+   dbms_output.put_line('....Drop table '||i.table_name);
+   begin
+       select 'Y' into v_table_exists
+       from USER_TABLES
+       where TABLE_NAME=i.table_name;
+
+       v_sql := 'drop table '||i.table_name;
+       execute immediate v_sql;
+       dbms_output.put_line('........Table '||i.table_name||' dropped successfully');
+       
+   exception
+       when no_data_found then
+           dbms_output.put_line('........Table already dropped');
+   end;
+   end loop;
+   dbms_output.put_line('Schema cleanup successfully completed');
+exception
+   when others then
+      dbms_output.put_line('Error with the table:'||sqlerrm);
+end;
+/
+
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'PASSENGER';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE passenger (
+              passenger_id NUMBER PRIMARY KEY,
+              age NUMBER CONSTRAINT age_format CHECK(age > 0),
+              address VARCHAR2(100),
+              sex VARCHAR2(10),
+              govt_id_nos VARCHAR2(10),
+              first_name VARCHAR2(30) CONSTRAINT first_name_format CHECK(first_name = INITCAP(first_name)),
+              last_name VARCHAR2(30) CONSTRAINT last_name_format CHECK(last_name = INITCAP(last_name)),
+              dob DATE,
+              contact_number NUMBER,
+              email VARCHAR2(100) UNIQUE       
+            )';
+    dbms_output.put_line('Table Passenger has been created');
+  ELSE
+    dbms_output.put_line('Table Passenger already exists');
+  END IF;
+END;
+/
+
+--creating orders table and checking if the table already exists, if it does exist
+-- display that the table already exists
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'ORDERS';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE orders ( 
+      order_id NUMBER PRIMARY KEY, 
+      passenger_id NUMBER, 
+      amount FLOAT, 
+      status VARCHAR2(20) 
+    )';
+    dbms_output.put_line('Table order has been created');
+  ELSE
+    dbms_output.put_line('Table order already exists');
+  END IF;
+END;
+/
+
+--CREATE OR REPLACE PROCEDURE insert_passengers IS
+--BEGIN
+--    execute passenger_onboarding_pkg.insert_passenger(25, '123 Main St, Anytown, USA', 'Male', '1234567890', 'John', 'Doe', TO_DATE('1997-05-22', 'YYYY-MM-DD'), 1234567890, 'johndoe@example.com');
+--    execute passenger_onboarding_pkg.insert_passenger(35, '456 Oak St, Anytown, USA', 'Female', '1234567890', 'Jane', 'Smith', TO_DATE('1987-08-15', 'YYYY-MM-DD'), 2345678901, 'janesmith@example.com');
+--    execute passenger_onboarding_pkg.insert_passenger(42, '789 Maple Ave, Anytown, USA', 'Male', '1234567890', 'Bob', 'Johnson', TO_DATE('1980-02-10', 'YYYY-MM-DD'), 3456789012, 'bobjohnson@example.com');
+--    execute passenger_onboarding_pkg.insert_passenger(30, '321 Elm St, Anytown, USA', 'Female', '1234567890', 'Maria', 'Garcia', TO_DATE('1992-11-01', 'YYYY-MM-DD'), 4567890123, 'mariagarcia@example.com');
+--    execute passenger_onboarding_pkg.insert_passenger(50, '789 Oak St, Anytown, USA', 'Male', '1234567890', 'David', 'Lee', TO_DATE('1973-06-12', 'YYYY-MM-DD'), 5678901234, 'davidlee@example.com');
+--    execute passenger_onboarding_pkg.insert_passenger(27, '456 Maple Ave, Anytown, USA', 'Female', '1234567890', 'Emily', 'Wang', TO_DATE('1996-02-29', 'YYYY-MM-DD'), 6789012345, 'emilywang@example.com');
+--    execute passenger_onboarding_pkg.insert_passenger(40, '123 Cherry St, Anytown, USA', 'Male', '1234567890', 'Michael', 'Smith', TO_DATE('1981-09-17', 'YYYY-MM-DD'), 7890123456, 'michaelsmith@example.com');
+--    execute passenger_onboarding_pkg.insert_passenger(22, '789 Pine St, Anytown, USA', 'Female', '1234567890', 'Ava', 'Brown', TO_DATE('2000-03-25', 'YYYY-MM-DD'), 8901234567, 'avabrown@example.com');
+--    commit;
+--EXCEPTION
+--  WHEN OTHERS THEN
+--    ROLLBACK;
+--    DBMS_OUTPUT.PUT_LINE('Error inserting Passenger: ' || SQLERRM);
+--END insert_passengers;
+--/
+--EXECUTE insert_passengers;
+
+
+execute passenger_onboarding_pkg.insert_passenger(25, '123 Main St, Anytown, USA', 'Male', '1234567890', 'John', 'Doe', TO_DATE('1997-05-22', 'YYYY-MM-DD'), 1234567890, 'johndoe@example.com');
+execute passenger_onboarding_pkg.insert_passenger(35, '456 Oak St, Anytown, USA', 'Female', '1234567890', 'Jane', 'Smith', TO_DATE('1987-08-15', 'YYYY-MM-DD'), 2345678901, 'janesmith@example.com');
+execute passenger_onboarding_pkg.insert_passenger(42, '789 Maple Ave, Anytown, USA', 'Male', '1234567890', 'Bob', 'Johnson', TO_DATE('1980-02-10', 'YYYY-MM-DD'), 3456789012, 'bobjohnson@example.com');
+execute passenger_onboarding_pkg.insert_passenger(30, '321 Elm St, Anytown, USA', 'Female', '1234567890', 'Maria', 'Garcia', TO_DATE('1992-11-01', 'YYYY-MM-DD'), 4567890123, 'mariagarcia@example.com');
+execute passenger_onboarding_pkg.insert_passenger(50, '789 Oak St, Anytown, USA', 'Male', '1234567890', 'David', 'Lee', TO_DATE('1973-06-12', 'YYYY-MM-DD'), 5678901234, 'davidlee@example.com');
+execute passenger_onboarding_pkg.insert_passenger(27, '456 Maple Ave, Anytown, USA', 'Female', '1234567890', 'Emily', 'Wang', TO_DATE('1996-02-29', 'YYYY-MM-DD'), 6789012345, 'emilywang@example.com');
+execute passenger_onboarding_pkg.insert_passenger(40, '123 Cherry St, Anytown, USA', 'Male', '1234567890', 'Michael', 'Smith', TO_DATE('1981-09-17', 'YYYY-MM-DD'), 7890123456, 'michaelsmith@example.com');
+execute passenger_onboarding_pkg.insert_passenger(22, '789 Pine St, Anytown, USA', 'Female', '1234567890', 'Ava', 'Brown', TO_DATE('2000-03-25', 'YYYY-MM-DD'), 8901234567, 'avabrown@example.com');
