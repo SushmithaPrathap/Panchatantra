@@ -288,29 +288,29 @@ END;
 /
 
 --EXECUTE insert_passenger;
-execute passenger_onboarding_pkg.insert_passenger(25, '123 Main St, Anytown, USA', 'Male', '1234567890', 'John', 'Doe', TO_DATE('1997-05-22', 'YYYY-MM-DD'), 1234567890, 'johndoe@example.com');
-execute passenger_onboarding_pkg.insert_passenger(35, '456 Oak St, Anytown, USA', 'Female', '1234567890', 'Jane', 'Smith', TO_DATE('1987-08-15', 'YYYY-MM-DD'), 2345678901, 'janesmith@example.com');
-execute passenger_onboarding_pkg.insert_passenger(42, '789 Maple Ave, Anytown, USA', 'Male', '1234567890', 'Bob', 'Johnson', TO_DATE('1980-02-10', 'YYYY-MM-DD'), 3456789012, 'bobjohnson@example.com');
-execute passenger_onboarding_pkg.insert_passenger(30, '321 Elm St, Anytown, USA', 'Female', '1234567890', 'Maria', 'Garcia', TO_DATE('1992-11-01', 'YYYY-MM-DD'), 4567890123, 'mariagarcia@example.com');
-execute passenger_onboarding_pkg.insert_passenger(50, '789 Oak St, Anytown, USA', 'Male', '1234567890', 'David', 'Lee', TO_DATE('1973-06-12', 'YYYY-MM-DD'), 5678901234, 'davidlee@example.com');
-execute passenger_onboarding_pkg.insert_passenger(27, '456 Maple Ave, Anytown, USA', 'Female', '1234567890', 'Emily', 'Wang', TO_DATE('1996-02-29', 'YYYY-MM-DD'), 6789012345, 'emilywang@example.com');
-execute passenger_onboarding_pkg.insert_passenger(40, '123 Cherry St, Anytown, USA', 'Male', '1234567890', 'Michael', 'Smith', TO_DATE('1981-09-17', 'YYYY-MM-DD'), 7890123456, 'michaelsmith@example.com');
-execute passenger_onboarding_pkg.insert_passenger(22, '789 Pine St, Anytown, USA', 'Female', '1234567890', 'Ava', 'Brown', TO_DATE('2000-03-25', 'YYYY-MM-DD'), 8901234567, 'avabrown@example.com');
-execute passenger_onboarding_pkg.insert_passenger(11, '456 Elm St, Anytown, USA', 'Male', '0987654321', 'John', 'Smith', TO_DATE('1995-08-12', 'YYYY-MM-DD'), 7654321098, 'john.smith@example.com');
-execute passenger_onboarding_pkg.insert_passenger(45, '567 Maple St, Anytown, USA', 'Male', '9876543210', 'James', 'Johnson', TO_DATE('1990-05-03', 'YYYY-MM-DD'), 2345678901, 'jamesjohnson@example.com');
-execute passenger_onboarding_pkg.insert_passenger(33, '123 Oak St, Anytown, USA', 'Female', '3456789012', 'Emma', 'Garcia', TO_DATE('2002-01-15', 'YYYY-MM-DD'), 8765432109, 'emmagarcia@example.com');
-execute passenger_onboarding_pkg.insert_passenger(87, '789 Cedar St, Anytown, USA', 'Male', '8901234567', 'Michael', 'Davis', TO_DATE('1985-11-22', 'YYYY-MM-DD'), 3456789012, 'michaeldavis@example.com');
-execute passenger_onboarding_pkg.insert_passenger(99, '321 Pine St, Anytown, USA', 'Female', '2345678901', 'Sophia', 'Lopez', TO_DATE('1998-07-08', 'YYYY-MM-DD'), 9012345678, 'sophialopez@example.com');
-execute passenger_onboarding_pkg.insert_passenger(12, '789 Main St, Anytown, USA', 'Female', '0123456789', 'Olivia', 'Wilson', TO_DATE('1999-12-05', 'YYYY-MM-DD'), 4567890123, 'oliviawilson@example.com');
-execute passenger_onboarding_pkg.insert_passenger(67, '345 Oak St, Anytown, USA', 'Male', '9012345678', 'William', 'Martin', TO_DATE('1989-09-30', 'YYYY-MM-DD'), 7890123456, 'williammartin@example.com');
-execute passenger_onboarding_pkg.insert_passenger(55, '567 Cedar St, Anytown, USA', 'Female', '4567890123', 'Mia', 'Thompson', TO_DATE('1997-02-18', 'YYYY-MM-DD'), 0123456789, 'miathompson@example.com');
-execute passenger_onboarding_pkg.insert_passenger(23, '123 Maple St, Anytown, USA', 'Male', '7890123456', 'Ethan', 'Gonzalez', TO_DATE('2001-06-10', 'YYYY-MM-DD'), 2345678901, 'ethangonzalez@example.com');
-execute passenger_onboarding_pkg.insert_passenger(44, '890 Elm St, Anytown, USA', 'Female', '2345678901', 'Isabella', 'Nelson', TO_DATE('1992-11-27', 'YYYY-MM-DD'), 6789012345, 'isabellanelson@example.com');
-execute passenger_onboarding_pkg.insert_passenger(76, '234 Pine St, Anytown, USA', 'Male', '8901234567', 'David', 'Carter', TO_DATE('1988-04-22', 'YYYY-MM-DD'), 1234567890, 'davidcarter@example.com');
-execute passenger_onboarding_pkg.insert_passenger(88, '456 Cedar St, Anytown, USA', 'Female', '9012345678', 'Chloe', 'Perez', TO_DATE('1993-09-16', 'YYYY-MM-DD'), 3456789012, 'chloeperez@example.com');
-execute passenger_onboarding_pkg.insert_passenger(91, '678 Oak St, Anytown, USA', 'Male', '2345678901', 'Daniel', 'Roberts', TO_DATE('1996-03-01', 'YYYY-MM-DD'), 7890123456, 'danielroberts@example.com');
-execute passenger_onboarding_pkg.insert_passenger(25, '890 Maple St, Anytown, USA', 'Female', '3456789012', 'Madison', 'Turner', TO_DATE('2004-10-20', 'YYYY-MM-DD'), 0123456789, 'madisonturner@example.com');
-execute passenger_onboarding_pkg.insert_passenger(19, '321 Elm St, Anytown, USA', 'Male', '6789012345', 'Noah', 'Phillips', TO_DATE('2003-07-13', 'YYYY-MM-DD'), 4567890123, 'noahphillips@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(25, '123 Main St, Anytown, USA', 'Male', '1234567890', 'John', 'Doe', TO_DATE('1997-05-22', 'YYYY-MM-DD'), 1234567890, 'johndoe@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(35, '456 Oak St, Anytown, USA', 'Female', '1234567890', 'Jane', 'Smith', TO_DATE('1987-08-15', 'YYYY-MM-DD'), 2345678901, 'janesmith@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(42, '789 Maple Ave, Anytown, USA', 'Male', '1234567890', 'Bob', 'Johnson', TO_DATE('1980-02-10', 'YYYY-MM-DD'), 3456789012, 'bobjohnson@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(30, '321 Elm St, Anytown, USA', 'Female', '1234567890', 'Maria', 'Garcia', TO_DATE('1992-11-01', 'YYYY-MM-DD'), 4567890123, 'mariagarcia@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(50, '789 Oak St, Anytown, USA', 'Male', '1234567890', 'David', 'Lee', TO_DATE('1973-06-12', 'YYYY-MM-DD'), 5678901234, 'davidlee@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(27, '456 Maple Ave, Anytown, USA', 'Female', '1234567890', 'Emily', 'Wang', TO_DATE('1996-02-29', 'YYYY-MM-DD'), 6789012345, 'emilywang@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(40, '123 Cherry St, Anytown, USA', 'Male', '1234567890', 'Michael', 'Smith', TO_DATE('1981-09-17', 'YYYY-MM-DD'), 7890123456, 'michaelsmith@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(22, '789 Pine St, Anytown, USA', 'Female', '1234567890', 'Ava', 'Brown', TO_DATE('2000-03-25', 'YYYY-MM-DD'), 8901234567, 'avabrown@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(11, '456 Elm St, Anytown, USA', 'Male', '0987654321', 'John', 'Smith', TO_DATE('1995-08-12', 'YYYY-MM-DD'), 7654321098, 'john.smith@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(45, '567 Maple St, Anytown, USA', 'Male', '9876543210', 'James', 'Johnson', TO_DATE('1990-05-03', 'YYYY-MM-DD'), 2345678901, 'jamesjohnson@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(33, '123 Oak St, Anytown, USA', 'Female', '3456789012', 'Emma', 'Garcia', TO_DATE('2002-01-15', 'YYYY-MM-DD'), 8765432109, 'emmagarcia@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(87, '789 Cedar St, Anytown, USA', 'Male', '8901234567', 'Michael', 'Davis', TO_DATE('1985-11-22', 'YYYY-MM-DD'), 3456789012, 'michaeldavis@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(99, '321 Pine St, Anytown, USA', 'Female', '2345678901', 'Sophia', 'Lopez', TO_DATE('1998-07-08', 'YYYY-MM-DD'), 9012345678, 'sophialopez@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(12, '789 Main St, Anytown, USA', 'Female', '0123456789', 'Olivia', 'Wilson', TO_DATE('1999-12-05', 'YYYY-MM-DD'), 4567890123, 'oliviawilson@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(67, '345 Oak St, Anytown, USA', 'Male', '9012345678', 'William', 'Martin', TO_DATE('1989-09-30', 'YYYY-MM-DD'), 7890123456, 'williammartin@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(55, '567 Cedar St, Anytown, USA', 'Female', '4567890123', 'Mia', 'Thompson', TO_DATE('1997-02-18', 'YYYY-MM-DD'), 0123456789, 'miathompson@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(23, '123 Maple St, Anytown, USA', 'Male', '7890123456', 'Ethan', 'Gonzalez', TO_DATE('2001-06-10', 'YYYY-MM-DD'), 2345678901, 'ethangonzalez@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(44, '890 Elm St, Anytown, USA', 'Female', '2345678901', 'Isabella', 'Nelson', TO_DATE('1992-11-27', 'YYYY-MM-DD'), 6789012345, 'isabellanelson@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(76, '234 Pine St, Anytown, USA', 'Male', '8901234567', 'David', 'Carter', TO_DATE('1988-04-22', 'YYYY-MM-DD'), 1234567890, 'davidcarter@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(88, '456 Cedar St, Anytown, USA', 'Female', '9012345678', 'Chloe', 'Perez', TO_DATE('1993-09-16', 'YYYY-MM-DD'), 3456789012, 'chloeperez@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(91, '678 Oak St, Anytown, USA', 'Male', '2345678901', 'Daniel', 'Roberts', TO_DATE('1996-03-01', 'YYYY-MM-DD'), 7890123456, 'danielroberts@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(25, '890 Maple St, Anytown, USA', 'Female', '3456789012', 'Madison', 'Turner', TO_DATE('2004-10-20', 'YYYY-MM-DD'), 0123456789, 'madisonturner@example.com');
+EXECUTE passenger_onboarding_pkg.insert_passenger(19, '321 Elm St, Anytown, USA', 'Male', '6789012345', 'Noah', 'Phillips', TO_DATE('2003-07-13', 'YYYY-MM-DD'), 4567890123, 'noahphillips@example.com');
 
 select * from passenger;
 
@@ -329,8 +329,12 @@ EXECUTE airline_pkg.insert_airline('SQ', 'Singapore Airlines');
 
 select * from airlines;
 
+<<<<<<< Updated upstream
 --EXECUTE insert_airport;
 
+=======
+--EXECUTE insert_airport
+>>>>>>> Stashed changes
 EXECUTE airport_pkg.insert_airport('LAX', 'Los Angeles', 'California', 'United States');
 EXECUTE airport_pkg.insert_airport('JFK', 'New York City', 'New York', 'United States');
 EXECUTE airport_pkg.insert_airport('NRT', 'Narita', 'Chiba', 'Japan');
@@ -339,7 +343,11 @@ EXECUTE airport_pkg.insert_airport('HND', 'Haneda', 'Tokyo', 'Japan');
 EXECUTE airport_pkg.insert_airport('YYZ', 'Toronto', 'Ontario', 'Canada');
 EXECUTE airport_pkg.insert_airport('SFO', 'San Francisco', 'California', 'United States');
 EXECUTE airport_pkg.insert_airport('LHR', 'London', 'Greater London', 'United Kingdom');
+<<<<<<< Updated upstream
 EXECUTE airport_pkg.insert_airport('CDG', 'Paris', 'ÃŽle-de-France', 'France');
+=======
+EXECUTE airport_pkg.insert_airport('CDG', 'Paris', 'Île-de-France', 'France');
+>>>>>>> Stashed changes
 EXECUTE airport_pkg.insert_airport('NRT', 'Narita', 'Chiba', 'Japan');
 EXECUTE airport_pkg.insert_airport('AMS', 'Amsterdam', 'North Holland', 'Netherlands');
 EXECUTE airport_pkg.insert_airport('ICN', 'Incheon', 'Gyeonggi-do', 'South Korea');
@@ -353,10 +361,24 @@ EXECUTE airport_pkg.insert_airport('BOM', 'Mumbai', 'Maharashtra', 'India');
 EXECUTE airport_pkg.insert_airport('PEK', 'Beijing', 'Beijing', 'China');
 EXECUTE airport_pkg.insert_airport('SVO', 'Moscow', 'Moscow Oblast', 'Russia');
 EXECUTE airport_pkg.insert_airport('SYX', 'Sanya', 'Hainan', 'China');
+<<<<<<< Updated upstream
 EXECUTE airport_pkg.insert_airport('GRU', 'SÃ£o Paulo', 'SÃ£o Paulo', 'Brazil');
+=======
+EXECUTE airport_pkg.insert_airport('GRU', 'São Paulo', 'São Paulo', 'Brazil');
+>>>>>>> Stashed changes
 EXECUTE airport_pkg.insert_airport('JNB', 'Johannesburg', 'Gauteng', 'South Africa');
 EXECUTE airport_pkg.insert_airport('AKL', 'Auckland', 'Auckland', 'New Zealand');
 EXECUTE airport_pkg.insert_airport('LIS', 'Lisbon', 'Lisbon', 'Portugal');
 EXECUTE airport_pkg.insert_airport('KUL', 'Kuala Lumpur', 'Selangor', 'Malaysia');
+<<<<<<< Updated upstream
 
 select * from airport;
+=======
+EXECUTE airport_pkg.insert_airport('BOS', 'Boston', null, 'United States of America');
+
+select * from airport;
+select * from orders;
+select * from flight;
+--EXECUTE insert_ticket
+--EXECUTE onboard_ticket_pkg.INSERT_TICKET(50000, 4001, 'A1', 'Vegetarian', 'LAX', 'BOS', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00)
+>>>>>>> Stashed changes
