@@ -250,26 +250,44 @@ BEGIN
   END IF;
 END;
 /
---CREATE OR REPLACE PROCEDURE insert_passengers IS
---BEGIN
---    execute passenger_onboarding_pkg.insert_passenger(25, '123 Main St, Anytown, USA', 'Male', '1234567890', 'John', 'Doe', TO_DATE('1997-05-22', 'YYYY-MM-DD'), 1234567890, 'johndoe@example.com');
---    execute passenger_onboarding_pkg.insert_passenger(35, '456 Oak St, Anytown, USA', 'Female', '1234567890', 'Jane', 'Smith', TO_DATE('1987-08-15', 'YYYY-MM-DD'), 2345678901, 'janesmith@example.com');
---    execute passenger_onboarding_pkg.insert_passenger(42, '789 Maple Ave, Anytown, USA', 'Male', '1234567890', 'Bob', 'Johnson', TO_DATE('1980-02-10', 'YYYY-MM-DD'), 3456789012, 'bobjohnson@example.com');
---    execute passenger_onboarding_pkg.insert_passenger(30, '321 Elm St, Anytown, USA', 'Female', '1234567890', 'Maria', 'Garcia', TO_DATE('1992-11-01', 'YYYY-MM-DD'), 4567890123, 'mariagarcia@example.com');
---    execute passenger_onboarding_pkg.insert_passenger(50, '789 Oak St, Anytown, USA', 'Male', '1234567890', 'David', 'Lee', TO_DATE('1973-06-12', 'YYYY-MM-DD'), 5678901234, 'davidlee@example.com');
---    execute passenger_onboarding_pkg.insert_passenger(27, '456 Maple Ave, Anytown, USA', 'Female', '1234567890', 'Emily', 'Wang', TO_DATE('1996-02-29', 'YYYY-MM-DD'), 6789012345, 'emilywang@example.com');
---    execute passenger_onboarding_pkg.insert_passenger(40, '123 Cherry St, Anytown, USA', 'Male', '1234567890', 'Michael', 'Smith', TO_DATE('1981-09-17', 'YYYY-MM-DD'), 7890123456, 'michaelsmith@example.com');
---    execute passenger_onboarding_pkg.insert_passenger(22, '789 Pine St, Anytown, USA', 'Female', '1234567890', 'Ava', 'Brown', TO_DATE('2000-03-25', 'YYYY-MM-DD'), 8901234567, 'avabrown@example.com');
---    commit;
---EXCEPTION
---  WHEN OTHERS THEN
---    ROLLBACK;
---    DBMS_OUTPUT.PUT_LINE('Error inserting Passenger: ' || SQLERRM);
---END insert_passengers;
---/
---EXECUTE insert_passengers;
 
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'SCHEDULE';
+  IF table_exists = 0 THEN
+   EXECUTE IMMEDIATE 'CREATE TABLE schedule (
+  schedule_id NUMBER PRIMARY KEY,
+  flight_id NUMBER REFERENCES flight(flight_id) ON DELETE CASCADE,
+  terminal_id NUMBER REFERENCES terminal(terminal_id) ON DELETE CASCADE,
+  arrival_time DATE,
+  departure_time DATE
+)';
+    dbms_output.put_line('Table Schedule has been created');
+  ELSE
+    dbms_output.put_line('Table Schedule already exists');
+  END IF;
+END;
+/
 
+DECLARE
+  table_exists NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = 'BAGGAGE';
+  IF table_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE TABLE baggage (
+    baggage_id       NUMBER PRIMARY KEY,
+    ticket_id     NUMBER REFERENCES ticket(ticket_id) ON DELETE CASCADE,
+    weight        FLOAT
+)';
+    dbms_output.put_line('Table Baggage has been created');
+  ELSE
+    dbms_output.put_line('Table Baggage already exists');
+  END IF;
+END;
+/
+
+--EXECUTE insert_passenger;
 execute passenger_onboarding_pkg.insert_passenger(25, '123 Main St, Anytown, USA', 'Male', '1234567890', 'John', 'Doe', TO_DATE('1997-05-22', 'YYYY-MM-DD'), 1234567890, 'johndoe@example.com');
 execute passenger_onboarding_pkg.insert_passenger(35, '456 Oak St, Anytown, USA', 'Female', '1234567890', 'Jane', 'Smith', TO_DATE('1987-08-15', 'YYYY-MM-DD'), 2345678901, 'janesmith@example.com');
 execute passenger_onboarding_pkg.insert_passenger(42, '789 Maple Ave, Anytown, USA', 'Male', '1234567890', 'Bob', 'Johnson', TO_DATE('1980-02-10', 'YYYY-MM-DD'), 3456789012, 'bobjohnson@example.com');
@@ -310,3 +328,5 @@ EXECUTE airline_pkg.insert_airline('CX', 'Cathay Pacific');
 EXECUTE airline_pkg.insert_airline('SQ', 'Singapore Airlines');
 
 select * from airlines;
+
+--
