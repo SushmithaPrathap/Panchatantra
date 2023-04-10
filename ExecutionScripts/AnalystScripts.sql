@@ -48,7 +48,7 @@ BEGIN
                       airportadmin.flight f
                       LEFT JOIN airportadmin.airlines a ON f.airline_id = a.airline_id
                     GROUP BY 
-                      f.airline_id, a.airline_name;
+                      f.airline_id, a.airline_name
                         ';
     DBMS_OUTPUT.PUT_LINE('The Occupancy Rate was created successfully');
 EXCEPTION
@@ -57,6 +57,22 @@ EXCEPTION
 END;
 /
 
+/*
+-- View 3: Retrieve count of the cancelled flights in the airport
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW flight_cancellation_counts AS
+    SELECT f.flight_id, COUNT(*) AS cancellation_count
+    FROM airportadmin.ticket t
+    JOIN airportadmin.flight f ON t.flight_id = f.flight_id
+    WHERE f.status = ''Cancelled''
+    GROUP BY f.flight_id';
+
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
 
 -- Test case for View 1
 SELECT * FROM flight_duration_analysis;
@@ -65,3 +81,8 @@ SELECT * FROM flight_duration_analysis where airline_id = 1005;
 -- Test case for View 2
 SELECT * FROM occupancy_rate_analysis;
 SELECT * FROM occupancy_rate_analysis where airline_name = 'American Airlines'; 
+
+-- Test case for View 3
+SELECT * FROM flight_cancellation_counts;
+
+

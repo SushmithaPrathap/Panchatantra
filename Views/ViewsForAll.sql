@@ -14,38 +14,5 @@ EXCEPTION
 END;
 /
 GRANT SELECT ON  AIRPORTADMIN.flight_schedule TO PASSENGERUSER;
-
-/*
-View 1 for Accountants
-*/
-BEGIN
-  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  flight_revenue AS
-    SELECT sum(a.transaction_amount) as Revenue, c.airline_name from ticket a 
-    JOIN flight b on a.flight_id = b.flight_id 
-    join airlines c on b.airline_id = c.airline_id group by c.airline_name order by Revenue desc
-    ';
-    DBMS_OUTPUT.PUT_LINE('The Flight Schedule was created successfully');
-EXCEPTION
-  WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
-END;
-/
-
-GRANT SELECT ON  AIRPORTADMIN.flight_revenue TO ACCOUNTANT;
-/*
-View 2 for Accountants
-*/
-
-BEGIN
-  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  cancelled_flights AS
-    SELECT sum(a.transaction_amount) as Revenue, c.airline_name from ticket a 
-    JOIN flight b on a.flight_id = b.flight_id 
-    join airlines c on b.airline_id = c.airline_id group by c.airline_name order by Revenue desc
-    ';
-    DBMS_OUTPUT.PUT_LINE('The Flight Schedule was created successfully');
-EXCEPTION
-  WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
-END;
-/
-GRANT SELECT ON  AIRPORTADMIN.cancelled_flights TO ACCOUNTANT;
+GRANT SELECT ON  AIRPORTADMIN.flight_schedule TO ACCOUNTANT;
+GRANT SELECT ON  AIRPORTADMIN.flight_schedule TO ANALYST;
