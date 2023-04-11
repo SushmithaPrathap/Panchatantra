@@ -43,7 +43,7 @@ CREATE OR REPLACE PACKAGE BODY PASSENGER_ONBOARDING_PKG AS
       DBMS_OUTPUT.PUT_LINE('Sex must be specified as male, female, or other');
       RETURN;
     END IF;
-    IF LENGTH(P_GOVT_ID_NOS) <= 10 THEN
+    IF LENGTH(P_GOVT_ID_NOS) != 10 THEN
       DBMS_OUTPUT.PUT_LINE('Govt ID Number must be a 10-digit value');
       RETURN;
     END IF;

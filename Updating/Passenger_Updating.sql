@@ -48,7 +48,7 @@ PROCEDURE update_passenger(
       dbms_output.put('Sex must be specified as male, female, or other');
       Return;      
     -- Validate gov_id_nos input
-    ELSIF LENGTH(p_govt_id_nos) <= 10 THEN
+    ELSIF LENGTH(p_govt_id_nos) != 10 THEN
       dbms_output.put('Govt ID Number must be a 10-digit value');
       Return;            
     -- Validate contact_number input
