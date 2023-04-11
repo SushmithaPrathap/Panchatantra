@@ -472,7 +472,7 @@ BEGIN
   IF table_exists = 0 THEN
     EXECUTE IMMEDIATE 'CREATE TABLE terminal (
       terminal_id NUMBER PRIMARY KEY,
-      terminal_name VARCHAR2(100)
+      terminal_name VARCHAR2(100) UNIQUE
     )';
     dbms_output.put_line('Table terminal has been created');
   ELSE

@@ -75,12 +75,12 @@ PROCEDURE insert_airline_staff(
       RETURN;
    END IF;
      -- Validate first name input
-    IF REGEXP_LIKE(in_first_name, '/^[a-zA-Z]+$/') = FALSE THEN
+    IF REGEXP_LIKE(in_first_name, '/^[a-zA-Z]+$ /') = FALSE THEN
         DBMS_OUTPUT.PUT_LINE('Invalid first name');
         RETURN;
     END IF;
       -- Validate last name input
-    IF REGEXP_LIKE(in_last_name, '/^[a-zA-Z]+$/') = FALSE THEN
+    IF REGEXP_LIKE(in_last_name, '/^[a-zA-Z]+$ /') = FALSE THEN
         DBMS_OUTPUT.PUT_LINE('Invalid last name');
         RETURN;
     END IF;

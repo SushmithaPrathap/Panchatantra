@@ -21,7 +21,7 @@ CREATE OR REPLACE PACKAGE BODY TERMINAL_PKG AS
       RETURN;
     END IF;
  --validate terminal name is not a special character
-    IF REGEXP_LIKE(IN_TERMINAL_NAME, '/^[a-zA-Z0-9]+$/') = FALSE THEN
+    IF REGEXP_LIKE(IN_TERMINAL_NAME, '/^[a-zA-Z0-9 ]+$/') = FALSE THEN
       DBMS_OUTPUT.PUT_LINE('Invalid terminal name');
       RETURN;
     END IF;
@@ -34,7 +34,8 @@ CREATE OR REPLACE PACKAGE BODY TERMINAL_PKG AS
     );
     COMMIT;
   EXCEPTION
-    DBMS_OUTPUT.PUT_LINE('An error occurred while inserting data');
+    WHEN OTHERS THEN
+      DBMS_OUTPUT.PUT_LINE('An error occurred while inserting data');
       ROLLBACK;
   END INSERT_TERMINAL;
 END TERMINAL_PKG;
