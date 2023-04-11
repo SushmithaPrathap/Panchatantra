@@ -365,7 +365,9 @@ EXECUTE airport_pkg.insert_airport('BER','Berlin', 'Brandenburg','Germany');
 EXECUTE airport_pkg.insert_airport('MIA' , 'Miami', 'Florida', 'United States of America');
 
 select * from airport;
+select * from passenger;
 select * from orders;
 select * from flight;
+select * from ticket;
 --EXECUTE insert_ticket
 --EXECUTE onboard_ticket_pkg.INSERT_TICKET(50000, 4001, 'A1', 'Vegetarian', 'LAX', 'BOS', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00)

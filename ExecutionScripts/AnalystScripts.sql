@@ -84,5 +84,3 @@ SELECT * FROM occupancy_rate_analysis where airline_name = 'American Airlines';
 
 -- Test case for View 3
 SELECT * FROM flight_cancellation_counts;
-
-
