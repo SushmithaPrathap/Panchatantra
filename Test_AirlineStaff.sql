@@ -1,0 +1,16 @@
+set serveroutput on;
+
+--- TEST CASES FOR terminal INSERTS;
+EXECUTE AIRLINE_STAFF_PKG.INSERT_AIRLINE_STAFF('1001','Harshita','Ranganath','23 Greylock','253-09-0001','harshita@gmail.com','8573132773',3,'Female');
+EXECUTE AIRLINE_STAFF_PKG.INSERT_AIRLINE_STAFF('');
+EXECUTE AIRLINE_STAFF_PKG.INSERT_AIRLINE_STAFF(NULL);
+
+select * from terminal;
+
+--- TEST CASES FOR terminal UPDATES;
+EXECUTE AIRLINE_STAFF_PKG.INSERT_AIRLINE_STAFF('1001', 'T1');
+EXECUTE AIRLINE_STAFF_PKG.update_terminal(7000, 'T1');
+EXECUTE AIRLINE_STAFF_PKG.update_terminal(6000, NULL);
+EXECUTE AIRLINE_STAFF_PKG.update_terminal(6000, 'Terminal A');
+select * from terminal;
+

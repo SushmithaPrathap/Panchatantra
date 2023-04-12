@@ -1,29 +1,28 @@
-CREATE OR REPLACE PACKAGE airline_pkg AS
-
-  PROCEDURE insert_airline (
-    v_airline_code IN VARCHAR2,
-    v_airline_name IN VARCHAR2
+CREATE OR REPLACE PACKAGE AIRLINE_PKG AS
+  PROCEDURE INSERT_AIRLINE (
+    V_AIRLINE_CODE IN VARCHAR2,
+    V_AIRLINE_NAME IN VARCHAR2
   );
-
-END airline_pkg;
+END AIRLINE_PKG;
 /
-SELECT admin.airline_seq.NEXTVAL FROM dual;
 
-CREATE OR REPLACE PACKAGE BODY airline_pkg AS
+SELECT
+  ADMIN.AIRLINE_SEQ.NEXTVAL
+FROM
+  DUAL;
 
-  PROCEDURE insert_airline (
-    v_airline_code IN VARCHAR2,
-    v_airline_name IN VARCHAR2
-  )
-  IS
-  v_count INTEGER;
+CREATE OR REPLACE PACKAGE BODY AIRLINE_PKG AS
+  PROCEDURE INSERT_AIRLINE (
+    V_AIRLINE_CODE IN VARCHAR2,
+    V_AIRLINE_NAME IN VARCHAR2
+  ) IS
   BEGIN
-    IF v_airline_code IS NULL OR v_airline_name IS NULL THEN
-      --RAISE_APPLICATION_ERROR(-20001, 'All input parameters must be specified');
+    IF V_AIRLINE_CODE IS NULL OR V_AIRLINE_NAME IS NULL THEN
+ --RAISE_APPLICATION_ERROR(-20001, 'All input parameters must be specified');
       DBMS_OUTPUT.PUT_LINE('All input parameters must be specified');
       return;
     END IF;
-    IF REGEXP_LIKE(v_airline_code, '^[a-zA-Z0-9]{2}$') = FALSE THEN
+    IF REGEXP_LIKE(V_AIRLINE_CODE, '^[a-zA-Z0-9]{2}$') = FALSE THEN
       DBMS_OUTPUT.PUT_LINE('Invalid airline code format');
       return;
       --RAISE_APPLICATION_ERROR(-20006, 'Invalid airline code format');
@@ -35,6 +34,17 @@ CREATE OR REPLACE PACKAGE BODY airline_pkg AS
     END IF;
     INSERT INTO airlines (airline_id, route_number, airline_code, airline_name)
     VALUES (admin.airline_seq.nextval, admin.airline_route_sequence.nextval, v_airline_code, v_airline_name);
+    INSERT INTO AIRLINES (
+      AIRLINE_ID,
+      ROUTE_NUMBER,
+      AIRLINE_CODE,
+      AIRLINE_NAME
+    ) VALUES (
+      ADMIN.AIRLINE_SEQ.NEXTVAL,
+      ADMIN.AIRLINE_ROUTE_SEQUENCE.NEXTVAL,
+      V_AIRLINE_CODE,
+      V_AIRLINE_NAME
+    );
     COMMIT;
     EXCEPTION
     WHEN OTHERS THEN
