@@ -48,11 +48,18 @@ CREATE OR REPLACE PACKAGE BODY ORDER_DELETE_PKG AS
     IF p_ticket_id IS NULL OR p_ticket_id <= 0 THEN
       RAISE invalid_ticket_id;
     END IF;
-    
+
     -- delete ticket
     DELETE FROM ticket
       WHERE ticket_id = p_ticket_id;
     COMMIT; 
+
+    UPDATE FLIGHT f
+      SET f.SEATS_FILLED = f.SEATS_FILLED - 1
+      WHERE f.flight_id = (
+        SELECT t.flight_id FROM TICKET t WHERE t.ticket_id = p_ticket_id
+      );
+    COMMIT;
     
     IF p_ticket_id IS NOT NULL AND p_ticket_id > 0 THEN
       -- Get all the ticket_ids associated with the given ticket_id
@@ -74,20 +81,25 @@ CREATE OR REPLACE PACKAGE BODY ORDER_DELETE_PKG AS
           ROLLBACK;
     END delete_ticket;
 
-  PROCEDURE delete_order(
-    p_order_id IN NUMBER
-  ) AS
-    invalid_order_id EXCEPTION;
-    l_ticket_id NUMBER;
-  BEGIN
-    -- Validate inputs
-    IF p_order_id IS NULL OR p_order_id <= 0 THEN
+ PROCEDURE delete_order(
+   p_order_id IN NUMBER
+) AS
+   invalid_order_id EXCEPTION;
+   l_ticket_id NUMBER;
+BEGIN
+   -- Validate inputs
+   IF p_order_id IS NULL OR p_order_id <= 0 THEN
       RAISE invalid_order_id;
-    END IF;
+   END IF;
 
-    -- delete order
-    DELETE FROM ORDERS
-      WHERE order_id = p_order_id;
+   -- delete order
+   DELETE FROM ORDERS
+   WHERE order_id = p_order_id;
+
+   -- check if any rows were deleted from ORDERS table
+   IF SQL%ROWCOUNT = 0 THEN
+      RAISE invalid_order_id;
+   END IF;
 
    IF p_order_id IS NOT NULL AND p_order_id > 0 THEN
       -- Get all the ticket_ids associated with the given order_id
@@ -97,16 +109,23 @@ CREATE OR REPLACE PACKAGE BODY ORDER_DELETE_PKG AS
          delete_ticket(ticket_rec.ticket_id);
       END LOOP;
    END IF;
+
+   COMMIT; 
    
-    COMMIT; 
-    DBMS_OUTPUT.PUT_LINE('Data successfully deleted from order table');
-      EXCEPTION
-        WHEN NO_DATA_FOUND THEN
-          DBMS_OUTPUT.PUT_LINE('No data found with the given order_id');
-        WHEN OTHERS THEN
-          DBMS_OUTPUT.PUT_LINE('An error occurred while deleting data: ' || SQLERRM);
-          ROLLBACK;
+   --DBMS_OUTPUT.PUT_LINE('Data successfully deleted from order table');
+   EXCEPTION
+      WHEN invalid_order_id THEN
+         DBMS_OUTPUT.PUT_LINE('Invalid order ID');
+      WHEN NO_DATA_FOUND THEN
+         DBMS_OUTPUT.PUT_LINE('No data found with the given order_id');
+      WHEN OTHERS THEN
+         DBMS_OUTPUT.PUT_LINE('An error occurred while deleting data: ' || SQLERRM);
+         ROLLBACK;
     END delete_order;
-
-
 END ORDER_DELETE_PKG;
+/
+
+
+select * from orders;
+select * from ticket;
+select * from baggage;

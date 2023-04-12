@@ -176,20 +176,6 @@ PROCEDURE update_baggage(
 
     l_class := ticket_updating_pkg.check_class(p_class, p_ticket_id);
     DBMS_OUTPUT.PUT_LINE('Output value for class: ' || l_class);
-
-    IF l_class = p_class THEN
-      DBMS_OUTPUT.PUT_LINE('No change in class ' || l_class);
-    ELSE
-    IF  p_class = 'Business' THEN
-        v_weight := 200.00;
-    ELSE
-        v_weight := 100.00;
-    END IF;
-    select baggage_id into l_bag from baggage where ticket_id = p_ticket_id;
-    BEGIN
-    ticket_updating_pkg.update_baggage(l_bag, p_ticket_id, v_weight);
-    END;
-    END IF;
     
     -- Update ticket
     UPDATE ticket SET
@@ -208,6 +194,31 @@ PROCEDURE update_baggage(
     WHERE ticket_id = p_ticket_id;
 
     COMMIT;
+
+  IF l_class = p_class THEN
+   DBMS_OUTPUT.PUT_LINE('No change in class ' || l_class);
+  ELSE
+   IF p_ticket_id IS NOT NULL AND p_ticket_id > 0 THEN
+      IF p_class = 'Business' THEN
+         v_weight := 200.00;
+      ELSE
+         v_weight := 100.00;
+      END IF;
+
+      -- Get all the ticket_ids associated with the given ticket_id
+      FOR baggage_rec IN (
+         SELECT baggage_id 
+         FROM baggage 
+         WHERE ticket_id = p_ticket_id
+      )
+      LOOP
+         -- Update the baggage associated with the ticket_id
+         ticket_updating_pkg.update_baggage(
+            baggage_rec.baggage_id, p_ticket_id, v_weight
+         );
+      END LOOP;
+   END IF;
+END IF;
 
   EXCEPTION
     WHEN invalid_ticket_id THEN 

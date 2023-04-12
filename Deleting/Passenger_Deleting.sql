@@ -35,6 +35,7 @@ CREATE OR REPLACE PACKAGE BODY passenger_delete_pkg AS
           DBMS_OUTPUT.PUT_LINE('An error occurred while deleting data: ' || SQLERRM);
           RETURN FALSE;
       END fn_delete_order_and_baggage;
+      
     PROCEDURE delete_ticket(p_order_id IN VARCHAR2) IS
     l_result BOOLEAN;
     l_ticket_id Number;
