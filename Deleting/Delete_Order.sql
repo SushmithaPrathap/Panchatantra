@@ -93,8 +93,12 @@ BEGIN
    END IF;
 
    -- delete order
-   DELETE FROM ORDERS
-   WHERE order_id = p_order_id;
+--    DELETE FROM ORDERS
+--    WHERE order_id = p_order_id;
+
+    UPDATE ORDERS SET
+    status =  'Cancelled'
+    WHERE order_id = p_order_id;
 
    -- check if any rows were deleted from ORDERS table
    IF SQL%ROWCOUNT = 0 THEN
