@@ -12,12 +12,12 @@ END;
 /
 
 
-CREATE OR REPLACE PACKAGE ticket_updating_pkg AS
+CREATE OR REPLACE PACKAGE UPDATE_TICKET_PKG AS
 
   FUNCTION check_class(in_class IN VARCHAR2, in_ticket_id NUMBER) RETURN VARCHAR2;
 
   PROCEDURE update_baggage(
-    p_baggage_id IN VARCHAR2,
+    p_baggage_id IN NUMBER,
     p_ticket_id IN NUMBER,
     p_weight IN FLOAT
   );
@@ -36,10 +36,10 @@ CREATE OR REPLACE PACKAGE ticket_updating_pkg AS
     p_member_id IN NUMBER,
     p_transaction_amount IN FLOAT
   );
-END ticket_updating_pkg;
+END UPDATE_TICKET_PKG;
 /
 
-CREATE OR REPLACE PACKAGE BODY ticket_updating_pkg AS
+CREATE OR REPLACE PACKAGE BODY UPDATE_TICKET_PKG AS
 
 FUNCTION check_class(in_class IN VARCHAR2, in_ticket_id IN NUMBER) RETURN VARCHAR2 IS
   v_result VARCHAR2(20);
@@ -52,7 +52,7 @@ BEGIN
 END check_class;
 
 PROCEDURE update_baggage(
-    p_baggage_id IN VARCHAR2,
+    p_baggage_id IN NUMBER,
     p_ticket_id IN NUMBER,
     p_weight IN FLOAT
   )AS 
@@ -61,7 +61,7 @@ PROCEDURE update_baggage(
     invalid_weight EXCEPTION;
 
     BEGIN
-     DBMS_OUTPUT.PUT_LINE('update baggage: ' || p_baggage_id || p_ticket_id || p_weight);
+    --  DBMS_OUTPUT.PUT_LINE('update baggage: ' || p_baggage_id || p_ticket_id || p_weight);
     IF p_baggage_id IS NULL OR p_baggage_id <= 0 THEN
       RAISE invalid_baggage_id;
     END IF;
@@ -109,7 +109,7 @@ PROCEDURE update_baggage(
   ) AS
     l_d_airport_count NUMBER;
     l_s_airport_count NUMBER;
-    l_class NUMBER;
+    l_class VARCHAR2(100);
     l_bag NUMBER;
     v_weight FLOAT;
     -- Define custom exceptions for invalid inputs
@@ -182,7 +182,7 @@ PROCEDURE update_baggage(
       RAISE_APPLICATION_ERROR(-20002, 'Source airport does not exist in airport table');
     END IF;
 
-    l_class := ticket_updating_pkg.check_class(p_class, p_ticket_id);
+    l_class := UPDATE_TICKET_PKG.check_class(p_class, p_ticket_id);
     DBMS_OUTPUT.PUT_LINE('Output value for class: ' || l_class);
     
     -- Update ticket
@@ -221,17 +221,18 @@ PROCEDURE update_baggage(
     v_weight := 100.00;
     END IF;
       -- Get all the ticket_ids associated with the given ticket_id
-      FOR baggage_rec IN (
-         SELECT baggage_id 
+      -- FOR baggage_rec IN (
+         SELECT baggage_id into l_bag
          FROM baggage 
-         WHERE ticket_id = p_ticket_id
-      )
-      LOOP
+         WHERE ticket_id = p_ticket_id;
+      -- )
+      -- LOOP
+      --  dbms_output.put_line('baggage_rec' || baggage_rec.baggage_id);
          -- Update the baggage associated with the ticket_id
-         ticket_updating_pkg.update_baggage(
-            baggage_rec.baggage_id, p_ticket_id, v_weight
+         UPDATE_TICKET_PKG.update_baggage(
+            l_bag, p_ticket_id, v_weight
          );
-      END LOOP;
+      -- END LOOP;
   --  END IF;
 END IF;
 
@@ -263,4 +264,4 @@ END IF;
     ROLLBACK;
     END update_ticket;
   
-END ticket_updating_pkg;
+END UPDATE_TICKET_PKG;
