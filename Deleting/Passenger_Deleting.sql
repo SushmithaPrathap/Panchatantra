@@ -49,8 +49,11 @@ CREATE OR REPLACE PACKAGE BODY passenger_delete_pkg AS
 
       Select ticket_id INTO l_ticket_id from TICKET where order_id = p_order_id;
     
-      DELETE FROM TICKET
-      WHERE order_id = p_order_id;
+      -- DELETE FROM TICKET
+      -- WHERE order_id = p_order_id;
+      UPDATE ticket SET 
+    payment_type = 'Cancelled'
+    WHERE order_id = p_order_id;
       
       l_result := fn_delete_order_and_baggage(p_order_id, l_ticket_id);
       COMMIT;

@@ -50,9 +50,12 @@ CREATE OR REPLACE PACKAGE BODY ORDER_DELETE_PKG AS
     END IF;
 
     -- delete ticket
-    DELETE FROM ticket
-      WHERE ticket_id = p_ticket_id;
-    COMMIT; 
+    -- DELETE FROM ticket
+    --   WHERE ticket_id = p_ticket_id;
+    -- COMMIT; 
+    UPDATE ticket SET 
+    payment_type = 'Cancelled'
+    WHERE ticket_id = p_ticket_id;
 
     UPDATE FLIGHT f
       SET f.SEATS_FILLED = f.SEATS_FILLED - 1
