@@ -74,7 +74,7 @@ CREATE OR REPLACE PACKAGE BODY AIRLINE_STAFF_PKG AS
       RETURN;
     END IF;
  -- Validate SSN input
-    IF NOT REGEXP_LIKE(IN_SSN, '^[0-9 ]+$') THEN
+    IF NOT REGEXP_LIKE(IN_SSN, '^(?!000|666)[0-9]{3}[-]?[0-9]{2}[-]?(?!0000)[0-9]{4}$') THEN
       DBMS_OUTPUT.PUT_LINE('Invalid SSN format');
       RETURN;
     END IF;

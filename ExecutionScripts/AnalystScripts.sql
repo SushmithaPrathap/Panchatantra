@@ -117,14 +117,21 @@ BEGIN
   FROM flight f
   JOIN schedule s ON f.flight_id = s.flight_id
   WHERE f.source = ''Boston'' AND f.destination = ''California''
-  AND s.departure_time > SYSTIMESTAMP()';
+  AND s.departure_time > TO_CHAR(SYSDATE, ''HH24:MI:SS'')';
   DBMS_OUTPUT.PUT_LINE('The flights_between_boston_and_california view was created successfully');
 EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('An error occurred: '
       || SQLERRM);
 END;
+<<<<<<< Updated upstream
 /
+=======
+/*
+View 7: The Below block of code creates a view to see status of flights
+*/
+select flight_id, soruce, destination, status from flight;
+>>>>>>> Stashed changes
 
 GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ACCOUNTANT;
 GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ANALYST;
