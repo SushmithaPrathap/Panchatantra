@@ -108,6 +108,9 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE('An error occurred: '
       || SQLERRM);
 END;
+/*
+View 6: The Below block of code creates a view to see number of flights between boston and california
+*/
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW flights_between_boston_and_california AS
   SELECT f.flight_id, f.duration, f.flight_type, f.source, f.destination, f.status, f.no_pax, f.airline_id, f.seats_filled, s.schedule_id, s.terminal_id, s.arrival_time, s.departure_time
