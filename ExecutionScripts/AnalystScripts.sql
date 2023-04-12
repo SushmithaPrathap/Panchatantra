@@ -124,11 +124,8 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE('An error occurred: '
       || SQLERRM);
 END;
-<<<<<<< Updated upstream
-=======
 /
-
->>>>>>> Stashed changes
+select * from flights_between_boston_and_california;
 /*
 View 7: The Below block of code creates a view to see status of flights
 */
