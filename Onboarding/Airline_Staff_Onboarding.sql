@@ -3,135 +3,136 @@ This Package is used for onboarding airline_staff data
 Airline staff is onboarded once airport and airline is added. Each staff has a unique ID.
 */
 
-CREATE OR REPLACE PACKAGE airline_staff_pkg AS  
-  FUNCTION check_airline_id_exists(in_airline_id in NUMBER) RETURN NUMBER;
-  PROCEDURE insert_airline_staff(
-    in_airline_id         IN NUMBER,
-    in_first_name             IN VARCHAR2,
-    in_last_name     IN VARCHAR2,
-    in_address      IN VARCHAR2,
-    in_ssn      IN VARCHAR2,
-    in_email_id             IN VARCHAR2,
-    in_contact_number   IN NUMBER,
-    in_job_group          IN VARCHAR2,
-    in_gender in VARCHAR2
+CREATE OR REPLACE PACKAGE AIRLINE_STAFF_PKG AS
+  FUNCTION CHECK_AIRLINE_ID_EXISTS(
+    IN_AIRLINE_ID IN NUMBER
+  ) RETURN NUMBER;
+  PROCEDURE INSERT_AIRLINE_STAFF(
+    IN_AIRLINE_ID IN NUMBER,
+    IN_FIRST_NAME IN VARCHAR2,
+    IN_LAST_NAME IN VARCHAR2,
+    IN_ADDRESS IN VARCHAR2,
+    IN_SSN IN VARCHAR2,
+    IN_EMAIL_ID IN VARCHAR2,
+    IN_CONTACT_NUMBER IN NUMBER,
+    IN_JOB_GROUP IN VARCHAR2,
+    IN_GENDER IN VARCHAR2
   );
-END airline_staff_pkg;
+END AIRLINE_STAFF_PKG;
 /
 
-CREATE OR REPLACE PACKAGE BODY airline_staff_pkg AS
-FUNCTION check_airline_id_exists(in_airline_id NUMBER)
-RETURN NUMBER
-AS
-  v_airline_count NUMBER;
-BEGIN
-  SELECT COUNT(*) INTO v_airline_count
-  FROM AIRLINES
-  WHERE AIRLINE_ID = in_airline_id;
-
-  IF v_airline_count > 0 THEN
-    RETURN in_airline_id;
-  ELSE
-    RETURN NULL;
-  END IF;
-END check_airline_id_exists;
-
-PROCEDURE insert_airline_staff(
-    in_airline_id         IN NUMBER,
-    in_first_name             IN VARCHAR2,
-    in_last_name     IN VARCHAR2,
-    in_address      IN VARCHAR2,
-    in_ssn      IN VARCHAR2,
-    in_email_id             IN VARCHAR2,
-    in_contact_number   IN NUMBER,
-    in_job_group          IN VARCHAR2,
-    in_gender in VARCHAR2
-  ) IS
-  INVALID_INPUTS EXCEPTION;
-  airline_id_exists NUMBER;
+CREATE OR REPLACE PACKAGE BODY AIRLINE_STAFF_PKG AS
+  FUNCTION CHECK_AIRLINE_ID_EXISTS(
+    IN_AIRLINE_ID NUMBER
+  ) RETURN NUMBER AS
+    V_AIRLINE_COUNT NUMBER;
   BEGIN
-    IF in_airline_id IS NULL OR in_gender IS NULL OR in_first_name IS NULL OR in_last_name  IS NULL OR in_address IS NULL OR in_ssn IS NULL OR in_email_id IS NULL OR in_contact_number IS NULL OR in_job_group IS NULL THEN
+    SELECT
+      COUNT(*) INTO V_AIRLINE_COUNT
+    FROM
+      AIRLINES
+    WHERE
+      AIRLINE_ID = IN_AIRLINE_ID;
+    IF V_AIRLINE_COUNT > 0 THEN
+      RETURN IN_AIRLINE_ID;
+    ELSE
+      RETURN NULL;
+    END IF;
+  END CHECK_AIRLINE_ID_EXISTS;
+  PROCEDURE INSERT_AIRLINE_STAFF(
+    IN_AIRLINE_ID IN NUMBER,
+    IN_FIRST_NAME IN VARCHAR2,
+    IN_LAST_NAME IN VARCHAR2,
+    IN_ADDRESS IN VARCHAR2,
+    IN_SSN IN VARCHAR2,
+    IN_EMAIL_ID IN VARCHAR2,
+    IN_CONTACT_NUMBER IN NUMBER,
+    IN_JOB_GROUP IN VARCHAR2,
+    IN_GENDER IN VARCHAR2
+  ) IS
+    INVALID_INPUTS EXCEPTION;
+    AIRLINE_ID_EXISTS NUMBER;
+  BEGIN
+    IF IN_AIRLINE_ID IS NULL OR IN_GENDER IS NULL OR IN_FIRST_NAME IS NULL OR IN_LAST_NAME IS NULL OR IN_ADDRESS IS NULL OR IN_SSN IS NULL OR IN_EMAIL_ID IS NULL OR IN_CONTACT_NUMBER IS NULL OR IN_JOB_GROUP IS NULL THEN
       RAISE INVALID_INPUTS;
     END IF;
-    --validate if airline ID exists before pushing into airline staff table
-      airline_id_exists := check_airline_id_exists(in_airline_id);
-      IF airline_id_exists IS NULL then
-        DBMS_OUTPUT.PUT_LINE('Airline ID does not exist');
-        RETURN;
-      END IF;
-     -- Validate gender
-    IF in_gender NOT IN ('Male', 'Female', 'Other') THEN
+ --validate if airline ID exists before pushing into airline staff table
+    AIRLINE_ID_EXISTS := CHECK_AIRLINE_ID_EXISTS(IN_AIRLINE_ID);
+    IF AIRLINE_ID_EXISTS IS NULL THEN
+      DBMS_OUTPUT.PUT_LINE('Airline ID does not exist');
+      RETURN;
+    END IF;
+ -- Validate gender
+    IF IN_GENDER NOT IN ('Male', 'Female', 'Other') THEN
       DBMS_OUTPUT.PUT_LINE('Sex must be specified as male, female, or other');
       RETURN;
     END IF;
-     -- Validate job group
-    IF in_job_group NOT IN (1,2,3,4,5) THEN
+ -- Validate job group
+    IF IN_JOB_GROUP NOT IN (1, 2, 3, 4, 5) THEN
       DBMS_OUTPUT.PUT_LINE('Incorrect job group');
       RETURN;
     END IF;
-    -- Validate SSN input
-   IF REGEXP_LIKE(in_ssn, '^((?!219-09-9999|078-05-1120)(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4})|((?!219 09 9999|078 05 1120)(?!666|000|9\d{2})\d{3} (?!00)\d{2} (?!0{4})\d{4})|((?!219099999|078051120)(?!666|000|9\d{2})\d{3}(?!00)\d{2}(?!0{4})\d{4})$') = FALSE THEN
+ -- Validate SSN input
+    IF REGEXP_LIKE(IN_SSN, '^((?!219-09-9999|078-05-1120)(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4})|((?!219 09 9999|078 05 1120)(?!666|000|9\d{2})\d{3} (?!00)\d{2} (?!0{4})\d{4})|((?!219099999|078051120)(?!666|000|9\d{2})\d{3}(?!00)\d{2}(?!0{4})\d{4})$') = FALSE THEN
       DBMS_OUTPUT.PUT_LINE('Invalid SSN format');
       RETURN;
-   END IF;
-     -- Validate first name input
-    IF REGEXP_LIKE(in_first_name, '/^[a-zA-Z]+$ /') = FALSE THEN
-        DBMS_OUTPUT.PUT_LINE('Invalid first name');
-        RETURN;
     END IF;
-      -- Validate last name input
-    IF REGEXP_LIKE(in_last_name, '/^[a-zA-Z]+$ /') = FALSE THEN
-        DBMS_OUTPUT.PUT_LINE('Invalid last name');
-        RETURN;
+ -- Validate first name input
+    IF REGEXP_LIKE(IN_FIRST_NAME, '^[a-zA-Z ]+$') = FALSE THEN
+      DBMS_OUTPUT.PUT_LINE('Invalid first name');
+      RETURN;
     END IF;
-
-    -- Validate contact_number input
-    IF LENGTH(in_contact_number) != 10 THEN
+ -- Validate last name input
+    IF REGEXP_LIKE(IN_LAST_NAME, '^[a-zA-Z ]+$') = FALSE THEN
+      DBMS_OUTPUT.PUT_LINE('Invalid last name');
+      RETURN;
+    END IF;
+ -- Validate contact_number input
+    IF LENGTH(IN_CONTACT_NUMBER) != 10 THEN
       DBMS_OUTPUT.PUT_LINE('Contact Number must be a 10-digit value');
       RETURN;
     END IF;
-    -- Validate address input
-    IF REGEXP_LIKE(in_address, '^[0-9]{1,5} [a-zA-Z0-9\s]{1,50}, [a-zA-Z\s]{2,50}, [A-Z]{2} [0-9]{5}$') = FALSE THEN
+ -- Validate address input
+    IF REGEXP_LIKE(IN_ADDRESS, '^[0-9]{1,5} [a-zA-Z0-9\s]{1,50}, [a-zA-Z\s]{2,50}, [A-Z]{2} [0-9]{5}$') = FALSE THEN
       DBMS_OUTPUT.PUT_LINE('Address must be in the format ex., 23 XYZ, Boston, MA 02115');
       RETURN;
     END IF;
-    -- Validate email input
-    IF REGEXP_LIKE(in_email_id, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$') = FALSE THEN
+ -- Validate email input
+    IF REGEXP_LIKE(IN_EMAIL_ID, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$') = FALSE THEN
       DBMS_OUTPUT.PUT_LINE('Invalid email format');
       RETURN;
     END IF;
-    INSERT INTO airline_staff (
-     staff_id,
-    airline_id,
-    first_name,
-    last_name,
-    address,
-    ssn,
-    email_id,
-    contact_number,
-    job_group,
-    gender
+    INSERT INTO AIRLINE_STAFF (
+      STAFF_ID,
+      AIRLINE_ID,
+      FIRST_NAME,
+      LAST_NAME,
+      ADDRESS,
+      SSN,
+      EMAIL_ID,
+      CONTACT_NUMBER,
+      JOB_GROUP,
+      GENDER
     ) VALUES (
-    ADMIN.airline_staff_seq.NEXTVAL,
-    in_airline_id,
-    in_first_name,
-    in_last_name,
-    in_address,
-    in_ssn,
-    in_email_id,
-    in_contact_number,
-    in_job_group,
-    in_gender
+      ADMIN.AIRLINE_STAFF_SEQ.NEXTVAL,
+      IN_AIRLINE_ID,
+      IN_FIRST_NAME,
+      IN_LAST_NAME,
+      IN_ADDRESS,
+      IN_SSN,
+      IN_EMAIL_ID,
+      IN_CONTACT_NUMBER,
+      IN_JOB_GROUP,
+      IN_GENDER
     );
-   COMMIT;
-   EXCEPTION
+    COMMIT;
+  EXCEPTION
+    WHEN OTHERS THEN
       DBMS_OUTPUT.PUT_LINE('An error occurred while inserting data');
-      rollback;
+      ROLLBACK;
       RETURN;
-      
-  END insert_airline_staff;
-
-END airline_staff_pkg;
+  END INSERT_AIRLINE_STAFF;
+END AIRLINE_STAFF_PKG;
 /
 
 SHOW ERRORS;

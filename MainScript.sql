@@ -298,7 +298,7 @@ BEGIN
     ssn            VARCHAR2(12),
     email_id       VARCHAR2(20),
     contact_number NUMBER,
-    job_group      VARCHAR2(10),
+    job_group      NUMBER,
     gender         VARCHAR2(10)
 )';
     dbms_output.put_line('Table Airline_staff has been created');
@@ -309,15 +309,15 @@ END;
 /
 BEGIN
   INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
-    (1, 1001, 'John', 'Doe', '123 Main St', '123-45-6789', 'jdoe@email.com', 5551234, 'Group1', 'Male');
+    (1, 1001, 'John', 'Doe', '123 Main St', '123-45-6789', 'jdoe@email.com', 3335551234, 1, 'Male');
   INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
-    (2, 1002, 'Jane', 'Smith', '456 Elm St', '234-56-7890', 'jsmith@email.com', 5552345, 'Group2', 'Female');
+    (2, 1002, 'Jane', 'Smith', '456 Elm St', '234-56-7890', 'jsmith@email.com', 4445552345, 3, 'Female');
   INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
-    (3, 1003, 'Bob', 'Johnson', '789 Oak St', '345-67-8901', 'bjohnson@email.com', 5553456, 'Group3', 'Male');
+    (3, 1003, 'Bob', 'Johnson', '789 Oak St', '345-67-8901', 'bjohnson@email.com', 2225553456, 3, 'Male');
   INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
-    (4, 1004, 'Mary', 'Lee', '12 Pine St', '456-78-9012', 'mlee@email.com', 5554567, 'Group4', 'Female');
+    (4, 1004, 'Mary', 'Lee', '12 Pine St', '456-78-9012', 'mlee@email.com', 1115554567, 4, 'Female');
   INSERT INTO airline_staff (staff_id, airline_id, first_name, last_name, address, ssn, email_id, contact_number, job_group, gender) VALUES
-    (5, 1005, 'Tom', 'Wilson', '345 Maple St', '567-89-0123', 'twilson@email.com', 5555678, 'Group5', 'Male');
+    (5, 1005, 'Tom', 'Wilson', '345 Maple St', '567-89-0123', 'twilson@email.com', 1115555678, 5, 'Male');
   dbms_output.put_line('Data Successfully Inserted into Airline Staff');
 END;
 /
