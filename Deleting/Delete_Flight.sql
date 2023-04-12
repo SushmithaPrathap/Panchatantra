@@ -28,10 +28,14 @@ CREATE OR REPLACE PACKAGE BODY FLIGHT_DELETE_PKG AS
     -- delete schedule
     DELETE FROM SCHEDULE
       WHERE schedule_id = p_schedule_id;
-    COMMIT; DBMS_OUTPUT.PUT_LINE('Data successfully deleted from schedule table');
+    COMMIT; 
+    
+    DBMS_OUTPUT.PUT_LINE('Data successfully deleted from schedule table');
       EXCEPTION
         WHEN NO_DATA_FOUND THEN
           DBMS_OUTPUT.PUT_LINE('No data found with the given schedule_id');
+        WHEN invalid_schedule_id THEN 
+        dbms_output.put_line('Invalid schedule id');
         WHEN OTHERS THEN
           DBMS_OUTPUT.PUT_LINE('An error occurred while deleting data: ' || SQLERRM);
           ROLLBACK;
@@ -54,7 +58,7 @@ CREATE OR REPLACE PACKAGE BODY FLIGHT_DELETE_PKG AS
 
     select schedule_id into l_schedule_id from schedule where flight_id = p_flight_id;
     
-    IF p_flight_id IS NULL OR p_flight_id <= 0 THEN
+    IF l_schedule_id IS NULL OR l_schedule_id <= 0 THEN
     BEGIN
     delete_schedule(l_schedule_id);
     END;
@@ -65,6 +69,8 @@ CREATE OR REPLACE PACKAGE BODY FLIGHT_DELETE_PKG AS
       EXCEPTION
         WHEN NO_DATA_FOUND THEN
           DBMS_OUTPUT.PUT_LINE('No data found with the given flight_id');
+        WHEN invalid_flight_id THEN 
+          dbms_output.put_line('Invalid flight id');
         WHEN OTHERS THEN
           DBMS_OUTPUT.PUT_LINE('An error occurred while deleting data: ' || SQLERRM);
           ROLLBACK;
