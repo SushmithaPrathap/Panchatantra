@@ -23,10 +23,11 @@ BEGIN
                     GROUP BY 
                       a.airline_id,a.airline_name
                         ';
-    DBMS_OUTPUT.PUT_LINE('The Flight Duration Analysis was created successfully');
+  DBMS_OUTPUT.PUT_LINE('The Flight Duration Analysis was created successfully');
 EXCEPTION
   WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+    DBMS_OUTPUT.PUT_LINE('An error occurred: '
+      || SQLERRM);
 END;
 /
 
@@ -50,10 +51,11 @@ BEGIN
                     GROUP BY 
                       f.airline_id, a.airline_name
                         ';
-    DBMS_OUTPUT.PUT_LINE('The Occupancy Rate was created successfully');
+  DBMS_OUTPUT.PUT_LINE('The Occupancy Rate was created successfully');
 EXCEPTION
   WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+    DBMS_OUTPUT.PUT_LINE('An error occurred: '
+      || SQLERRM);
 END;
 /
 
@@ -67,10 +69,10 @@ BEGIN
     JOIN airportadmin.flight f ON t.flight_id = f.flight_id
     WHERE f.status = ''Cancelled''
     GROUP BY f.flight_id';
-
 EXCEPTION
   WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+    DBMS_OUTPUT.PUT_LINE('An error occurred: '
+      || SQLERRM);
 END;
 /
 
@@ -83,12 +85,14 @@ BEGIN
     FROM airline_staff
     JOIN airlines ON airline_staff.airline_id = airlines.airline_id
     GROUP BY airline_name';
-    DBMS_OUTPUT.PUT_LINE('The airline_staff_counts view was created successfully');
+  DBMS_OUTPUT.PUT_LINE('The airline_staff_counts view was created successfully');
 EXCEPTION
   WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+    DBMS_OUTPUT.PUT_LINE('An error occurred: '
+      || SQLERRM);
 END;
 /
+
 /*
 View 5: The Below block of code creates views from the ticket table for monthly ticket sales
 */
@@ -98,10 +102,24 @@ SELECT TO_CHAR(date_of_travel, 'YYYY-MM') AS month,
        SUM(Transaction_amount) AS total_sales
 FROM ticket
 GROUP BY TO_CHAR(date_of_travel, 'YYYY-MM')';
-    DBMS_OUTPUT.PUT_LINE('The monthly_ticket_sales view was created successfully');
+  DBMS_OUTPUT.PUT_LINE('The monthly_ticket_sales view was created successfully');
 EXCEPTION
   WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+    DBMS_OUTPUT.PUT_LINE('An error occurred: '
+      || SQLERRM);
+END;
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW flights_between_boston_and_california AS
+  SELECT f.flight_id, f.duration, f.flight_type, f.source, f.destination, f.status, f.no_pax, f.airline_id, f.seats_filled, s.schedule_id, s.terminal_id, s.arrival_time, s.departure_time
+  FROM flight f
+  JOIN schedule s ON f.flight_id = s.flight_id
+  WHERE f.source = ''Boston'' AND f.destination = ''California''
+  AND s.departure_time > SYSTIMESTAMP()';
+  DBMS_OUTPUT.PUT_LINE('The flights_between_boston_and_california view was created successfully');
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: '
+      || SQLERRM);
 END;
 
 
@@ -120,24 +138,3 @@ SELECT * FROM occupancy_rate_analysis where airline_name = 'American Airlines';
 
 -- Test case for View 3
 SELECT * FROM flight_cancellation_counts;
-
-
-/*
-View 6 : Baggage transaction – The number of bags per transaction
-*/
-
-BEGIN
-  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW baggage_count_per_order AS
-    SELECT COUNT(B.baggage_id) AS BAGGAGE_COUNT, O.ORDER_ID 
-    FROM ((BAGGAGE B JOIN TICKET T ON B.TICKET_ID = T.TICKET_ID) 
-    JOIN ORDERS O ON O.ORDER_ID = T.ORDER_ID) 
-    GROUP BY O.ORDER_ID';
-    DBMS_OUTPUT.PUT_LINE('baggage_count_per_order view was created successfully');
-EXCEPTION
-  WHEN OTHERS THEN
-    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
-END;
-/
-
--- Test case for View 6
-select * from baggage_count_per_order;
