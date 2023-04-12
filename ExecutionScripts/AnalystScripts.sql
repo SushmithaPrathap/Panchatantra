@@ -92,11 +92,7 @@ EXCEPTION
       || SQLERRM);
 END;
 /
-<<<<<<< Updated upstream
-
-=======
 GRANT SELECT ON  AIRPORTADMIN.airline_staff_counts TO ANALYST;
->>>>>>> Stashed changes
 /*
 View 5: The Below block of code creates views from the ticket table for monthly ticket sales
 */
@@ -157,8 +153,24 @@ EXCEPTION
 END;
 /
 /*
-View 7: 
+View 7: Number of ticket cancellations
 */
+
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW ticket_cancellations AS
+    SELECT COUNT(*) AS num_cancellations, date_of_travel
+    FROM ticket
+    WHERE payment_type = ''CANCELLED''
+    GROUP BY date_of_travel';
+    DBMS_OUTPUT.PUT_LINE('The ticket_cancellations view was created successfully');
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
+select * from ticket_cancellations;
+
 
 select * from staff_flight_assignments;
 
