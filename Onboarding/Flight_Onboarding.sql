@@ -7,7 +7,6 @@ CREATE OR REPLACE PACKAGE ONBOARD_FLIGHT_PKG AS
   FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN NUMBER;
 
   PROCEDURE INSERT_FLIGHT(
-    p_flight_id IN NUMBER,
     p_flight_type IN VARCHAR2,
     p_departure_time IN DATE,
     p_arrival_time IN DATE,
@@ -65,8 +64,6 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_FLIGHT_PKG AS
   END get_duration;
   
   PROCEDURE INSERT_FLIGHT(
-    p_flight_id IN NUMBER,
-    -- p_duration IN NUMBER,
     p_flight_type IN VARCHAR2,
     p_departure_time IN DATE,
     p_arrival_time IN DATE,
@@ -83,15 +80,14 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_FLIGHT_PKG AS
     l_duration NUMBER;
     l_airline_count NUMBER;
     l_terminal_count NUMBER;
-
+    l_flight_id NUMBER := ADMIN.flight_seq.NEXTVAL;
     INVALID_INPUTS EXCEPTION;
     
   BEGIN
 
    IF
     (
-        p_flight_id <= 0
-        OR LENGTH(p_flight_type)<= 0
+        LENGTH(p_flight_type)<= 0
         OR p_departure_time is NULL
         OR p_arrival_time is NULL
         OR LENGTH(p_source) <= 0
@@ -145,8 +141,6 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_FLIGHT_PKG AS
       flight_id,
       duration,
       flight_type,
-    --   departure_time,
-    --   arrival_time,
       destination,
       source,
       status,
@@ -154,11 +148,9 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_FLIGHT_PKG AS
       airline_id,
       seats_filled
     ) VALUES (
-      p_flight_id,
+      l_flight_id,
       l_duration,
       p_flight_type,
-    --   p_departure_time,
-    --   p_arrival_time,
       p_destination,
       p_source,
       p_status,
@@ -170,11 +162,11 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_FLIGHT_PKG AS
 
 --insert a schedule for the flight
     INSERT INTO schedule (schedule_id, flight_id, terminal_id, arrival_time, departure_time) 
-    VALUES (ADMIN.schedule_seq.NEXTVAL, p_flight_id, p_terminal_id, p_arrival_time ,p_departure_time);       --insert a schedule sequence
+    VALUES (ADMIN.schedule_seq.NEXTVAL, l_flight_id, p_terminal_id, p_arrival_time ,p_departure_time);       --insert a schedule sequence
     COMMIT;
 EXCEPTION
   WHEN INVALID_INPUTS THEN 
-    dbms_output.put_line('Invalid input' || p_arrival_time || p_departure_time ||  p_flight_id || l_duration ||
+    dbms_output.put_line('Invalid input' || p_arrival_time || p_departure_time || l_duration ||
       p_flight_type ||
       p_destination ||
       p_source ||

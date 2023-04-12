@@ -44,7 +44,6 @@ CREATE OR REPLACE PACKAGE ONBOARD_TICKET_PKG AS
   FUNCTION check_airport(in_airport_name IN VARCHAR2) RETURN NUMBER;
 
   PROCEDURE INSERT_TICKET(
-    in_ticket_id IN NUMBER,
     in_order_id IN NUMBER,
     in_flight_id IN NUMBER,
     in_seat_no IN VARCHAR2,
@@ -75,7 +74,6 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
   END check_airport;
   
   PROCEDURE INSERT_TICKET(
-    in_ticket_id IN NUMBER,
     in_order_id IN NUMBER,
     in_flight_id IN NUMBER,
     in_seat_no IN VARCHAR2,
@@ -90,6 +88,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
   ) AS
     l_d_airport_count NUMBER;
     l_s_airport_count NUMBER;
+    l_ticket_id NUMBER := ADMIN.ticket_seq.NEXTVAL;
     -- l_duration NUMBER;
 
     INVALID_INPUTS EXCEPTION;
@@ -97,8 +96,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
   BEGIN
     IF
     (
-        in_ticket_id <= 0
-        OR in_order_id <= 0
+        in_order_id <= 0
         OR in_flight_id <= 0
         OR LENGTH(in_seat_no)<= 0
         OR LENGTH(in_meal_preferences)<= 0
@@ -131,7 +129,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
     INSERT INTO ticket (
      ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount
     ) VALUES (
-    in_ticket_id,
+    l_ticket_id,
     in_order_id,
     in_flight_id,
     in_seat_no,
@@ -146,7 +144,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
     );
 
     --insert a schedule for the flight
-    insert_baggage(ADMIN.baggage_id_seq.NEXTVAL, in_ticket_id);
+    insert_baggage(ADMIN.baggage_id_seq.NEXTVAL, l_ticket_id);
     
   EXCEPTION
     WHEN INVALID_INPUTS THEN 
