@@ -92,7 +92,11 @@ EXCEPTION
       || SQLERRM);
 END;
 /
+<<<<<<< Updated upstream
 
+=======
+GRANT SELECT ON  AIRPORTADMIN.airline_staff_counts TO ANALYST;
+>>>>>>> Stashed changes
 /*
 View 5: The Below block of code creates views from the ticket table for monthly ticket sales
 */
@@ -124,10 +128,32 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE('An error occurred: '
       || SQLERRM);
 END;
-
+/
 
 GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ACCOUNTANT;
 GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ANALYST;
+
+/*
+View 6: Assigning Airline Staff to flight
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE VIEW staff_flight_assignments AS
+SELECT s.staff_id, s.first_name, s.last_name, f.flight_id, f.flight_type, 
+    sch.arrival_time, sch.departure_time
+FROM airline_staff s
+INNER JOIN flight f ON s.airline_id = f.airline_id
+INNER JOIN schedule sch ON f.flight_id = sch.flight_id';
+    DBMS_OUTPUT.PUT_LINE('The monthly_ticket_sales view was created successfully');
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+/*
+View 7: 
+*/
+
+select * from staff_flight_assignments;
 
 select * from monthly_ticket_sales;
 
