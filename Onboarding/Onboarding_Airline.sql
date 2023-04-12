@@ -21,9 +21,11 @@ CREATE OR REPLACE PACKAGE BODY airline_pkg AS
     IF v_airline_code IS NULL OR v_airline_name IS NULL THEN
       --RAISE_APPLICATION_ERROR(-20001, 'All input parameters must be specified');
       DBMS_OUTPUT.PUT_LINE('All input parameters must be specified');
+      return;
     END IF;
     IF REGEXP_LIKE(v_airline_code, '^[a-zA-Z0-9]{2}$') = FALSE THEN
       DBMS_OUTPUT.PUT_LINE('Invalid airline code format');
+      return;
       --RAISE_APPLICATION_ERROR(-20006, 'Invalid airline code format');
     END IF;
     SELECT COUNT(*) INTO v_count FROM airlines WHERE airline_code = v_airline_code;
@@ -38,7 +40,7 @@ CREATE OR REPLACE PACKAGE BODY airline_pkg AS
     WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('Error occured while inserting airline');
     rollback;
-  END;
+  END insert_airline;
 
 END airline_pkg;
 /
