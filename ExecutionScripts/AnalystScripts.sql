@@ -141,3 +141,23 @@ SELECT * FROM occupancy_rate_analysis where airline_name = 'American Airlines';
 
 -- Test case for View 3
 SELECT * FROM flight_cancellation_counts;
+
+/*
+View 6 : Baggage transaction – The number of bags per transaction
+*/
+
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW baggage_count_per_order AS
+    SELECT COUNT(B.baggage_id) AS BAGGAGE_COUNT, O.ORDER_ID 
+    FROM ((BAGGAGE B JOIN TICKET T ON B.TICKET_ID = T.TICKET_ID) 
+    JOIN ORDERS O ON O.ORDER_ID = T.ORDER_ID) 
+    GROUP BY O.ORDER_ID';
+    DBMS_OUTPUT.PUT_LINE('baggage_count_per_order view was created successfully');
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
+-- Test case for View 6
+select * from baggage_count_per_order;
