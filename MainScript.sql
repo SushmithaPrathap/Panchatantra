@@ -295,9 +295,9 @@ BEGIN
     first_name     VARCHAR2(20),
     last_name      VARCHAR2(20),
     address        VARCHAR2(100),
-    ssn            VARCHAR2(12),
-    email_id       VARCHAR2(20),
-    contact_number NUMBER,
+    ssn            VARCHAR2(15) UNIQUE,
+    email_id       VARCHAR2(20) UNIQUE,
+    contact_number NUMBER UNIQUE,
     job_group      NUMBER,
     gender         VARCHAR2(10)
 )';
