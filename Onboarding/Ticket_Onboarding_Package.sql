@@ -9,13 +9,21 @@ IS
     v_weight FLOAT;
     v_ticket_class VARCHAR2(20);
     BEGIN
+
     SELECT class INTO v_ticket_class FROM ticket WHERE ticket_id = p_ticket_id;
     
-    IF v_ticket_class = 'Business' THEN
-        v_weight := 200.00;
-    ELSE
-        v_weight := 100.00;
-    END IF;
+ IF v_ticket_class = 'Business' THEN
+    v_weight := 200.00;
+END IF;
+IF v_ticket_class = 'Business Pro' THEN
+    v_weight := 300.00;
+END IF;
+IF v_ticket_class = 'First Class' THEN
+    v_weight := 400.00;
+END IF;
+IF v_ticket_class = 'Economy' THEN
+    v_weight := 100.00;
+END IF;
     
     INSERT INTO baggage (
         baggage_id,
@@ -42,6 +50,8 @@ IS
 CREATE OR REPLACE PACKAGE ONBOARD_TICKET_PKG AS
 
   FUNCTION check_airport(in_airport_name IN VARCHAR2) RETURN NUMBER;
+
+  FUNCTION check_flight(in_flight_id IN NUMBER) RETURN NUMBER;
 
   PROCEDURE INSERT_TICKET(
     in_order_id IN NUMBER,
@@ -72,6 +82,16 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
 
     RETURN v_result;
   END check_airport;
+
+  FUNCTION check_flight(in_flight_id IN NUMBER) RETURN NUMBER IS
+    v_result NUMBER;
+  BEGIN
+    SELECT COUNT(*) INTO v_result
+    FROM flight
+    WHERE flight_id = in_flight_id;
+
+    RETURN v_result;
+  END check_flight;
   
   PROCEDURE INSERT_TICKET(
     in_order_id IN NUMBER,
@@ -88,9 +108,8 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
   ) AS
     l_d_airport_count NUMBER;
     l_s_airport_count NUMBER;
-    l_ticket_id NUMBER := ADMIN.ticket_seq.NEXTVAL;
-    -- l_duration NUMBER;
-
+    l_flight_count NUMBER;
+    l_ticket_id NUMBER := ADMIN.ticket_seq.NEXTVAL; --seq
     INVALID_INPUTS EXCEPTION;
     
   BEGIN
@@ -111,6 +130,13 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
         RAISE INVALID_INPUTS;
     END IF;
 
+    l_flight_count := ONBOARD_FLIGHT_PKG.check_flight(in_flight_id);
+    DBMS_OUTPUT.PUT_LINE('Output value for flight: ' || l_flight_count);
+
+    IF l_flight_count = 0 THEN
+      RAISE_APPLICATION_ERROR(-20001, 'Flight_id does not exist in flight table');
+    END IF;
+
         l_d_airport_count := ONBOARD_FLIGHT_PKG.check_airport(in_destination);
     DBMS_OUTPUT.PUT_LINE('Output value for destination: ' || l_d_airport_count);
 
@@ -125,6 +151,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
       RAISE_APPLICATION_ERROR(-20002, 'Source airport does not exist in airport table');
     END IF;
 
+    dbms_output.put_line('ticket_id', l_ticket_id);
     -- Insert ticket record
     INSERT INTO ticket (
      ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount
