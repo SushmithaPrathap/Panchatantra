@@ -1,15 +1,34 @@
+CREATE OR REPLACE TRIGGER INSERT_SCHEDULE_TRG
+BEFORE INSERT ON SCHEDULE
+FOR EACH ROW
+DECLARE
+  l_now TIMESTAMP := SYSTIMESTAMP;
+BEGIN
+    -- Check if arrival and departure date are in the future
+    IF :NEW.departure_time <= l_now THEN
+      DBMS_OUTPUT.PUT_LINE('Departure date should be in the future');
+    
+    END IF;
+
+    IF :NEW.arrival_time <= l_now THEN
+      DBMS_OUTPUT.PUT_LINE('Arrival date should be in the future');
+     
+    END IF;
+END;
+/
+
 CREATE OR REPLACE PACKAGE ONBOARD_FLIGHT_PKG AS
 
   FUNCTION check_airport(in_airport_name IN VARCHAR2) RETURN NUMBER;
   FUNCTION check_airline(in_airline_id IN NUMBER) RETURN NUMBER;
   FUNCTION check_terminal(in_terminal_id IN NUMBER) RETURN NUMBER;
 
-  FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN NUMBER;
+  FUNCTION get_duration(in_arrival_time IN TIMESTAMP, in_departure_time IN TIMESTAMP) RETURN NUMBER;
 
   PROCEDURE INSERT_FLIGHT(
     p_flight_type IN VARCHAR2,
-    p_departure_time IN DATE,
-    p_arrival_time IN DATE,
+    p_departure_time IN TIMESTAMP,
+    p_arrival_time IN TIMESTAMP,
     p_destination IN VARCHAR2,
     p_source IN VARCHAR2,
     p_status IN VARCHAR2,
@@ -53,20 +72,29 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_FLIGHT_PKG AS
     RETURN v_result;
   END check_terminal;
 
-  FUNCTION get_duration(in_arrival_time IN DATE, in_departure_time IN DATE) RETURN NUMBER IS
-    v_result NUMBER;
-  BEGIN
-    IF in_arrival_time <= in_departure_time THEN
-      RAISE_APPLICATION_ERROR(-20001, 'Arrival time must be after departure time');
+FUNCTION get_duration(
+    in_arrival_time IN TIMESTAMP,
+    in_departure_time IN TIMESTAMP
+) RETURN NUMBER IS
+    v_duration_in_minutes NUMBER;
+BEGIN
+    IF in_departure_time >= in_arrival_time THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Arrival time must be after departure time');
     END IF;
-    v_result := ROUND((in_arrival_time - in_departure_time) * 24 * 60);
-    RETURN v_result;
-  END get_duration;
+    
+    SELECT (EXTRACT(DAY FROM (in_arrival_time - in_departure_time)) * 24 * 60) +
+           (EXTRACT(HOUR FROM (in_arrival_time - in_departure_time)) * 60) +
+            EXTRACT(MINUTE FROM (in_arrival_time - in_departure_time))
+    INTO v_duration_in_minutes
+    FROM dual;
+    
+    RETURN v_duration_in_minutes;
+END get_duration;
   
   PROCEDURE INSERT_FLIGHT(
     p_flight_type IN VARCHAR2,
-    p_departure_time IN DATE,
-    p_arrival_time IN DATE,
+    p_departure_time IN TIMESTAMP,
+    p_arrival_time IN TIMESTAMP,
     p_destination IN VARCHAR2,
     p_source IN VARCHAR2,
     p_status IN VARCHAR2,
@@ -105,35 +133,40 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_FLIGHT_PKG AS
     DBMS_OUTPUT.PUT_LINE('Output value for destination: ' || l_d_airport_count);
 
     IF l_d_airport_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20001, 'Destination airport does not exist in airport table');
+      DBMS_OUTPUT.PUT_LINE('Destination airport does not exist in airport table');
+      RETURN;
     END IF;
 
     l_s_airport_count := ONBOARD_FLIGHT_PKG.check_airport(p_source);
     DBMS_OUTPUT.PUT_LINE('Output value for source: ' || l_s_airport_count);
 
     IF l_s_airport_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20002, 'Source airport does not exist in airport table');
+      DBMS_OUTPUT.PUT_LINE('Source airport does not exist in airport table');
+      RETURN;
     END IF;
 
     l_airline_count := ONBOARD_FLIGHT_PKG.check_airline(p_airline_id);
     DBMS_OUTPUT.PUT_LINE('Output value for airline: ' || l_airline_count);
 
     IF l_airline_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20002, 'Airline does not exist in airline table');
+      DBMS_OUTPUT.PUT_LINE('Airline does not exist in airline table');
+      RETURN;
     END IF;
 
     l_terminal_count := ONBOARD_FLIGHT_PKG.check_terminal(p_terminal_id);
     DBMS_OUTPUT.PUT_LINE('Output value for terminal: ' || l_terminal_count);
 
     IF l_terminal_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20002, 'Terminal does not exist in terminal table');
+      DBMS_OUTPUT.PUT_LINE('Terminal does not exist in terminal table');
+      RETURN;
     END IF;
 
      l_duration := ONBOARD_FLIGHT_PKG.get_duration(p_arrival_time, p_departure_time);
-    DBMS_OUTPUT.PUT_LINE('Duration Match: ' || l_duration);
+    DBMS_OUTPUT.PUT_LINE('Duration Got: ' || l_duration);
 
     IF l_duration = 0 THEN
-      RAISE_APPLICATION_ERROR(-20002, 'Duration is Wrong');
+      DBMS_OUTPUT.PUT_LINE('Duration is Wrong');
+      RETURN;
     END IF;
 
     -- Insert flight record

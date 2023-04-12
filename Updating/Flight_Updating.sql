@@ -1,3 +1,20 @@
+CREATE OR REPLACE TRIGGER UPDATE_SCHEDULE_TRG
+BEFORE UPDATE ON SCHEDULE
+FOR EACH ROW
+DECLARE
+  l_now TIMESTAMP := SYSTIMESTAMP;
+BEGIN
+    -- Check if arrival and departure date are in the future
+    IF :NEW.departure_time <= l_now THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Departure date should be in the future');
+    END IF;
+
+    IF :NEW.arrival_time <= l_now THEN
+        RAISE_APPLICATION_ERROR(-20004, 'Arrival date should be in the future');
+    END IF;
+END;
+/
+
 CREATE OR REPLACE PACKAGE flight_updating_pkg AS
 
   PROCEDURE update_flight(
