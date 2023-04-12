@@ -1,8 +1,8 @@
 CREATE OR REPLACE PACKAGE ORDER_DELETE_PKG AS
 
-  PROCEDURE delete_baggage(in_ticket_id IN NUMBER);
+  PROCEDURE delete_baggage(p_baggage_id IN NUMBER);
 
-  PROCEDURE delete_ticket(in_ticket_id IN NUMBER);
+  PROCEDURE delete_ticket(p_ticket_id IN NUMBER);
 
   PROCEDURE delete_order(
     p_order_id IN NUMBER
@@ -13,6 +13,31 @@ END ORDER_DELETE_PKG;
 
 CREATE OR REPLACE PACKAGE BODY ORDER_DELETE_PKG AS
 
+  PROCEDURE delete_baggage(
+    p_baggage_id IN NUMBER
+  ) AS
+    invalid_baggage_id EXCEPTION;
+  BEGIN
+    -- Validate inputs
+    IF p_baggage_id IS NULL OR p_baggage_id <= 0 THEN
+      RAISE invalid_baggage_id;
+    END IF;
+    
+    -- delete baggage
+    DELETE FROM baggage
+      WHERE baggage_id = p_baggage_id;
+    COMMIT; 
+    
+    DBMS_OUTPUT.PUT_LINE('Data successfully deleted from baggage table');
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          DBMS_OUTPUT.PUT_LINE('No data found with the given baggage_id');
+        WHEN invalid_baggage_id THEN 
+        dbms_output.put_line('Invalid baggage id');
+        WHEN OTHERS THEN
+          DBMS_OUTPUT.PUT_LINE('An error occurred while deleting data: ' || SQLERRM);
+          ROLLBACK;
+    END delete_baggage;
 
  PROCEDURE delete_ticket(
     p_ticket_id IN NUMBER
@@ -61,7 +86,7 @@ CREATE OR REPLACE PACKAGE BODY ORDER_DELETE_PKG AS
     END IF;
 
     -- delete order
-    DELETE FROM ORDER
+    DELETE FROM ORDERS
       WHERE order_id = p_order_id;
 
    IF p_order_id IS NOT NULL AND p_order_id > 0 THEN
@@ -72,8 +97,7 @@ CREATE OR REPLACE PACKAGE BODY ORDER_DELETE_PKG AS
          delete_ticket(ticket_rec.ticket_id);
       END LOOP;
    END IF;
-
-
+   
     COMMIT; 
     DBMS_OUTPUT.PUT_LINE('Data successfully deleted from order table');
       EXCEPTION

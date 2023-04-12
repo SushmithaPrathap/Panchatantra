@@ -656,7 +656,7 @@ IS
 
 -- Generating 10 insert statements 
 DECLARE 
-  bag_id NUMBER := 1001; 
+  bag_id NUMBER := 7000; 
 BEGIN 
   FOR i IN 1..5 LOOP 
     insert_baggage(ADMIN.baggage_id_seq.NEXTVAL, bag_id);
