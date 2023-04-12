@@ -237,3 +237,19 @@ EXCEPTION
 END;
 /
 select * from weekwise_transaction_details;
+/*
+View 9: Number of passengers trvelling through the airport(tickets booked so far)
+*/
+
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW people_travelled AS
+    SELECT COUNT(DISTINCT o.passenger_id) AS booking_count
+    FROM orders o
+    INNER JOIN ticket t ON o.order_id = t.order_id';
+    DBMS_OUTPUT.PUT_LINE('people_travelled view was created successfully');
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+select * from people_travelled;
