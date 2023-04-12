@@ -17,8 +17,8 @@ CREATE OR REPLACE PACKAGE BODY passenger_delete_pkg AS
     FUNCTION fn_delete_order_and_baggage(order_id_in NUMBER, ticket_id_in NUMBER) RETURN BOOLEAN IS
       BEGIN
         -- Delete data from ORDER table
-        DELETE FROM ORDERS WHERE order_id = order_id_in;
-    
+        --DELETE FROM ORDERS WHERE order_id = order_id_in;
+        UPDATE ORDERS set status = 'Cancelled' where order_id = order_id_in;
         -- Delete data from BAGGAGE table
         DELETE FROM BAGGAGE WHERE ticket_id = ticket_id_in;
     
