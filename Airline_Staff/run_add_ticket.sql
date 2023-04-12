@@ -1,6 +1,6 @@
 --TEST CASES FOR TICKET UPDATE
 
--- EXECUTE ONBOARD_TICKET_PKG.INSERT_TICKET(50004, 4005, 'E6', 'Gluten Free', 'BOS', 'HKG', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Business', 'Cash', 2345, 250.00);
+EXECUTE ONBOARD_TICKET_PKG.INSERT_TICKET(50004, 4005, 'E6', 'Gluten Free', 'BOS', 'HKG', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Business', 'Cash', 2345, 250.00);
 -- /
 -- SELECT weight FROM baggage WHERE ticket_id = 7005;
 -- EXECUTE ONBOARD_TICKET_PKG.INSERT_TICKET(50004, 4005, 'P6', 'Gluten Free', 'HKG', 'BOM', TO_DATE('2023-05-16', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 150.00);
@@ -27,9 +27,9 @@
 --EXECUTE ticket_updating_pkg.update_ticket(7006, 50004, 4005, 'E6', 'Gluten Free', 'BOS', 'HKG', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Business', 'Cash', 2345, 250.00);
 --/
 --SELECT weight FROM baggage WHERE ticket_id = 7005;
-EXECUTE ticket_updating_pkg.update_ticket(7006, 50004, 4005, 'P6', 'Gluten Free', 'HKG', 'BOM', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 150);
-/
-SELECT weight FROM baggage WHERE ticket_id = 7006;
+-- EXECUTE ticket_updating_pkg.update_ticket(7006, 50004, 4005, 'P6', 'Gluten Free', 'HKG', 'BOM', TO_DATE('2023-05-15', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 150);
+-- /
+-- SELECT weight FROM baggage WHERE ticket_id = 7006;
 -- --invalid order_id
 -- EXECUTE ticket_updating_pkg.update_ticket(7006, 5000, 4005, 'P6', 'Gluten Free', 'HKG', 'BOM', TO_DATE('2023-05-16', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 150.00);
 -- --invalid order_id null
