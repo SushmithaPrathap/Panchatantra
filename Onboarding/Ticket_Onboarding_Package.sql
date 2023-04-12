@@ -143,14 +143,14 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
         RAISE INVALID_INPUTS;
     END IF;
 
-    l_flight_count := ONBOARD_FLIGHT_PKG.check_flight(in_flight_id);
+    l_flight_count := ONBOARD_TICKET_PKG.check_flight(in_flight_id);
     DBMS_OUTPUT.PUT_LINE('Output value for flight: ' || l_flight_count);
 
     IF l_flight_count = 0 THEN
       RAISE_APPLICATION_ERROR(-20001, 'Flight_id does not exist in flight table');
     END IF;
 
-        l_d_airport_count := ONBOARD_FLIGHT_PKG.check_airport(in_destination);
+      l_d_airport_count := ONBOARD_FLIGHT_PKG.check_airport(in_destination);
     DBMS_OUTPUT.PUT_LINE('Output value for destination: ' || l_d_airport_count);
 
     IF l_d_airport_count = 0 THEN
@@ -163,8 +163,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
     IF l_s_airport_count = 0 THEN
       RAISE_APPLICATION_ERROR(-20002, 'Source airport does not exist in airport table');
     END IF;
-
-    dbms_output.put_line('ticket_id', l_ticket_id);
+    
     -- Insert ticket record
     INSERT INTO ticket (
      ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount
