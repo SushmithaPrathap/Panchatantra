@@ -74,6 +74,42 @@ EXCEPTION
 END;
 /
 
+/*
+View 4: View to see the number of employees per airline
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW airline_staff_counts AS
+    SELECT airline_name, COUNT(*) AS num_staff
+    FROM airline_staff
+    JOIN airlines ON airline_staff.airline_id = airlines.airline_id
+    GROUP BY airline_name';
+    DBMS_OUTPUT.PUT_LINE('The airline_staff_counts view was created successfully');
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+/*
+View 5: The Below block of code creates views from the ticket table for monthly ticket sales
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW monthly_ticket_sales AS
+SELECT TO_CHAR(date_of_travel, 'YYYY-MM') AS month,
+       SUM(Transaction_amount) AS total_sales
+FROM ticket
+GROUP BY TO_CHAR(date_of_travel, 'YYYY-MM')';
+    DBMS_OUTPUT.PUT_LINE('The monthly_ticket_sales view was created successfully');
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+
+
+GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ACCOUNTANT;
+GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ANALYST;
+
+select * from monthly_ticket_sales;
+
 -- Test case for View 1
 SELECT * FROM flight_duration_analysis;
 SELECT * FROM flight_duration_analysis where airline_id = 1005; 
