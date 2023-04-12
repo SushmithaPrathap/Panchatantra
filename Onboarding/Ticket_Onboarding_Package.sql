@@ -1,3 +1,16 @@
+CREATE OR REPLACE TRIGGER INSERT_TICKET_TRG
+BEFORE INSERT ON TICKET
+FOR EACH ROW
+DECLARE
+  l_now TIMESTAMP := SYSTIMESTAMP;
+BEGIN
+    -- Check if date_of_travel are in the future
+    IF :NEW.date_of_travel <= l_now THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Date_of_travel should be in the future');
+    END IF;
+END;
+/
+
 /*
 Stored Procedure for updating baggage weight based on the class
 */
@@ -125,7 +138,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
         OR LENGTH(in_class)<=0
         OR LENGTH(in_payment_type)<=0
         OR in_member_id <= 0
-        OR in_transaction_amount <= 0
+        OR in_transaction_amount <= 0.0
     ) THEN 
         RAISE INVALID_INPUTS;
     END IF;

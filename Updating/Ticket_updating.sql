@@ -1,3 +1,17 @@
+CREATE OR REPLACE TRIGGER UPDATE_TICKET_TRG
+BEFORE UPDATE ON TICKET
+FOR EACH ROW
+DECLARE
+  l_now TIMESTAMP := SYSTIMESTAMP;
+BEGIN
+    -- Check if date_of_travel are in the future
+    IF :NEW.date_of_travel <= l_now THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Date_of_travel should be in the future');
+    END IF;
+END;
+/
+
+
 CREATE OR REPLACE PACKAGE ticket_updating_pkg AS
 
   FUNCTION check_class(in_class IN VARCHAR2, in_ticket_id NUMBER) RETURN VARCHAR2;
@@ -42,7 +56,6 @@ PROCEDURE update_baggage(
     p_ticket_id IN NUMBER,
     p_weight IN FLOAT
   )AS 
-    weight_array VARCHAR2(200) := '100.00, 200.00, 300.00, 400.00';
     invalid_ticket_id EXCEPTION;
     invalid_baggage_id EXCEPTION;
     invalid_weight EXCEPTION;
@@ -57,14 +70,9 @@ PROCEDURE update_baggage(
       RAISE invalid_ticket_id;
     END IF;
 
-    IF p_weight <= 0 or p_weight IS NULL THEN
+    IF p_weight <= 0.0 or p_weight IS NULL THEN
       RAISE invalid_weight;
     END IF;
-
-    IF INSTR(weight_array, p_weight) = 0 THEN
-    RAISE_APPLICATION_ERROR(-20004, 'Weight must be one of the following: ' || weight_array);
-    END IF;
-
 
      -- Update baggage
     UPDATE baggage SET
@@ -103,7 +111,7 @@ PROCEDURE update_baggage(
     l_s_airport_count NUMBER;
     l_class NUMBER;
     l_bag NUMBER;
-    v_weight NUMBER;
+    v_weight FLOAT;
     -- Define custom exceptions for invalid inputs
     invalid_ticket_id EXCEPTION;
     invalid_order_id EXCEPTION;
@@ -132,31 +140,31 @@ PROCEDURE update_baggage(
       RAISE invalid_order_id;
     END IF;
     
-    IF LENGTH(p_seat_no) <= 0 or p_seat_no IS NULL THEN
+    IF LENGTH(p_seat_no) <= 0  THEN
       RAISE invalid_seat_no;
     END IF;
     
-    IF LENGTH(p_meal_preferences) <= 0 or p_meal_preferences IS NULL THEN
+    IF LENGTH(p_meal_preferences) <= 0 THEN
       RAISE invalid_meal_preferences;
     END IF;
     
-    IF LENGTH(p_source) <= 0 or p_source IS NULL THEN
+    IF LENGTH(p_source) <= 0  THEN
       RAISE invalid_source;
     END IF;
 
-    IF LENGTH(p_destination) <= 0 or p_destination IS NULL THEN
+    IF LENGTH(p_destination) <= 0  THEN
       RAISE invalid_destination;
     END IF;
 
-    IF LENGTH(p_class) <= 0 or p_class IS NULL THEN
+    IF LENGTH(p_class) <= 0 THEN
       RAISE invalid_class;
     END IF;
 
-    IF LENGTH(p_member_id) <= 0 or p_member_id IS NULL THEN
+    IF LENGTH(p_member_id) <= 0 THEN
       RAISE invalid_member_id;
     END IF;
     
-    IF p_transaction_amount <= 0 or p_transaction_amount IS NULL THEN
+    IF p_transaction_amount <= 0.0 THEN
       RAISE invalid_transaction_amount;
     END IF;
 
@@ -198,13 +206,20 @@ PROCEDURE update_baggage(
   IF l_class = p_class THEN
    DBMS_OUTPUT.PUT_LINE('No change in class ' || l_class);
   ELSE
-   IF p_ticket_id IS NOT NULL AND p_ticket_id > 0 THEN
-      IF p_class = 'Business' THEN
-         v_weight := 200.00;
-      ELSE
-         v_weight := 100.00;
-      END IF;
-
+  --  IF p_ticket_id IS NOT NULL AND p_ticket_id > 0 THEN
+     
+     IF p_class = 'Business' THEN
+    v_weight := 200.00;
+    END IF;
+    IF p_class = 'Business Pro' THEN
+    v_weight := 300.00;
+    END IF;
+    IF p_class = 'First Class' THEN
+    v_weight := 400.00;
+    END IF;
+    IF p_class = 'Economy' THEN
+    v_weight := 100.00;
+    END IF;
       -- Get all the ticket_ids associated with the given ticket_id
       FOR baggage_rec IN (
          SELECT baggage_id 
@@ -217,7 +232,7 @@ PROCEDURE update_baggage(
             baggage_rec.baggage_id, p_ticket_id, v_weight
          );
       END LOOP;
-   END IF;
+  --  END IF;
 END IF;
 
   EXCEPTION
