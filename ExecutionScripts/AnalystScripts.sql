@@ -133,10 +133,7 @@ END;
 View 7: The Below block of code creates a view to see status of flights
 */
 select flight_id, soruce, destination, status from flight;
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 
 GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ACCOUNTANT;
 GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ANALYST;
