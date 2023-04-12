@@ -124,14 +124,10 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE('An error occurred: '
       || SQLERRM);
 END;
-<<<<<<< Updated upstream
-/
-=======
 /*
 View 7: The Below block of code creates a view to see status of flights
 */
 select flight_id, soruce, destination, status from flight;
->>>>>>> Stashed changes
 
 GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ACCOUNTANT;
 GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ANALYST;
@@ -222,6 +218,22 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
 /
-
 -- Test case for View 7
 select * from no_of_bookings;
+/*
+View 8: Week wise transaction details
+*/
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW weekwise_transaction_details AS
+SELECT TO_CHAR(date_of_travel, ''IW'') AS week_number,
+       TO_CHAR(date_of_travel, ''YYYY'') AS year_number,
+       COUNT(ticket_id) AS num_of_tickets,
+       SUM(transaction_amount) AS total_amount
+FROM ticket
+GROUP BY TO_CHAR(date_of_travel, ''IW''), TO_CHAR(date_of_travel, ''YYYY'')';
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+select * from weekwise_transaction_details;

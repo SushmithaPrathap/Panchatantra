@@ -24,6 +24,9 @@ View 2 The Below block of code creates views from the airline_staff table
 
 
 
+
+
+
 CREATE OR REPLACE VIEW airline_staff_counts AS
     SELECT airline_name, COUNT(*) AS num_staff
     FROM airline_staff
@@ -47,7 +50,4 @@ GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ACCOUNTANT;
 GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ANALYST;
 
 select * from monthly_ticket_sales;
-<<<<<<< Updated upstream
-=======
 select * from airlines;
->>>>>>> Stashed changes
