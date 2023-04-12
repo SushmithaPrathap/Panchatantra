@@ -242,7 +242,7 @@ BEGIN
   IF table_exists = 0 THEN
     EXECUTE IMMEDIATE 'CREATE TABLE terminal (
       terminal_id NUMBER PRIMARY KEY,
-      terminal_name VARCHAR2(100)
+      terminal_name VARCHAR2(100) UNIQUE
     )';
     dbms_output.put_line('Table terminal has been created');
   ELSE
@@ -289,7 +289,6 @@ END;
 
 --EXECUTE insert_passenger;
 EXECUTE passenger_onboarding_pkg.insert_passenger(25, '123 Main St, Anytown, USA', 'Male', '1234567890', 'John', 'Doe', TO_DATE('1997-05-22', 'YYYY-MM-DD'), 1234567890, 'johndoe@example.com');
-EXECUTE passenger_onboarding_pkg.insert_passenger(35, '456 Oak St, Anytown, USA', 'Female', '1234567890', 'Jane', 'Smith', TO_DATE('1987-08-15', 'YYYY-MM-DD'), 2345678901, 'janesmith@example.com');
 EXECUTE passenger_onboarding_pkg.insert_passenger(42, '789 Maple Ave, Anytown, USA', 'Male', '1234567890', 'Bob', 'Johnson', TO_DATE('1980-02-10', 'YYYY-MM-DD'), 3456789012, 'bobjohnson@example.com');
 EXECUTE passenger_onboarding_pkg.insert_passenger(30, '321 Elm St, Anytown, USA', 'Female', '1234567890', 'Maria', 'Garcia', TO_DATE('1992-11-01', 'YYYY-MM-DD'), 4567890123, 'mariagarcia@example.com');
 EXECUTE passenger_onboarding_pkg.insert_passenger(50, '789 Oak St, Anytown, USA', 'Male', '1234567890', 'David', 'Lee', TO_DATE('1973-06-12', 'YYYY-MM-DD'), 5678901234, 'davidlee@example.com');
