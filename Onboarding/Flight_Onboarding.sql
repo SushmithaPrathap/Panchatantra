@@ -6,13 +6,11 @@ DECLARE
 BEGIN
     -- Check if arrival and departure date are in the future
     IF :NEW.departure_time <= l_now THEN
-      DBMS_OUTPUT.PUT_LINE('Departure date should be in the future');
-    
+        RAISE_APPLICATION_ERROR(-20003, 'Departure date should be in the future');
     END IF;
 
     IF :NEW.arrival_time <= l_now THEN
-      DBMS_OUTPUT.PUT_LINE('Arrival date should be in the future');
-     
+        RAISE_APPLICATION_ERROR(-20004, 'Arrival date should be in the future');
     END IF;
 END;
 /

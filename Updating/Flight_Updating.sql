@@ -32,8 +32,8 @@ CREATE OR REPLACE PACKAGE flight_updating_pkg AS
    PROCEDURE update_schedule(
     p_schedule_id IN VARCHAR2,
     p_flight_id IN NUMBER,
-    p_departure_time IN DATE,
-    p_arrival_time IN DATE,
+    p_departure_time IN TIMESTAMP,
+    p_arrival_time IN TIMESTAMP,
     p_terminal_id IN NUMBER
   );
 END flight_updating_pkg;
@@ -94,21 +94,24 @@ CREATE OR REPLACE PACKAGE BODY flight_updating_pkg AS
     DBMS_OUTPUT.PUT_LINE('Output value for destination: ' || l_d_airport_count);
 
     IF l_d_airport_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20001, 'Destination airport does not exist in airport table');
+      DBMS_OUTPUT.PUT_LINE('Destination airport does not exist in airport table');
+      RETURN;
     END IF;
 
     l_s_airport_count := ONBOARD_FLIGHT_PKG.check_airport(p_source);
     DBMS_OUTPUT.PUT_LINE('Output value for source: ' || l_s_airport_count);
 
     IF l_s_airport_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20002, 'Source airport does not exist in airport table');
+      DBMS_OUTPUT.PUT_LINE('Source airport does not exist in airport table');
+      RETURN;
     END IF;
 
     l_airline_count := ONBOARD_FLIGHT_PKG.check_airline(p_airline_id);
     DBMS_OUTPUT.PUT_LINE('Output value for airline: ' || l_airline_count);
 
     IF l_airline_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20002, 'Airline does not exist in airline table');
+      DBMS_OUTPUT.PUT_LINE('Airline does not exist in airline table');
+      RETURN;
     END IF;
     
     -- Update flight
@@ -147,8 +150,8 @@ CREATE OR REPLACE PACKAGE BODY flight_updating_pkg AS
  PROCEDURE update_schedule(
   p_schedule_id IN VARCHAR2,
   p_flight_id IN NUMBER,
-  p_departure_time IN DATE,
-  p_arrival_time IN DATE,
+  p_departure_time IN TIMESTAMP,
+  p_arrival_time IN TIMESTAMP,
   p_terminal_id IN NUMBER
 ) AS
   -- Define custom exceptions for invalid inputs
@@ -174,7 +177,8 @@ BEGIN
   DBMS_OUTPUT.PUT_LINE('Duration Match: ' || l_duration);
 
   IF l_duration = 0 THEN
-    RAISE_APPLICATION_ERROR(-20002, 'Duration is Wrong');
+    DBMS_OUTPUT.PUT_LINE('Duration is Wrong');
+    RETURN;
   END IF;
 
   UPDATE schedule SET

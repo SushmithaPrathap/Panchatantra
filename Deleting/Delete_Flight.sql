@@ -61,9 +61,14 @@ CREATE OR REPLACE PACKAGE BODY FLIGHT_DELETE_PKG AS
     delete_schedule(l_schedule_id);
    END IF;
 
-    -- delete flight
-    DELETE FROM FLIGHT
+    -- update flight status to cancelled
+    -- DELETE FROM FLIGHT
+    --   WHERE flight_id = p_flight_id;
+
+    UPDATE FLIGHT 
+      SET status = 'Cancelled'
       WHERE flight_id = p_flight_id;
+    COMMIT;
 
     COMMIT; 
     DBMS_OUTPUT.PUT_LINE('Data successfully deleted from flight table');

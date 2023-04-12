@@ -12,16 +12,39 @@ EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Embraer E175',  TO_TIMEST
 EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A320',  TO_TIMESTAMP('2023-04-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-04-25 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS', 'On Time', 300, 2, 0, 6001);
 
 --Test case with valid inputs:
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Boeing 747', TO_TIMESTAMP('2023-05-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-05-02 06:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'JFK', 'Delayed', 400, 1, 1, 450);
+EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Boeing 747', TO_TIMESTAMP('2023-05-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-05-02 06:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'JFK', 'Delayed', 400, 1, 0, 6000);
 --Test case with departure time after arrival time:
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A380', TO_TIMESTAMP('2023-06-01 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-06-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'SYD', 'LAX', 'On Time', 500, 2, 2, 520);
+EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A380', TO_TIMESTAMP('2023-06-01 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-06-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'SYD', 'LAX', 'On Time', 500, 2, 0, 6001);
 --Test case with invalid destination airport code:
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Boeing 737', TO_TIMESTAMP('2023-07-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-07-01 18:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'XYZ', 'LAX', 'On Time', 200, 3, 3, 180);
+EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Boeing 737', TO_TIMESTAMP('2023-07-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-07-01 18:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'XYZ', 'LAX', 'On Time', 200, 3, 0, 6002);
 --Test case with invalid source airport code:
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A330', TO_TIMESTAMP('2023-08-01 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-08-02 12:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'XYZ', 'Delayed', 300, 4, 4, 280);
+EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A330', TO_TIMESTAMP('2023-08-01 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-08-02 12:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'XYZ', 'Delayed', 300, 4, 0, 6001);
 --Test case with empty flight type:
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('', TO_TIMESTAMP('2023-09-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-09-02 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'LHR', 'On Time', 300, 5, 5, 290);
+EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('', TO_TIMESTAMP('2023-09-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-09-02 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'LHR', 'On Time', 300, 5, 5, 6000);
 --Test case with negative number of passengers:
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A340', TO_TIMESTAMP('2023-10-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-10-02 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'LHR', 'On Time', -100, 6, 6, 280);
+EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A340', TO_TIMESTAMP('2023-10-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-10-02 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'LHR', 'On Time', -100, 6, 0, 6002);
 --Test case with negative airline ID:
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Boeing 767', TO_TIMESTAMP('2023-11-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-11-02 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'LHR', '
+EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Boeing 767', TO_TIMESTAMP('2023-11-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-11-02 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'LHR', 'Delayed', 100, -6, 0, 6000);
+
+
+--TEST CASES FOR FLIGHT UPDATES;
+
+
+EXECUTE airportadmin.flight_updating_pkg.update_flight(4004, 'Airbus A380', 'LHR', 'BOS', 'Delayed', 300, 2, 0);
+--inavlid source
+EXECUTE airportadmin.flight_updating_pkg.update_flight(4004, 'Airbus A380', 'XAT', 'BOS', 'On Time', 300, 2, 0);
+--inavlid destination
+EXECUTE airportadmin.flight_updating_pkg.update_flight(4004, 'Airbus A380', 'LHR', 'TAP', 'On Time', 300, 2, 0);
+--invalid flight id
+EXECUTE airportadmin.flight_updating_pkg.update_flight(4, 'Airbus A380', 'LHR', 'TAP', 'On Time', 300, 2, 0);
+--invalid pax
+EXECUTE airportadmin.flight_updating_pkg.update_flight(4004, 'Airbus A380', 'LHR', 'TAP', 'On Time', 0, 2, 0);
+--invalid pax
+EXECUTE airportadmin.flight_updating_pkg.update_flight(4003, '', 'LHR', 'TAP', 'On Time', 0, 2, 0);
+
+
+--TEST CASES FOR FLIGHT DELETE
+
+EXECUTE airportadmin.FLIGHT_DELETE_PKG.delete_flight(4003);
+/
+select * from flight;
