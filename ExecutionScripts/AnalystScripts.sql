@@ -120,3 +120,11 @@ SELECT * FROM occupancy_rate_analysis where airline_name = 'American Airlines';
 
 -- Test case for View 3
 SELECT * FROM flight_cancellation_counts;
+
+
+/*
+View 4 : Baggage transaction – The number of bags per transaction
+
+SELECT COUNT(B.baggage_id) AS BAGGAGE_COUNT, O.ORDER_ID FROM ((BAGGAGE B JOIN TICKET T ON B.TICKET_ID = T.TICKET_ID) JOIN ORDERS O ON O.ORDER_ID = T.ORDER_ID) GROUP BY O.ORDER_ID;
+
+*/
