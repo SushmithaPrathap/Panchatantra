@@ -161,3 +161,22 @@ END;
 
 -- Test case for View 6
 select * from baggage_count_per_order;
+
+/*
+View 7 : Number of Bookings
+*/
+
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW no_of_bookings AS
+    SELECT COUNT(ORDER_ID) AS NO_OF_BOOKINGS 
+    FROM ORDERS 
+    WHERE STATUS = ''Completed''';
+    DBMS_OUTPUT.PUT_LINE('no_of_bookings view was created successfully');
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
+-- Test case for View 7
+select * from no_of_bookings;
