@@ -46,23 +46,24 @@ CREATE OR REPLACE PACKAGE BODY FLIGHT_DELETE_PKG AS
   ) AS
     invalid_flight_id EXCEPTION;
     l_schedule_id NUMBER;
+    l_count NUMBER;
   BEGIN
-    -- Validate inputs
-    IF p_flight_id IS NULL OR p_flight_id <= 0 THEN
-      RAISE invalid_flight_id;
+    -- Validate inputs 
+    select flight_id into l_count from flight where flight_id = p_flight_id;
+
+    IF p_flight_id IS NULL OR p_flight_id <= 0 OR l_count = 0 THEN
+     RAISE invalid_flight_id;
     END IF;
+
+   select schedule_id into l_schedule_id from schedule where flight_id = p_flight_id;
+    
+   IF l_schedule_id IS NOT NULL THEN
+    delete_schedule(l_schedule_id);
+   END IF;
 
     -- delete flight
     DELETE FROM FLIGHT
       WHERE flight_id = p_flight_id;
-
-    select schedule_id into l_schedule_id from schedule where flight_id = p_flight_id;
-    
-    IF l_schedule_id IS NULL OR l_schedule_id <= 0 THEN
-    BEGIN
-    delete_schedule(l_schedule_id);
-    END;
-    END IF;
 
     COMMIT; 
     DBMS_OUTPUT.PUT_LINE('Data successfully deleted from flight table');

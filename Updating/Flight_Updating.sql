@@ -109,6 +109,8 @@ CREATE OR REPLACE PACKAGE BODY flight_updating_pkg AS
     COMMIT;
 
   EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+      DBMS_OUTPUT.PUT_LINE('No data found with the given flight_id');
     WHEN invalid_flight_id THEN 
       dbms_output.put_line('Invalid flight id');
     WHEN invalid_flight_type THEN 

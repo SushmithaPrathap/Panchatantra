@@ -87,7 +87,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_FLIGHT_PKG AS
 
    IF
     (
-        LENGTH(p_flight_type)<= 0
+        LENGTH(p_flight_type) <= 0
         OR p_departure_time is NULL
         OR p_arrival_time is NULL
         OR LENGTH(p_source) <= 0
