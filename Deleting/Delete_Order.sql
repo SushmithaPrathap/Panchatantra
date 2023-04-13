@@ -58,7 +58,7 @@ CREATE OR REPLACE PACKAGE BODY ORDER_DELETE_PKG AS
     payment_type = 'Cancelled'
     WHERE ticket_id = p_ticket_id;
 
-    select seats_filled into l_count from flight f WHERE f.flight_id = (
+    select f.seats_filled into l_count from flight f WHERE f.flight_id = (
     SELECT t.flight_id FROM TICKET t WHERE t.ticket_id = p_ticket_id
     );
       IF l_count = 0 THEN

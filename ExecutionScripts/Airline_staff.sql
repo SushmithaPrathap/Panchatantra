@@ -52,6 +52,8 @@ EXECUTE airportadmin.FLIGHT_DELETE_PKG.delete_flight(4003);
 
 --TEST CASES FOR TICKET INSERT
 
+EXECUTE ONBOARD_TICKET_PKG.INSERT_TICKET(50008, 4004, 'B7', 'Vegetarian', 'LHR', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345,350.00);
+
 --invalid source and destination
 EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50002, 4000, 'P6', 'Gluten Free', 'ABC', 'LHR', TO_DATE('2023-04-16', 'YYYY-MM-DD'), 'Business', 'Cash', 2345, 250.00);
 EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4001, 'P5', 'Vegetarian', 'BOM', 'THE', TO_DATE('2023-04-17', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345, 350.00);
@@ -77,6 +79,11 @@ EXECUTE airportadmin.UPDATE_TICKET_PKG.update_ticket(7002, 50004, 4004, 'A6', 'V
 --invalid order_id/
 
 --TEST CASES FOR DELETE TICKET
-EXECUTE airportadmin.ORDER_DELETE_PKG.delete_order(50005);
+EXECUTE airportadmin.ORDER_DELETE_PKG.delete_order(50008);
+--EXECUTE airportadmin.ORDER_DELETE_PKG.delete_order(5000);
 
---TEST CASES FOR DELETE TICKET
+
+
+select * from ticket;
+select * from flight;
+select * from orders;

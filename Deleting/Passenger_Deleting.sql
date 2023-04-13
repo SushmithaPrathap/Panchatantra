@@ -41,7 +41,7 @@ CREATE OR REPLACE PACKAGE BODY passenger_delete_pkg AS
     l_ticket_id Number;
     l_count Number;
     BEGIN
-    select seats_filled into l_count from flight f WHERE f.flight_id = (
+    select f.seats_filled into l_count from flight f WHERE f.flight_id = (
     SELECT t.flight_id FROM TICKET t WHERE t.order_id = p_order_id
     );
       IF l_count = 0 THEN

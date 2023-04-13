@@ -224,9 +224,7 @@ BEGIN
 
     UPDATE FLIGHT f
       SET f.SEATS_FILLED = f.SEATS_FILLED + 1
-      WHERE f.flight_id = (
-        SELECT t.flight_id FROM TICKET t WHERE t.order_id = in_order_id
-      );
+      WHERE f.flight_id = in_flight_id;
       COMMIT;
 
     --insert a schedule for the flight
