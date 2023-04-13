@@ -28,7 +28,7 @@ select * from flight_revenue;
 
 -- TEST VIEWS FOR CANCELLED FLIGHTS
 select * from airportadmin.flight_schedule where status = 'Cancelled';
-
+select * from airportadmin.flight_schedule;
     
 
     

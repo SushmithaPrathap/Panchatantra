@@ -16,11 +16,10 @@ END;
 /
 
 CREATE OR REPLACE PACKAGE ONBOARD_FLIGHT_PKG AS
-
+  FUNCTION check_terminal_busy (p_terminal_id IN NUMBER,p_departure_time IN TIMESTAMP ) RETURN NUMBER;
   FUNCTION check_airport(in_airport_name IN VARCHAR2) RETURN NUMBER;
   FUNCTION check_airline(in_airline_id IN NUMBER) RETURN NUMBER;
   FUNCTION check_terminal(in_terminal_id IN NUMBER) RETURN NUMBER;
-
   FUNCTION get_duration(in_arrival_time IN TIMESTAMP, in_departure_time IN TIMESTAMP) RETURN NUMBER;
 
   PROCEDURE INSERT_FLIGHT(
@@ -39,7 +38,16 @@ END ONBOARD_FLIGHT_PKG;
 /
 
 CREATE OR REPLACE PACKAGE BODY ONBOARD_FLIGHT_PKG AS
+    FUNCTION check_terminal_busy (p_terminal_id IN NUMBER, p_departure_time IN TIMESTAMP) RETURN NUMBER IS
+      v_flight_count NUMBER;
+    BEGIN
+      SELECT COUNT(*) INTO v_flight_count FROM schedule 
+      WHERE terminal_id = p_terminal_id 
+      AND departure_time = p_departure_time;     
+      RETURN v_flight_count;
+    END check_terminal_busy;
 
+    
   FUNCTION check_airport(in_airport_name IN VARCHAR2) RETURN NUMBER IS
     v_result NUMBER;
   BEGIN
@@ -106,9 +114,9 @@ END get_duration;
     l_duration NUMBER;
     l_airline_count NUMBER;
     l_terminal_count NUMBER;
+    l_flight_count NUMBER;
     l_flight_id NUMBER := ADMIN.flight_seq.NEXTVAL;
     INVALID_INPUTS EXCEPTION;
-
     invalid_flight_id EXCEPTION;
     invalid_flight_type EXCEPTION;
     invalid_status EXCEPTION;
@@ -171,6 +179,14 @@ END get_duration;
 
     IF l_duration = 0 THEN
       DBMS_OUTPUT.PUT_LINE('Duration is Wrong');
+      RETURN;
+    END IF;
+    
+    l_flight_count:= check_terminal_busy(p_terminal_id, p_departure_time);
+    DBMS_OUTPUT.PUT_LINE('flight count: ' || l_flight_count);
+    
+    IF l_flight_count > 0 THEN
+      DBMS_OUTPUT.PUT_LINE('Terminal is Busy');
       RETURN;
     END IF;
 

@@ -11,6 +11,24 @@ BEGIN
 END;
 /
 
+--CREATE OR REPLACE TRIGGER validate_flight_location
+--BEFORE INSERT OR UPDATE ON ticket
+--FOR EACH ROW
+--DECLARE
+--    location_exists NUMBER;
+--BEGIN
+--    SELECT COUNT(*) INTO location_exists FROM ticket 
+--    WHERE flight_id = :NEW.flight_id 
+--    AND source = :NEW.source 
+--    AND destination = :NEW.destination;
+--    IF location_exists > 0 THEN
+--        RAISE_APPLICATION_ERROR(-20001, 'Cannot add new source and destination for this flight ID');
+--    END IF;
+--END;
+--/
+--CREATE UNIQUE INDEX ticket_index
+--ON ticket(flight_id, source,destination);
+
 /*
 Stored Procedure for updating baggage weight based on the class
 */
@@ -61,7 +79,7 @@ END IF;
 /
 
 CREATE OR REPLACE PACKAGE ONBOARD_TICKET_PKG AS
-
+  FUNCTION check_flight_exists(p_flight_id IN NUMBER,p_source IN VARCHAR2,p_destination IN VARCHAR2) RETURN BOOLEAN;
   FUNCTION check_airport(in_airport_name IN VARCHAR2) RETURN NUMBER;
 
   FUNCTION check_flight(in_flight_id IN NUMBER) RETURN NUMBER;
@@ -84,7 +102,52 @@ END ONBOARD_TICKET_PKG;
 /
 
 CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
+    FUNCTION check_flight_exists(
+      p_flight_id IN NUMBER,
+      p_source IN VARCHAR2,p_destination IN VARCHAR2
+    ) RETURN BOOLEAN
+    IS
+      l_flight_exists NUMBER;
+      l_flight_count NUMBER;
+    BEGIN
+      -- Check if a flight record exists with the given flight_id, source, and destination
+      
+      SELECT COUNT(*)
+      INTO l_flight_count
+      FROM ticket;
+      
+      SELECT COUNT(*) INTO l_flight_exists
+      FROM flight
+      WHERE flight_id = p_flight_id
+        AND source = p_source
+        AND destination = p_destination;
+     select count(*) into l_flight_exists from ticket 
+     where flight_id = p_flight_id and source = p_source and destination = p_destination;
 
+--        SELECT COUNT(*)
+--        INTO l_flight_count
+--        FROM ticket
+--        WHERE passenger_id = p_passenger_id
+--        AND source = p_source
+--        AND dest = p_dest;
+        SELECT COUNT(*)
+        INTO l_flight_count
+        FROM ticket
+        WHERE flight_id = p_flight_id
+        AND (source != p_source OR destination != p_destination);   
+     IF (l_flight_count > 0)  THEN
+       Return True;
+     else
+       Return False;
+--       if (l_flight_exists = 0) THEN
+--         Return False;
+--        else  
+--         return true;
+--       end if; 
+     END IF;
+      --RETURN l_flight_exists;
+      
+    END check_flight_exists;
 
   FUNCTION check_airport(in_airport_name IN VARCHAR2) RETURN NUMBER IS
     v_result NUMBER;
@@ -122,6 +185,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
     l_d_airport_count NUMBER;
     l_s_airport_count NUMBER;
     l_flight_count NUMBER;
+    l_flight_exists BOOLEAN;
     l_ticket_id NUMBER := ADMIN.ticket_seq.NEXTVAL; --seq
     -- INVALID_INPUTS EXCEPTION;
     invalid_ticket_id EXCEPTION;
@@ -203,6 +267,11 @@ BEGIN
       RETURN;
     END IF;
     
+    l_flight_exists := check_flight_exists(in_flight_id, in_source, in_destination);
+    IF l_flight_exists THEN 
+      DBMS_OUTPUT.PUT_LINE('The Source and Destination is not matching');
+      RETURN;
+    END IF;    
     -- Insert ticket record
     INSERT INTO ticket (
      ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id
