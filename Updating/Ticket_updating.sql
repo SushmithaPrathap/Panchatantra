@@ -33,8 +33,7 @@ CREATE OR REPLACE PACKAGE UPDATE_TICKET_PKG AS
     p_date_of_travel IN DATE,
     p_class IN VARCHAR2,
     p_payment_type IN VARCHAR2,
-    p_member_id IN NUMBER,
-    p_transaction_amount IN FLOAT
+    p_member_id IN NUMBER
   );
 END UPDATE_TICKET_PKG;
 /
@@ -104,8 +103,7 @@ PROCEDURE update_baggage(
     p_date_of_travel IN DATE,
     p_class IN VARCHAR2,
     p_payment_type IN VARCHAR2,
-    p_member_id IN NUMBER,
-    p_transaction_amount IN FLOAT
+    p_member_id IN NUMBER
   ) AS
     l_d_airport_count NUMBER;
     l_s_airport_count NUMBER;
@@ -124,7 +122,6 @@ PROCEDURE update_baggage(
     invalid_class EXCEPTION;
     invalid_payment_type EXCEPTION;
     invalid_member_id EXCEPTION;
-    invalid_transaction_amount EXCEPTION;
     
   BEGIN
     -- Validate inputs
@@ -163,23 +160,21 @@ PROCEDURE update_baggage(
     IF LENGTH(p_member_id) <= 0 THEN
       RAISE invalid_member_id;
     END IF;
-    
-    IF p_transaction_amount <= 0.0 THEN
-      RAISE invalid_transaction_amount;
-    END IF;
 
     l_d_airport_count := ONBOARD_FLIGHT_PKG.check_airport(p_destination);
     DBMS_OUTPUT.PUT_LINE('Output value for destination: ' || l_d_airport_count);
 
     IF l_d_airport_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20001, 'Destination airport does not exist in airport table');
+      DBMS_OUTPUT.PUT_LINE('Destination airport does not exist in airport table');
+      RETURN;
     END IF;
 
     l_s_airport_count := ONBOARD_FLIGHT_PKG.check_airport(p_source);
     DBMS_OUTPUT.PUT_LINE('Output value for source: ' || l_s_airport_count);
 
     IF l_s_airport_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20002, 'Source airport does not exist in airport table');
+      DBMS_OUTPUT.PUT_LINE('Source airport does not exist in airport table');
+      RETURN;
     END IF;
 
     l_class := UPDATE_TICKET_PKG.check_class(p_class, p_ticket_id);
@@ -197,8 +192,7 @@ PROCEDURE update_baggage(
     date_of_travel = p_date_of_travel,
     class = p_class,
     payment_type = p_payment_type,
-    member_id = p_member_id,
-    transaction_amount = p_transaction_amount
+    member_id = p_member_id
     WHERE ticket_id = p_ticket_id;
 
     COMMIT;
@@ -257,8 +251,6 @@ END IF;
       dbms_output.put_line('Invalid class');
     WHEN invalid_payment_type THEN 
       dbms_output.put_line('Invalid payment_type');
-    WHEN invalid_transaction_amount THEN 
-      dbms_output.put_line('Invalid transaction_amount');
     WHEN invalid_member_id THEN 
       dbms_output.put_line('Invalid member id');
     ROLLBACK;

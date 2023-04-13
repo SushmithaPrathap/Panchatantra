@@ -221,8 +221,7 @@ BEGIN
       date_of_travel DATE,
       class VARCHAR2(20),
       payment_type VARCHAR2(20),
-      member_id NUMBER,
-      transaction_amount FLOAT
+      member_id NUMBER
       )';
     dbms_output.put_line('Table ticket has been created');
   ELSE
@@ -260,8 +259,8 @@ BEGIN
   schedule_id NUMBER PRIMARY KEY,
   flight_id NUMBER REFERENCES flight(flight_id) ON DELETE CASCADE,
   terminal_id NUMBER REFERENCES terminal(terminal_id) ON DELETE CASCADE,
-  arrival_time DATE,
-  departure_time DATE
+  arrival_time TIMESTAMP,
+  departure_time TIMESTAMP
 )';
     dbms_output.put_line('Table Schedule has been created');
   ELSE
@@ -382,12 +381,19 @@ EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Boeing 747',  TO_TIMESTAM
 EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Embraer E175',  TO_TIMESTAMP('2023-05-21 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-05-22 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'DXB', 'BOS', 'Cancelled', 80, 3, 0, 6002);
 EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A320',  TO_TIMESTAMP('2023-04-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-04-25 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS', 'On Time', 300, 2, 0, 6001);
 
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50002, 4000, 'P6', 'Gluten Free', 'BOM', 'LHR', TO_DATE('2023-04-16', 'YYYY-MM-DD'), 'Business', 'Cash', 2345);
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4001, 'P5', 'Vegetarian', 'BOM', 'BOS', TO_DATE('2023-04-17', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345);
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4002, 'E6', 'Non-Vegetarian', 'SIN', 'LAX', TO_DATE('2023-04-19', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345);
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50004, 4004, 'A6', 'Vegan', 'DXB', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'First Class', 'Cash', 2345);
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50005, 4004, 'B7', 'Vegetarian', 'LHR', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345);
+
 select * from airport;
-select * from passenger;
-select * from orders;
+--select * from passenger;
+--select * from orders;
 select * from flight;
+--select * from airline_staff;
+--select * from terminal;
 select * from ticket;
-select * from airline_staff;
-select * from terminal;
+select * from baggage;
 --EXECUTE insert_ticket
 --EXECUTE onboard_ticket_pkg.INSERT_TICKET(50000, 4001, 'A1', 'Vegetarian', 'LAX', 'BOS', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00)

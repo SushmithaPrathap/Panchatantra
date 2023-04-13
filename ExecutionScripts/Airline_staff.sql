@@ -47,4 +47,44 @@ EXECUTE airportadmin.flight_updating_pkg.update_flight(4003, '', 'LHR', 'TAP', '
 
 EXECUTE airportadmin.FLIGHT_DELETE_PKG.delete_flight(4003);
 /
+
+
+
+--TEST CASES FOR TICKET INSERT
+
+--invalid source and destination
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50002, 4000, 'P6', 'Gluten Free', 'ABC', 'LHR', TO_DATE('2023-04-16', 'YYYY-MM-DD'), 'Business', 'Cash', 2345);
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4001, 'P5', 'Vegetarian', 'BOM', 'THE', TO_DATE('2023-04-17', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345);
+--invalid class
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4002, 'E6', 'Non-Vegetarian', 'SIN', 'LAX', TO_DATE('2023-04-19', 'YYYY-MM-DD'), '', 'Cash', 2345);
+--invalid cash
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50004, 4004, 'A6', 'Vegan', 'DXB', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'First Class', 'Cash', 2345, 0.0);
+--invalid order_id
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(0, 4004, 'B7', 'Vegetarian', 'LHR', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345);
+--previous date
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(0, 4004, 'B7', 'Vegetarian', 'LHR', 'BOS', TO_DATE('2023-04-11', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345);
+
+--TEST CASES FOR TICKET UPDATE
+--update class
+EXECUTE airportadmin.UPDATE_TICKET_PKG.update_ticket(7001, 50002, 4000, 'P6', 'Gluten Free', 'BOM', 'LHR', TO_DATE('2023-04-16', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345);
+--invalid class
+EXECUTE airportadmin.UPDATE_TICKET_PKG.update_ticket(7001, 50002, 4000, 'P6', 'Gluten Free', 'BOM', 'LHR', TO_DATE('2023-04-16', 'YYYY-MM-DD'), '', 'Cash', 2345);
+--previos source and destination
+EXECUTE airportadmin.UPDATE_TICKET_PKG.update_ticket(7001, 50002, 4000, 'P6', 'Gluten Free', 'ABC', 'LHR', TO_DATE('2023-04-16', 'YYYY-MM-DD'), 'Business', 'Cash', 2345);
+EXECUTE airportadmin.UPDATE_TICKET_PKG.update_ticket(7002, 50003, 4002, 'E6', 'Non-Vegetarian', 'SIN', 'THE', TO_DATE('2023-04-19', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345);
+--invalid cash
+EXECUTE airportadmin.UPDATE_TICKET_PKG.update_ticket(7002, 50004, 4004, 'A6', 'Vegan', 'DXB', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'First Class', 'Cash', 2345, 0.0);
+--invalid order_id
+EXECUTE airportadmin.UPDATE_TICKET_PKG.update_ticket(7001, 5000, 4000, 'P6', 'Gluten Free', 'BOM', 'BOS', TO_DATE('2023-04-16', 'YYYY-MM-DD'), 'Business', 'Cash', 2345);
+/
+
+--TEST CASES FOR DELETE TICKET
+-- EXECUTE airportadmin.FLIGHT_DELETE_PKG.delete_flight(4003);
+
+
 select * from flight;
+select * from schedule;
+select * from ticket;
+select * from baggage;
+
+--TEST CASES FOR DELETE TICKET

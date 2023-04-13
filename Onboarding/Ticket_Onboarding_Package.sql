@@ -76,8 +76,7 @@ CREATE OR REPLACE PACKAGE ONBOARD_TICKET_PKG AS
     in_date_of_travel IN DATE,
     in_class IN VARCHAR2,
     in_payment_type IN VARCHAR2,
-    in_member_id IN NUMBER,
-    in_transaction_amount IN FLOAT
+    in_member_id IN NUMBER
 );
 
 END ONBOARD_TICKET_PKG;
@@ -116,8 +115,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
     in_date_of_travel IN DATE,
     in_class IN VARCHAR2,
     in_payment_type IN VARCHAR2,
-    in_member_id IN NUMBER,
-    in_transaction_amount IN FLOAT
+    in_member_id IN NUMBER
   ) AS
     l_d_airport_count NUMBER;
     l_s_airport_count NUMBER;
@@ -138,7 +136,6 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
         OR LENGTH(in_class)<=0
         OR LENGTH(in_payment_type)<=0
         OR in_member_id <= 0
-        OR in_transaction_amount <= 0.0
     ) THEN 
         RAISE INVALID_INPUTS;
     END IF;
@@ -147,26 +144,29 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
     DBMS_OUTPUT.PUT_LINE('Output value for flight: ' || l_flight_count);
 
     IF l_flight_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20001, 'Flight_id does not exist in flight table');
+      DBMS_OUTPUT.PUT_LINE('Flight_id does not exist in flight table');
+      RETURN;
     END IF;
 
       l_d_airport_count := ONBOARD_FLIGHT_PKG.check_airport(in_destination);
     DBMS_OUTPUT.PUT_LINE('Output value for destination: ' || l_d_airport_count);
 
     IF l_d_airport_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20001, 'Destination airport does not exist in airport table');
+      DBMS_OUTPUT.PUT_LINE('Destination airport does not exist in airport table');
+      RETURN;
     END IF;
 
     l_s_airport_count := ONBOARD_FLIGHT_PKG.check_airport(in_source);
     DBMS_OUTPUT.PUT_LINE('Output value for source: ' || l_s_airport_count);
 
     IF l_s_airport_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20002, 'Source airport does not exist in airport table');
+      DBMS_OUTPUT.PUT_LINE('Source airport does not exist in airport table');
+      RETURN;
     END IF;
     
     -- Insert ticket record
     INSERT INTO ticket (
-     ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id, transaction_amount
+     ticket_id, order_id, flight_id, seat_no, meal_preferences, source, destination, date_of_travel, class, payment_type, member_id
     ) VALUES (
     l_ticket_id,
     in_order_id,
@@ -178,8 +178,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
     in_date_of_travel,
     in_class,
     in_payment_type,
-    in_member_id,
-    in_transaction_amount
+    in_member_id
     );
 
     --insert a schedule for the flight
