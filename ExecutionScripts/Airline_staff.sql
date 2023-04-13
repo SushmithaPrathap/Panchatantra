@@ -77,6 +77,6 @@ EXECUTE airportadmin.UPDATE_TICKET_PKG.update_ticket(7002, 50004, 4004, 'A6', 'V
 --invalid order_id/
 
 --TEST CASES FOR DELETE TICKET
--- EXECUTE airportadmin.FLIGHT_DELETE_PKG.delete_flight(4003);
+EXECUTE airportadmin.ORDER_DELETE_PKG.delete_order(50005);
 
 --TEST CASES FOR DELETE TICKET

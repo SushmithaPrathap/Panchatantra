@@ -222,6 +222,13 @@ BEGIN
 
     UPDATE ORDERS SET amount = in_transaction_amount WHERE order_id = in_order_id;
 
+    UPDATE FLIGHT f
+      SET f.SEATS_FILLED = f.SEATS_FILLED + 1
+      WHERE f.flight_id = (
+        SELECT t.flight_id FROM TICKET t WHERE t.order_id = in_order_id
+      );
+      COMMIT;
+
     --insert a schedule for the flight
     insert_baggage(ADMIN.baggage_id_seq.NEXTVAL, l_ticket_id);
     

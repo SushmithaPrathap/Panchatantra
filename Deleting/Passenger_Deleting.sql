@@ -39,7 +39,15 @@ CREATE OR REPLACE PACKAGE BODY passenger_delete_pkg AS
     PROCEDURE delete_ticket(p_order_id IN VARCHAR2) IS
     l_result BOOLEAN;
     l_ticket_id Number;
+    l_count Number;
     BEGIN
+    select seats_filled into l_count from flight f WHERE f.flight_id = (
+    SELECT t.flight_id FROM TICKET t WHERE t.order_id = p_order_id
+    );
+      IF l_count = 0 THEN
+
+      DBMS_OUTPUT.PUT_LINE('Number of seats_filled is: ' || l_count);
+      ELSE
       UPDATE FLIGHT f
       SET f.SEATS_FILLED = f.SEATS_FILLED - 1
       WHERE f.flight_id = (
@@ -47,13 +55,10 @@ CREATE OR REPLACE PACKAGE BODY passenger_delete_pkg AS
       );
       COMMIT;
 
+      END IF;
+
       Select ticket_id INTO l_ticket_id from TICKET where order_id = p_order_id;
-    
-      -- DELETE FROM TICKET
-      -- WHERE order_id = p_order_id;
-      UPDATE ticket SET 
-    payment_type = 'Cancelled'
-    WHERE order_id = p_order_id;
+      UPDATE ticket SET payment_type = 'Cancelled' WHERE order_id = p_order_id;
       
       l_result := fn_delete_order_and_baggage(p_order_id, l_ticket_id);
       COMMIT;

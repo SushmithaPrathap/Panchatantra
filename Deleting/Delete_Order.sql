@@ -43,6 +43,7 @@ CREATE OR REPLACE PACKAGE BODY ORDER_DELETE_PKG AS
     p_ticket_id IN NUMBER
   ) AS
     invalid_ticket_id EXCEPTION;
+    l_count NUMBER;
   BEGIN
     -- Validate inputs
     IF p_ticket_id IS NULL OR p_ticket_id <= 0 THEN
@@ -57,12 +58,28 @@ CREATE OR REPLACE PACKAGE BODY ORDER_DELETE_PKG AS
     payment_type = 'Cancelled'
     WHERE ticket_id = p_ticket_id;
 
-    UPDATE FLIGHT f
+    select seats_filled into l_count from flight f WHERE f.flight_id = (
+    SELECT t.flight_id FROM TICKET t WHERE t.ticket_id = p_ticket_id
+    );
+      IF l_count = 0 THEN
+
+      DBMS_OUTPUT.PUT_LINE('Number of seats_filled is: ' || l_count);
+      ELSE
+      UPDATE FLIGHT f
       SET f.SEATS_FILLED = f.SEATS_FILLED - 1
       WHERE f.flight_id = (
         SELECT t.flight_id FROM TICKET t WHERE t.ticket_id = p_ticket_id
       );
-    COMMIT;
+      COMMIT;
+
+      END IF;
+
+    -- UPDATE FLIGHT f
+    --   SET f.SEATS_FILLED = f.SEATS_FILLED - 1
+    --   WHERE f.flight_id = (
+    --     SELECT t.flight_id FROM TICKET t WHERE t.ticket_id = p_ticket_id
+    --   );
+    -- COMMIT;
     
     IF p_ticket_id IS NOT NULL AND p_ticket_id > 0 THEN
       -- Get all the ticket_ids associated with the given ticket_id
