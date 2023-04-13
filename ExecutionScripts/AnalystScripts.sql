@@ -92,32 +92,34 @@ EXCEPTION
       || SQLERRM);
 END;
 /
-GRANT SELECT ON  AIRPORTADMIN.airline_staff_counts TO ANALYST;
 /*
 View 5: The Below block of code creates views from the ticket table for monthly ticket sales
 */
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW monthly_ticket_sales AS
-SELECT TO_CHAR(date_of_travel, 'YYYY-MM') AS month,
-       SUM(Transaction_amount) AS total_sales
-FROM airportadmin.ticket
-GROUP BY TO_CHAR(date_of_travel, 'YYYY-MM')';
+    SELECT TO_CHAR(t.date_of_travel, ''YYYY-MM'') AS month,
+           SUM(o.AMOUNT) AS total_sales
+    FROM airportadmin.ticket t JOIN airportadmin.ORDERS o on t.ORDER_ID = o.ORDER_ID
+    GROUP BY TO_CHAR(t.date_of_travel, ''YYYY-MM'')';
   DBMS_OUTPUT.PUT_LINE('The monthly_ticket_sales view was created successfully');
 EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('An error occurred: '
       || SQLERRM);
 END;
+/
+
+
+
 /*
 View 6: The Below block of code creates a view to see number of flights between boston and california
 */
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW flights_between_boston_and_california AS
   SELECT f.flight_id, f.duration, f.flight_type, f.source, f.destination, f.status, f.no_pax, f.airline_id, f.seats_filled, s.schedule_id, s.terminal_id, s.arrival_time, s.departure_time
-  FROM airportadmin.flight f
-  JOIN airportadmin.schedule s ON f.flight_id = s.flight_id
-  WHERE f.source = ''Boston'' AND f.destination = ''California''
-  AND s.departure_time > TO_CHAR(SYSDATE, ''HH24:MI:SS'')';
+FROM airportadmin.flight f
+JOIN airportadmin.schedule s ON f.flight_id = s.flight_id
+WHERE (f.source = ''SFO'' AND f.destination = ''BOS'') OR (f.source = ''BOS'' AND f.destination = ''SFO'') AND s.departure_time > TO_CHAR(SYSDATE, ''HH24:MI:SS'')';
   DBMS_OUTPUT.PUT_LINE('The flights_between_boston_and_california view was created successfully');
 EXCEPTION
   WHEN OTHERS THEN
@@ -125,11 +127,23 @@ EXCEPTION
       || SQLERRM);
 END;
 /
-select * from flights_between_boston_and_california;
+
+
 /*
 View 7: The Below block of code creates a view to see status of flights
 */
-select flight_id, source, destination, status from flight;
+
+BEGIN
+  EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW status_of_flights AS
+    select flight_id, source, destination, status from airportadmin.flight';
+  DBMS_OUTPUT.PUT_LINE('The flights_between_boston_and_california view was created successfully');
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('An error occurred: '
+      || SQLERRM);
+END;
+/
+
 
 /*
 View 6: Assigning Airline Staff to flight
@@ -138,15 +152,16 @@ BEGIN
   EXECUTE IMMEDIATE 'CREATE VIEW staff_flight_assignments AS
 SELECT s.staff_id, s.first_name, s.last_name, f.flight_id, f.flight_type, 
     sch.arrival_time, sch.departure_time
-FROM airline_staff s
-INNER JOIN flight f ON s.airline_id = f.airline_id
-INNER JOIN schedule sch ON f.flight_id = sch.flight_id';
+FROM airportadmin.airline_staff s
+INNER JOIN airportadmin.flight f ON s.airline_id = f.airline_id
+INNER JOIN airportadmin.schedule sch ON f.flight_id = sch.flight_id';
     DBMS_OUTPUT.PUT_LINE('The monthly_ticket_sales view was created successfully');
 EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
 /
+
 /*
 View 7: Number of ticket cancellations
 */
@@ -154,8 +169,8 @@ View 7: Number of ticket cancellations
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW ticket_cancellations AS
     SELECT COUNT(*) AS num_cancellations, date_of_travel
-    FROM ticket
-    WHERE payment_type = ''CANCELLED''
+    FROM airportadmin.ticket
+    WHERE payment_type = ''Cancelled''
     GROUP BY date_of_travel';
     DBMS_OUTPUT.PUT_LINE('The ticket_cancellations view was created successfully');
 EXCEPTION
@@ -164,23 +179,7 @@ EXCEPTION
 END;
 /
 
-select * from ticket_cancellations;
 
-
-select * from staff_flight_assignments;
-
-select * from monthly_ticket_sales;
-
--- Test case for View 1
-SELECT * FROM flight_duration_analysis;
-SELECT * FROM flight_duration_analysis where airline_id = 1005; 
-
--- Test case for View 2
-SELECT * FROM occupancy_rate_analysis;
-SELECT * FROM occupancy_rate_analysis where airline_name = 'American Airlines'; 
-
--- Test case for View 3
-SELECT * FROM flight_cancellation_counts;
 
 /*
 View 6 : Baggage transaction – The number of bags per transaction
@@ -200,7 +199,7 @@ END;
 /
 
 -- Test case for View 6
-select * from baggage_count_per_order;
+
 
 /*
 View 7 : Number of Bookings
@@ -218,24 +217,24 @@ EXCEPTION
 END;
 /
 -- Test case for View 7
-select * from no_of_bookings;
+
 /*
 View 8: Week wise transaction details
 */
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW weekwise_transaction_details AS
-SELECT TO_CHAR(date_of_travel, ''IW'') AS week_number,
-       TO_CHAR(date_of_travel, ''YYYY'') AS year_number,
-       COUNT(ticket_id) AS num_of_tickets,
-       SUM(transaction_amount) AS total_amount
-FROM airportadmin.ticket
-GROUP BY TO_CHAR(date_of_travel, ''IW''), TO_CHAR(date_of_travel, ''YYYY'')';
+SELECT TO_CHAR(t.date_of_travel, ''IW'') AS week_number,
+       TO_CHAR(t.date_of_travel, ''YYYY'') AS year_number,
+       COUNT(t.ticket_id) AS num_of_tickets,
+       SUM(o.amount) AS total_amount
+        FROM airportadmin.ticket t JOIN airportadmin.ORDERS o on t.ORDER_ID = o.ORDER_ID
+        GROUP BY TO_CHAR(date_of_travel, ''IW''), TO_CHAR(date_of_travel, ''YYYY'')';
 EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
 /
-select * from weekwise_transaction_details;
+
 /*
 View 9: Number of passengers trvelling through the airport(tickets booked so far)
 */
@@ -251,8 +250,26 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END;
 /
+
+
+-- ALL VIEWS
 select * from people_travelled;
+select * from weekwise_transaction_details;
+select * from no_of_bookings;
+select * from baggage_count_per_order;
+select * from ticket_cancellations;
+select * from airportadmin.ticket;
+select * from staff_flight_assignments;
+select * from monthly_ticket_sales;
+select * from flights_between_boston_and_california;
+select * from status_of_flights;
 
+-- Test case for View 1
+SELECT * FROM flight_duration_analysis;
+SELECT * FROM flight_duration_analysis where airline_id = 1005; 
+-- Test case for View 2
+SELECT * FROM occupancy_rate_analysis;
+SELECT * FROM occupancy_rate_analysis where airline_name = 'American Airlines'; 
 
-
-select * from airportadmin.flight;
+-- Test case for View 3
+SELECT * FROM flight_cancellation_counts;
