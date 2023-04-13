@@ -11,7 +11,7 @@ CREATE OR REPLACE PACKAGE BODY acct_pkg AS
   BEGIN
     SELECT SUM(amount) INTO total_revenue
     FROM ORDERS
-    WHERE status = 'Completed'; -- you can adjust the status criteria to your specific needs
+    WHERE status = 'Completed' or status = 'SUCCESS'; -- you can adjust the status criteria to your specific needs
     
     IF total_revenue IS NULL THEN
       DBMS_OUTPUT.PUT_LINE('No completed orders found.');

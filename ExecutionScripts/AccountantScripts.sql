@@ -11,9 +11,10 @@ VIEW 1
 */
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW  flight_revenue AS
-    SELECT sum(a.transaction_amount) as Revenue, c.airline_name from airportadmin.ticket a 
-    JOIN airportadmin.flight b on a.flight_id = b.flight_id 
-    join airportadmin.airlines c on b.airline_id = c.airline_id group by c.airline_name order by Revenue desc
+    select sum(a.amount) as Revenue, g.airline_name from airportadmin.orders a
+    JOIN airportadmin.ticket t on t.order_id = a.order_id
+    JOIN airportadmin.Flight f on f.flight_id = t.flight_id
+    JOIN airportadmin.airlines g on g.airline_id = f.airline_id group by g.airline_name order by Revenue desc
     ';
     DBMS_OUTPUT.PUT_LINE('The Flight Schedule was created successfully');
 EXCEPTION
@@ -27,3 +28,7 @@ select * from flight_revenue;
 
 -- TEST VIEWS FOR CANCELLED FLIGHTS
 select * from airportadmin.flight_schedule where status = 'Cancelled';
+
+    
+
+    

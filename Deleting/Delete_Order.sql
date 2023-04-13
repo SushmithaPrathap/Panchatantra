@@ -148,8 +148,3 @@ BEGIN
     END delete_order;
 END ORDER_DELETE_PKG;
 /
-
-
-select * from orders;
-select * from ticket;
-select * from baggage;
