@@ -22,4 +22,4 @@ priviliges to the user.
 
 ----------------
 
-<img src="C:\Users\HP\Pictures\ERD_AMS.jpg" alt="Alt text" title="ERD Airport Management System">
+![alt text](https://github.com/SushmithaPrathap/Panchatantra/blob/main/Picture%201.jpg)
