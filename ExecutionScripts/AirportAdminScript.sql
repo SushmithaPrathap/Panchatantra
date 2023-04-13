@@ -13,7 +13,7 @@ alter sequence ADMIN.airline_route_sequence restart start with 10;
 alter sequence ADMIN.orders_seq restart start with 50000;
 alter sequence ADMIN.flight_seq restart start with 4000;
 alter sequence ADMIN.passenger_seq restart start with 10000;
-alter sequence ADMIN.baggage_id_seq restart start with 1;
+alter sequence ADMIN.baggage_id_seq restart start with 10;
 alter sequence ADMIN.schedule_seq restart start with 5000;
 alter sequence ADMIN.terminal_seq restart start with 6000;
 alter sequence ADMIN.ticket_seq restart start with 7000;
@@ -310,7 +310,6 @@ EXECUTE passenger_onboarding_pkg.insert_passenger(91, '678 Oak St, Anytown, USA'
 EXECUTE passenger_onboarding_pkg.insert_passenger(25, '890 Maple St, Anytown, USA', 'Female', '3456789012', 'Madison', 'Turner', TO_DATE('2004-10-20', 'YYYY-MM-DD'), 1234567893, 'madisonturner@example.com');
 EXECUTE passenger_onboarding_pkg.insert_passenger(19, '321 Elm St, Anytown, USA', 'Male', '6789012345', 'Noah', 'Phillips', TO_DATE('2003-07-13', 'YYYY-MM-DD'), 4567890123, 'noahphillips@example.com');
 
-select * from passenger;
 
 --EXECUTE insert_airlines;
 
@@ -324,8 +323,6 @@ EXECUTE airline_pkg.insert_airline('UA', 'United Airlines');
 EXECUTE airline_pkg.insert_airline('TK', 'Turkish Airlines');
 EXECUTE airline_pkg.insert_airline('CX', 'Cathay Pacific');
 EXECUTE airline_pkg.insert_airline('SQ', 'Singapore Airlines');
-
-select * from airlines;
 
 
 --EXECUTE insert_airport
@@ -341,7 +338,6 @@ EXECUTE airport_pkg.insert_airport('NRT', 'Narita', 'Chiba', 'Japan');
 EXECUTE airport_pkg.insert_airport('AMS', 'Amsterdam', 'North Holland', 'Netherlands');
 EXECUTE airport_pkg.insert_airport('ICN', 'Incheon', 'Gyeonggi-do', 'South Korea');
 EXECUTE airport_pkg.insert_airport('MEX', 'Mexico City', 'Mexico City', 'Mexico');
-EXECUTE airport_pkg.insert_airport('SFO', 'San Francisco', 'California', 'United States');
 EXECUTE airport_pkg.insert_airport('FRA', 'Frankfurt', 'Hesse', 'Germany');
 EXECUTE airport_pkg.insert_airport('MAD', 'Madrid', 'Community of Madrid', 'Spain');
 EXECUTE airport_pkg.insert_airport('IST', 'Istanbul', 'Istanbul', 'Turkey');
@@ -350,7 +346,6 @@ EXECUTE airport_pkg.insert_airport('BOM', 'Mumbai', 'Maharashtra', 'India');
 EXECUTE airport_pkg.insert_airport('PEK', 'Beijing', 'Beijing', 'China');
 EXECUTE airport_pkg.insert_airport('SVO', 'Moscow', 'Moscow Oblast', 'Russia');
 EXECUTE airport_pkg.insert_airport('SYX', 'Sanya', 'Hainan', 'China');
-EXECUTE airport_pkg.insert_airport('GRU', 'S�o Paulo', 'S�o Paulo', 'Brazil');
 EXECUTE airport_pkg.insert_airport('JNB', 'Johannesburg', 'Gauteng', 'South Africa');
 EXECUTE airport_pkg.insert_airport('AKL', 'Auckland', 'Auckland', 'New Zealand');
 EXECUTE airport_pkg.insert_airport('LIS', 'Lisbon', 'Lisbon', 'Portugal');
@@ -375,25 +370,26 @@ EXECUTE TERMINAL_PKG.INSERT_TERMINAL('T1');
 EXECUTE TERMINAL_PKG.INSERT_TERMINAL('T2');
 EXECUTE TERMINAL_PKG.INSERT_TERMINAL('T3');
 
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A320',  TO_TIMESTAMP('2023-04-21 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-04-22 17:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'LHR', 'On Time', 300, 3, 0, 6001);
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Boeing 737',  TO_TIMESTAMP('2023-04-16 03:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-04-17 17:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'BOS', 'Delayed', 150, 2, 0, 6002);
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Boeing 747',  TO_TIMESTAMP('2023-04-18 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-04-19 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'SIN', 'LAX', 'On Time', 300, 1, 0, 6000);
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Embraer E175',  TO_TIMESTAMP('2023-05-21 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-05-22 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'DXB', 'BOS', 'Cancelled', 80, 3, 0, 6002);
-EXECUTE airportadmin.ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A320',  TO_TIMESTAMP('2023-04-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-04-25 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS', 'On Time', 300, 2, 0, 6001);
+EXECUTE ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A320',  TO_TIMESTAMP('2023-04-21 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-04-22 17:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'LHR', 'On Time', 300, 3, 0, 6001);
+EXECUTE ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Boeing 737',  TO_TIMESTAMP('2023-04-16 03:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-04-17 17:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'BOM', 'BOS', 'Delayed', 150, 2, 0, 6002);
+EXECUTE ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Boeing 747',  TO_TIMESTAMP('2023-04-18 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-04-19 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'SIN', 'LAX', 'On Time', 300, 1, 0, 6000);
+EXECUTE ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Embraer E175',  TO_TIMESTAMP('2023-05-21 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-05-22 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'DXB', 'BOS', 'Cancelled', 80, 3, 0, 6002);
+EXECUTE ONBOARD_FLIGHT_PKG.INSERT_FLIGHT('Airbus A320',  TO_TIMESTAMP('2023-04-24 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('2023-04-25 11:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'LHR', 'BOS', 'On Time', 300, 2, 0, 6001);
 
-EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50002, 4000, 'P6', 'Gluten Free', 'BOM', 'LHR', TO_DATE('2023-04-16', 'YYYY-MM-DD'), 'Business', 'Cash', 2345);
-EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4001, 'P5', 'Vegetarian', 'BOM', 'BOS', TO_DATE('2023-04-17', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345);
-EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4002, 'E6', 'Non-Vegetarian', 'SIN', 'LAX', TO_DATE('2023-04-19', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345);
-EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50004, 4004, 'A6', 'Vegan', 'DXB', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'First Class', 'Cash', 2345);
-EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50005, 4004, 'B7', 'Vegetarian', 'LHR', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345);
+EXECUTE ONBOARD_TICKET_PKG.INSERT_TICKET(50002, 4000, 'P6', 'Gluten Free', 'BOM', 'LHR', TO_DATE('2023-04-16', 'YYYY-MM-DD'), 'Business', 'Cash', 2345, 250.00);
+EXECUTE ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4001, 'P5', 'Vegetarian', 'BOM', 'BOS', TO_DATE('2023-04-17', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345, 350.00);
+EXECUTE ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4002, 'E6', 'Non-Vegetarian', 'SIN', 'LAX', TO_DATE('2023-04-19', 'YYYY-MM-DD'), 'Economy', 'Cash', 2345, 150.00);
+EXECUTE ONBOARD_TICKET_PKG.INSERT_TICKET(50004, 4004, 'A6', 'Vegan', 'DXB', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'First Class', 'Cash', 2345,450.00);
+EXECUTE ONBOARD_TICKET_PKG.INSERT_TICKET(50005, 4004, 'B7', 'Vegetarian', 'LHR', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345,350.00);
 
 select * from airport;
---select * from passenger;
---select * from orders;
+select * from passenger;
+select * from orders;
 select * from flight;
---select * from airline_staff;
---select * from terminal;
+select * from airline_staff;
+select * from terminal;
 select * from ticket;
 select * from baggage;
---EXECUTE insert_ticket
+select * from schedule;
+select * from airlines;
 --EXECUTE onboard_ticket_pkg.INSERT_TICKET(50000, 4001, 'A1', 'Vegetarian', 'LAX', 'BOS', TO_DATE('2023-04-15', 'YYYY-MM-DD'), 'Economy', 'Credit Card', 5678, 350.00)

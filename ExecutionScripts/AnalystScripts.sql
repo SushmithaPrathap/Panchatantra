@@ -82,8 +82,8 @@ View 4: View to see the number of employees per airline
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW airline_staff_counts AS
     SELECT airline_name, COUNT(*) AS num_staff
-    FROM airline_staff
-    JOIN airlines ON airline_staff.airline_id = airlines.airline_id
+    FROM airportadmin.airline_staff
+    JOIN airportadmin.airlines ON airline_staff.airline_id = airlines.airline_id
     GROUP BY airline_name';
   DBMS_OUTPUT.PUT_LINE('The airline_staff_counts view was created successfully');
 EXCEPTION
@@ -100,7 +100,7 @@ BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW monthly_ticket_sales AS
 SELECT TO_CHAR(date_of_travel, 'YYYY-MM') AS month,
        SUM(Transaction_amount) AS total_sales
-FROM ticket
+FROM airportadmin.ticket
 GROUP BY TO_CHAR(date_of_travel, 'YYYY-MM')';
   DBMS_OUTPUT.PUT_LINE('The monthly_ticket_sales view was created successfully');
 EXCEPTION
@@ -114,8 +114,8 @@ View 6: The Below block of code creates a view to see number of flights between 
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW flights_between_boston_and_california AS
   SELECT f.flight_id, f.duration, f.flight_type, f.source, f.destination, f.status, f.no_pax, f.airline_id, f.seats_filled, s.schedule_id, s.terminal_id, s.arrival_time, s.departure_time
-  FROM flight f
-  JOIN schedule s ON f.flight_id = s.flight_id
+  FROM airportadmin.flight f
+  JOIN airportadmin.schedule s ON f.flight_id = s.flight_id
   WHERE f.source = ''Boston'' AND f.destination = ''California''
   AND s.departure_time > TO_CHAR(SYSDATE, ''HH24:MI:SS'')';
   DBMS_OUTPUT.PUT_LINE('The flights_between_boston_and_california view was created successfully');
@@ -129,11 +129,7 @@ select * from flights_between_boston_and_california;
 /*
 View 7: The Below block of code creates a view to see status of flights
 */
-select flight_id, soruce, destination, status from flight;
-
-
-GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ACCOUNTANT;
-GRANT SELECT ON  AIRPORTADMIN.monthly_ticket_sales TO ANALYST;
+select flight_id, source, destination, status from flight;
 
 /*
 View 6: Assigning Airline Staff to flight
@@ -193,8 +189,8 @@ View 6 : Baggage transaction – The number of bags per transaction
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW baggage_count_per_order AS
     SELECT COUNT(B.baggage_id) AS BAGGAGE_COUNT, O.ORDER_ID 
-    FROM ((BAGGAGE B JOIN TICKET T ON B.TICKET_ID = T.TICKET_ID) 
-    JOIN ORDERS O ON O.ORDER_ID = T.ORDER_ID) 
+    FROM ((airportadmin.BAGGAGE B JOIN airportadmin.TICKET T ON B.TICKET_ID = T.TICKET_ID) 
+    JOIN airportadmin.ORDERS O ON O.ORDER_ID = T.ORDER_ID) 
     GROUP BY O.ORDER_ID';
     DBMS_OUTPUT.PUT_LINE('baggage_count_per_order view was created successfully');
 EXCEPTION
@@ -213,7 +209,7 @@ View 7 : Number of Bookings
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW no_of_bookings AS
     SELECT COUNT(ORDER_ID) AS NO_OF_BOOKINGS 
-    FROM ORDERS 
+    FROM airportadmin.ORDERS 
     WHERE STATUS = ''Completed''';
     DBMS_OUTPUT.PUT_LINE('no_of_bookings view was created successfully');
 EXCEPTION
@@ -232,7 +228,7 @@ SELECT TO_CHAR(date_of_travel, ''IW'') AS week_number,
        TO_CHAR(date_of_travel, ''YYYY'') AS year_number,
        COUNT(ticket_id) AS num_of_tickets,
        SUM(transaction_amount) AS total_amount
-FROM ticket
+FROM airportadmin.ticket
 GROUP BY TO_CHAR(date_of_travel, ''IW''), TO_CHAR(date_of_travel, ''YYYY'')';
 EXCEPTION
   WHEN OTHERS THEN
@@ -247,8 +243,8 @@ View 9: Number of passengers trvelling through the airport(tickets booked so far
 BEGIN
   EXECUTE IMMEDIATE 'CREATE OR REPLACE VIEW people_travelled AS
     SELECT COUNT(DISTINCT o.passenger_id) AS booking_count
-    FROM orders o
-    INNER JOIN ticket t ON o.order_id = t.order_id';
+    FROM airportadmin.orders o
+    INNER JOIN airportadmin.ticket t ON o.order_id = t.order_id';
     DBMS_OUTPUT.PUT_LINE('people_travelled view was created successfully');
 EXCEPTION
   WHEN OTHERS THEN
@@ -256,3 +252,7 @@ EXCEPTION
 END;
 /
 select * from people_travelled;
+
+
+
+select * from airportadmin.flight;

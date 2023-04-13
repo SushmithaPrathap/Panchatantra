@@ -93,7 +93,7 @@ PROCEDURE update_passenger(
       WHERE
         passenger_id = v_passenger_id;
       commit;  
-      DBMS_OUTPUT.PUT_LINE('Data Successfully Updated BLAHAHHAHAHA');
+      DBMS_OUTPUT.PUT_LINE('Data Successfully Updated');
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         DBMS_OUTPUT.PUT_LINE('No passenger found with the given ID');
