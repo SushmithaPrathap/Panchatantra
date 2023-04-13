@@ -22,6 +22,6 @@ priviliges to the user.
 *Roles are created and the necessary grants and priviliges are performed by the airport admin and the script is present in the secondary file*
 
 ----------------
-ER Diagram
+**ER Diagram**
 
 ![alt text](https://github.com/SushmithaPrathap/Panchatantra/blob/main/Picture%201.jpg)
