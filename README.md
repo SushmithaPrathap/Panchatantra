@@ -8,7 +8,8 @@ and assigns it to `Airport_Admin`.  The final script is called `MainScript` whic
 PL/SQL with in the form of stored procedures. Additionally **VIEWS** have been created with the tables created. The following steps have to be taken
 to ensure the script runs with out errors
 
- 
+**INSTRUCTIONS TO RUN**
+
 1. Run Admin.sql file - This files creates the role of `Airport_Admin` and adds `sequences` which are used in the code. The file also grants the necessary
 priviliges to the user.
 
@@ -21,5 +22,6 @@ priviliges to the user.
 *Roles are created and the necessary grants and priviliges are performed by the airport admin and the script is present in the secondary file*
 
 ----------------
+ER Diagram
 
 ![alt text](https://github.com/SushmithaPrathap/Panchatantra/blob/main/Picture%201.jpg)
