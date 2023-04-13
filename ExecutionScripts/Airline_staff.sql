@@ -53,16 +53,16 @@ EXECUTE airportadmin.FLIGHT_DELETE_PKG.delete_flight(4003);
 --TEST CASES FOR TICKET INSERT
 
 --invalid source and destination
-EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50002, 4000, 'P6', 'Gluten Free', 'ABC', 'LHR', TO_DATE('2023-04-16', 'YYYY-MM-DD'), 'Business', 'Cash', 2345);
-EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4001, 'P5', 'Vegetarian', 'BOM', 'THE', TO_DATE('2023-04-17', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345);
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50002, 4000, 'P6', 'Gluten Free', 'ABC', 'LHR', TO_DATE('2023-04-16', 'YYYY-MM-DD'), 'Business', 'Cash', 2345, 250.00);
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4001, 'P5', 'Vegetarian', 'BOM', 'THE', TO_DATE('2023-04-17', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345, 350.00);
 --invalid class
-EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4002, 'E6', 'Non-Vegetarian', 'SIN', 'LAX', TO_DATE('2023-04-19', 'YYYY-MM-DD'), '', 'Cash', 2345);
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50003, 4002, 'E6', 'Non-Vegetarian', 'SIN', 'LAX', TO_DATE('2023-04-19', 'YYYY-MM-DD'), '', 'Cash', 2345, 150.00);
 --invalid cash
 EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(50004, 4004, 'A6', 'Vegan', 'DXB', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'First Class', 'Cash', 2345, 0.0);
 --invalid order_id
-EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(0, 4004, 'B7', 'Vegetarian', 'LHR', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345);
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(0, 4004, 'B7', 'Vegetarian', 'LHR', 'BOS', TO_DATE('2023-04-25', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345, 350.00);
 --previous date
-EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(0, 4004, 'B7', 'Vegetarian', 'LHR', 'BOS', TO_DATE('2023-04-11', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345);
+EXECUTE airportadmin.ONBOARD_TICKET_PKG.INSERT_TICKET(0, 4004, 'B7', 'Vegetarian', 'LHR', 'BOS', TO_DATE('2023-04-11', 'YYYY-MM-DD'), 'Business Pro', 'Cash', 2345, 350.00);
 
 --TEST CASES FOR TICKET UPDATE
 --update class

@@ -76,7 +76,8 @@ CREATE OR REPLACE PACKAGE ONBOARD_TICKET_PKG AS
     in_date_of_travel IN DATE,
     in_class IN VARCHAR2,
     in_payment_type IN VARCHAR2,
-    in_member_id IN NUMBER
+    in_member_id IN NUMBER,
+    in_transaction_amount IN FLOAT
 );
 
 END ONBOARD_TICKET_PKG;
@@ -115,7 +116,8 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
     in_date_of_travel IN DATE,
     in_class IN VARCHAR2,
     in_payment_type IN VARCHAR2,
-    in_member_id IN NUMBER
+    in_member_id IN NUMBER,
+    in_transaction_amount IN FLOAT
   ) AS
     l_d_airport_count NUMBER;
     l_s_airport_count NUMBER;
@@ -136,6 +138,7 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
         OR LENGTH(in_class)<=0
         OR LENGTH(in_payment_type)<=0
         OR in_member_id <= 0
+        OR in_transaction_amount <= 0.0
     ) THEN 
         RAISE INVALID_INPUTS;
     END IF;
@@ -180,6 +183,8 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
     in_payment_type,
     in_member_id
     );
+
+    UPDATE ORDERS SET amount = in_transaction_amount WHERE order_id = in_order_id;
 
     --insert a schedule for the flight
     insert_baggage(ADMIN.baggage_id_seq.NEXTVAL, l_ticket_id);
