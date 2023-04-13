@@ -108,23 +108,30 @@ END get_duration;
     l_terminal_count NUMBER;
     l_flight_id NUMBER := ADMIN.flight_seq.NEXTVAL;
     INVALID_INPUTS EXCEPTION;
+
+    invalid_flight_id EXCEPTION;
+    invalid_flight_type EXCEPTION;
+    invalid_status EXCEPTION;
+    invalid_no_pax EXCEPTION;
+    invalid_seats_filled EXCEPTION;
+    invalid_duration EXCEPTION;
     
   BEGIN
-
-   IF
-    (
-        LENGTH(p_flight_type) <= 0
-        OR p_departure_time is NULL
-        OR p_arrival_time is NULL
-        OR LENGTH(p_source) <= 0
-        OR LENGTH(p_destination)<=0
-        OR LENGTH(p_status)<=0
-        OR p_no_pax <= 0
-        OR p_seats_filled > 0
-        OR p_airline_id <= 0
-        OR p_terminal_id <= 0
-    ) THEN 
-        RAISE INVALID_INPUTS;
+    
+    IF LENGTH(p_flight_type) <= 0 or p_flight_type IS NULL THEN
+      RAISE invalid_flight_type;
+    END IF;
+    
+    IF LENGTH(p_status) <= 0 or p_status IS NULL THEN
+      RAISE invalid_status;
+    END IF;
+    
+    IF p_no_pax <= 0 or p_no_pax IS NULL THEN
+      RAISE invalid_no_pax;
+    END IF;
+    
+    IF p_seats_filled > 0 or p_seats_filled IS NULL THEN
+      RAISE invalid_seats_filled;
     END IF;
 
     l_d_airport_count := ONBOARD_FLIGHT_PKG.check_airport(p_destination);
@@ -196,15 +203,16 @@ END get_duration;
     VALUES (ADMIN.schedule_seq.NEXTVAL, l_flight_id, p_terminal_id, p_arrival_time ,p_departure_time);       --insert a schedule sequence
     COMMIT;
 EXCEPTION
-  WHEN INVALID_INPUTS THEN 
-    dbms_output.put_line('Invalid input' || p_arrival_time || p_departure_time || l_duration ||
-      p_flight_type ||
-      p_destination ||
-      p_source ||
-      p_status ||
-      p_no_pax ||
-      p_airline_id ||
-      p_seats_filled );
+  WHEN invalid_flight_type THEN 
+      dbms_output.put_line('Invalid flight type');
+    WHEN invalid_status THEN 
+      dbms_output.put_line('Invalid status');
+    WHEN invalid_no_pax THEN 
+      dbms_output.put_line('Invalid number of passengers');
+    WHEN invalid_seats_filled THEN 
+      dbms_output.put_line('Invalid number of seats filled');
+    WHEN invalid_duration THEN 
+      dbms_output.put_line('Invalid Duration');
 
   END INSERT_FLIGHT;
 END ONBOARD_FLIGHT_PKG;

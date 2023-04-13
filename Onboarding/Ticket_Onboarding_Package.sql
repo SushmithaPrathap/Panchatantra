@@ -15,15 +15,15 @@ END;
 Stored Procedure for updating baggage weight based on the class
 */
  CREATE OR REPLACE PROCEDURE insert_baggage (
-    p_baggage_id IN NUMBER,
-    p_ticket_id IN NUMBER
+    in_baggage_id IN NUMBER,
+    in_ticket_id IN NUMBER
 )
 IS
     v_weight FLOAT;
     v_ticket_class VARCHAR2(20);
     BEGIN
 
-    SELECT class INTO v_ticket_class FROM ticket WHERE ticket_id = p_ticket_id;
+    SELECT class INTO v_ticket_class FROM ticket WHERE ticket_id = in_ticket_id;
     
  IF v_ticket_class = 'Business' THEN
     v_weight := 200.00;
@@ -43,17 +43,17 @@ END IF;
         ticket_id,
         weight
     ) VALUES (
-        p_baggage_id,
-        p_ticket_id,
+        in_baggage_id,
+        in_ticket_id,
         v_weight
     );
     
     COMMIT;
     
-    DBMS_OUTPUT.PUT_LINE('Baggage ' || p_baggage_id || ' weight updated to ' || v_weight);
+    DBMS_OUTPUT.PUT_LINE('Baggage ' || in_baggage_id || ' weight updated to ' || v_weight);
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No ticket found with ID ' || p_ticket_id);
+        DBMS_OUTPUT.PUT_LINE('No ticket found with ID ' || in_ticket_id);
     WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('Error inserting baggage record: ' || SQLERRM);
     ROLLBACK;
@@ -123,24 +123,60 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
     l_s_airport_count NUMBER;
     l_flight_count NUMBER;
     l_ticket_id NUMBER := ADMIN.ticket_seq.NEXTVAL; --seq
-    INVALID_INPUTS EXCEPTION;
+    -- INVALID_INPUTS EXCEPTION;
+    invalid_ticket_id EXCEPTION;
+    invalid_order_id EXCEPTION;
+    invalid_flight_id EXCEPTION;
+    invalid_seat_no EXCEPTION;
+    invalid_meal_preferences EXCEPTION;
+    invalid_source EXCEPTION;
+    invalid_destination EXCEPTION;
+    invalid_date_of_travel EXCEPTION;
+    invalid_class EXCEPTION;
+    invalid_payment_type EXCEPTION;
+    invalid_member_id EXCEPTION;
+    invalid_transaction_amount EXCEPTION;
+  
+BEGIN
+     -- Validate inputs
+    IF in_flight_id IS NULL OR in_flight_id <= 0 THEN
+      RAISE invalid_flight_id;
+    END IF;
+
+    IF in_order_id IS NULL OR in_order_id <= 0 THEN
+      RAISE invalid_order_id;
+    END IF;
     
-  BEGIN
-    IF
-    (
-        in_order_id <= 0
-        OR in_flight_id <= 0
-        OR LENGTH(in_seat_no)<= 0
-        OR LENGTH(in_meal_preferences)<= 0
-        OR LENGTH(in_source) <= 0
-        OR LENGTH(in_destination)<=0
-        OR in_date_of_travel is NULL
-        OR LENGTH(in_class)<=0
-        OR LENGTH(in_payment_type)<=0
-        OR in_member_id <= 0
-        OR in_transaction_amount <= 0.0
-    ) THEN 
-        RAISE INVALID_INPUTS;
+    IF LENGTH(in_seat_no) <= 0 OR in_seat_no IS NULL THEN
+      RAISE invalid_seat_no;
+    END IF;
+    
+    IF LENGTH(in_meal_preferences) <= 0 OR in_meal_preferences IS NULL THEN
+      RAISE invalid_meal_preferences;
+    END IF;
+    
+    IF LENGTH(in_source) <= 0 THEN
+      RAISE invalid_source;
+    END IF;
+
+    IF LENGTH(in_destination) <= 0 THEN
+      RAISE invalid_destination;
+    END IF;
+
+    IF LENGTH(in_class) <= 0 OR in_class IS NULL THEN
+      RAISE invalid_class;
+    END IF;
+
+    IF LENGTH(in_member_id) <= 0 THEN
+      RAISE invalid_member_id;
+    END IF;
+
+    IF LENGTH(in_transaction_amount) <= 0.0 THEN
+      RAISE invalid_transaction_amount;
+    END IF;
+
+     IF LENGTH(in_payment_type) <= 0 OR in_payment_type IS NULL THEN
+      RAISE invalid_payment_type;
     END IF;
 
     l_flight_count := ONBOARD_TICKET_PKG.check_flight(in_flight_id);
@@ -190,8 +226,28 @@ CREATE OR REPLACE PACKAGE BODY ONBOARD_TICKET_PKG AS
     insert_baggage(ADMIN.baggage_id_seq.NEXTVAL, l_ticket_id);
     
   EXCEPTION
-    WHEN INVALID_INPUTS THEN 
-      dbms_output.put_line('Invalid input');
+    WHEN invalid_ticket_id THEN 
+      dbms_output.put_line('Invalid Ticket id');
+    WHEN invalid_order_id THEN 
+      dbms_output.put_line('Invalid order id');
+    WHEN invalid_flight_id THEN 
+      dbms_output.put_line('Invalid flight id');
+    WHEN invalid_seat_no THEN 
+      dbms_output.put_line('Invalid seat no');
+    WHEN invalid_meal_preferences THEN 
+      dbms_output.put_line('Invalid meal_preferences');
+    WHEN invalid_source THEN 
+      dbms_output.put_line('Invalid source');
+    WHEN invalid_destination THEN 
+      dbms_output.put_line('Invalid destination');
+    WHEN invalid_date_of_travel THEN 
+      dbms_output.put_line('Invalid date_of_travel');
+    WHEN invalid_class THEN 
+      dbms_output.put_line('Invalid class');
+    WHEN invalid_payment_type THEN 
+      dbms_output.put_line('Invalid payment_type');
+    WHEN invalid_member_id THEN 
+      dbms_output.put_line('Invalid member id');
 
   END INSERT_TICKET;
 END ONBOARD_TICKET_PKG;

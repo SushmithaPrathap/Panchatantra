@@ -137,23 +137,23 @@ PROCEDURE update_baggage(
       RAISE invalid_order_id;
     END IF;
     
-    IF LENGTH(p_seat_no) <= 0  THEN
+    IF LENGTH(p_seat_no) <= 0 OR p_seat_no IS NULL THEN
       RAISE invalid_seat_no;
     END IF;
     
-    IF LENGTH(p_meal_preferences) <= 0 THEN
+    IF LENGTH(p_meal_preferences) <= 0 OR p_meal_preferences IS NULL THEN
       RAISE invalid_meal_preferences;
     END IF;
     
-    IF LENGTH(p_source) <= 0  THEN
+    IF LENGTH(p_source) <= 0 THEN
       RAISE invalid_source;
     END IF;
 
-    IF LENGTH(p_destination) <= 0  THEN
+    IF LENGTH(p_destination) <= 0 THEN
       RAISE invalid_destination;
     END IF;
 
-    IF LENGTH(p_class) <= 0 THEN
+    IF LENGTH(p_class) <= 0 OR p_class IS NULL THEN
       RAISE invalid_class;
     END IF;
 
